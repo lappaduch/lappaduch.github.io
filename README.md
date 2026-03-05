@@ -1,1 +1,1364 @@
-# lappaduch.github.io
+<!DOCTYPE html>
+<!-- saved from url=(0046)file:///C:/Users/PC/Downloads/cube_primer.html -->
+<html lang="cs"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commander Cube – Primer</title>
+<link href="./Commander Cube – Primer_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg: #08090d;
+  --surface: #0f1118;
+  --surface2: #161924;
+  --surface3: #1d2232;
+  --border: #252d42;
+  --text: #e2dff5;
+  --muted: #5a6080;
+  --accent: #c9a84c;
+  --accent2: #7b68ee;
+
+  --w: #f5f0dc; --u: #4a9eff; --b: #b06eff;
+  --r: #ff6b4a; --g: #52c96e; --art: #c9a84c; --multi: #e88040;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Crimson Text', Georgia, serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(123,104,238,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---- HEADER ---- */
+.header {
+  position: relative;
+  text-align: center;
+  padding: 52px 24px 40px;
+  border-bottom: 1px solid var(--border);
+  z-index: 1;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.header h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(22px, 4vw, 36px);
+  letter-spacing: 4px;
+  color: var(--accent);
+  text-shadow: 0 0 40px rgba(201,168,76,0.3);
+  margin-bottom: 8px;
+}
+.header .sub {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ---- NAV ---- */
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 20px 24px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  background: rgba(8,9,13,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+.nav-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  padding: 6px 14px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.nav-btn:hover { color: var(--text); border-color: var(--muted); }
+.nav-btn.active { background: var(--accent); color: #08090d; border-color: var(--accent); font-weight: 700; }
+
+/* ---- MAIN ---- */
+main { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+
+.section { display: none; }
+.section.active { display: block; }
+
+/* ---- OVERVIEW ---- */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 40px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  text-align: center;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: default;
+}
+.stat-card:hover { transform: translateY(-2px); }
+.stat-card .val {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+.stat-card .lbl {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.color-bars { margin-bottom: 40px; }
+.color-bars h2 { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 2px; color: var(--muted); margin-bottom: 16px; text-transform: uppercase; }
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.bar-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  width: 90px;
+  flex-shrink: 0;
+  color: var(--text);
+}
+.bar-track {
+  flex: 1;
+  height: 20px;
+  background: var(--surface);
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
+.bar-num {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: rgba(0,0,0,0.7);
+  font-weight: 700;
+}
+.bar-count { font-family: 'Cinzel', serif; font-size: 11px; color: var(--muted); width: 30px; text-align: right; flex-shrink: 0; }
+
+/* ---- ARCHETYPE GRID ---- */
+.archetypes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.arch-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.arch-card:hover { transform: translateY(-3px); }
+.arch-header {
+  padding: 16px 18px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.arch-icon { font-size: 22px; }
+.arch-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; }
+.arch-guild { font-family: 'Cinzel', serif; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+.arch-body { padding: 14px 18px; font-size: 13px; line-height: 1.65; color: #b8b4d0; }
+.arch-body p { margin-bottom: 10px; }
+.arch-body p:last-child { margin-bottom: 0; }
+.arch-tags { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 18px 14px; }
+.arch-tag {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid;
+  opacity: 0.8;
+}
+.arch-keycard { padding: 0 18px 16px; }
+.arch-keycard-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+.keycards { display: flex; flex-wrap: wrap; gap: 4px; }
+.keycard {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: var(--text);
+  font-style: italic;
+}
+
+/* ---- CARD LIST ---- */
+.card-section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  margin-top: 36px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.card-section-header:first-child { margin-top: 0; }
+.csh-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+.csh-title { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 2px; font-weight: 700; }
+.csh-count { font-family: 'Cinzel', serif; font-size: 11px; color: var(--muted); margin-left: auto; }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.card-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s, border-color 0.15s;
+  cursor: default;
+}
+.card-item:hover { background: var(--surface2); border-color: var(--muted); }
+.card-dot { width: 6px; height: 6px; border-radius: 1px; flex-shrink: 0; }
+.card-name { flex: 1; }
+.card-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  border: 1px solid;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+/* ---- SEARCH ---- */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+.search-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 14px;
+  color: var(--text);
+  font-family: 'Crimson Text', serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--muted); }
+.search-results { font-family: 'Cinzel', serif; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+
+/* ---- SECTION FILTER BAR ---- */
+.section-filter-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.section-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+.filter-clear {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid #ff6b4a55;
+  background: transparent;
+  color: #ff6b4a;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-left: 4px;
+}
+.filter-clear:hover { background: #ff6b4a22; }
+
+/* ---- FILTERS ---- */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+.filter-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  width: 60px;
+  flex-shrink: 0;
+}
+.filter-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.5px;
+}
+.filter-btn:hover { color: var(--text); border-color: var(--muted); }
+.filter-btn.active { background: var(--surface3); color: var(--text); border-color: var(--accent); }
+.filter-btn.cmc-active { background: #1a1f35; color: #90caf9; border-color: #4a9eff; }
+.filter-btn.type-active { background: #1f1a2e; color: #ce93d8; border-color: #b06eff; }
+.filter-btn.color-active { background: #1a2218; color: #a5d6a7; border-color: #52c96e; }
+
+/* ---- FOOTER ---- */
+footer {
+  text-align: center;
+  padding: 32px;
+  border-top: 1px solid var(--border);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.section.active { animation: fadeIn 0.3s ease forwards; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>Commander Cube</h1>
+  <div class="sub">Multiplayer Draft · 10 Archetypes · 600 Cards</div>
+</header>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection(&#39;overview&#39;)">Overview</button>
+  <button class="nav-btn" onclick="showSection(&#39;archetypes&#39;)">Archetypy</button>
+  <button class="nav-btn" onclick="showSection(&#39;white&#39;)">⬜ Bílá</button>
+  <button class="nav-btn" onclick="showSection(&#39;blue&#39;)">🔵 Modrá</button>
+  <button class="nav-btn" onclick="showSection(&#39;black&#39;)">⚫ Černá</button>
+  <button class="nav-btn" onclick="showSection(&#39;red&#39;)">🔴 Červená</button>
+  <button class="nav-btn" onclick="showSection(&#39;green&#39;)">🟢 Zelená</button>
+  <button class="nav-btn" onclick="showSection(&#39;multi&#39;)">🌈 Multicolor</button>
+  <button class="nav-btn" onclick="showSection(&#39;artifacts&#39;)">⚙️ Artefakty</button>
+  <button class="nav-btn" onclick="showSection(&#39;lands&#39;)">🏔️ Země</button>
+  <button class="nav-btn" onclick="showSection(&#39;search&#39;)">🔍 Hledat</button>
+</nav>
+
+<main>
+
+<!-- OVERVIEW -->
+<section id="overview" class="section active">
+  <div class="overview-grid" id="overview-stats">
+    <div class="stat-card" style="border-color:#c9a84c33">
+      <span class="val" style="color:#c9a84c">600</span>
+      <span class="lbl">Celkem karet</span>
+    </div>
+  
+    <div class="stat-card" style="border-color:#90caf933">
+      <span class="val" style="color:#90caf9">540</span>
+      <span class="lbl">Bez zemí</span>
+    </div>
+  
+    <div class="stat-card" style="border-color:#7b68ee33">
+      <span class="val" style="color:#7b68ee">10</span>
+      <span class="lbl">Archetypů</span>
+    </div>
+  
+    <div class="stat-card" style="border-color:#e8804033">
+      <span class="val" style="color:#e88040">153</span>
+      <span class="lbl">Multicolor</span>
+    </div>
+  
+    <div class="stat-card" style="border-color:#c9a84c33">
+      <span class="val" style="color:#c9a84c">56</span>
+      <span class="lbl">Artefaktů</span>
+    </div>
+  
+    <div class="stat-card" style="border-color:#8d9e7a33">
+      <span class="val" style="color:#8d9e7a">60</span>
+      <span class="lbl">Zemí</span>
+    </div>
+  </div>
+  <div class="color-bars">
+    <h2>Distribuce karet podle barvy</h2>
+    <div id="color-bars-content">
+    <div class="bar-row">
+      <span class="bar-label" style="color:#f5f0dc">Bílá</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:43%;background:#f5f0dc99">
+          <span class="bar-num">66</span>
+        </div>
+      </div>
+      <span class="bar-count">66</span>
+    </div>
+  
+    <div class="bar-row">
+      <span class="bar-label" style="color:#4a9eff">Modrá</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:44%;background:#4a9eff99">
+          <span class="bar-num">67</span>
+        </div>
+      </div>
+      <span class="bar-count">67</span>
+    </div>
+  
+    <div class="bar-row">
+      <span class="bar-label" style="color:#b06eff">Černá</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:44%;background:#b06eff99">
+          <span class="bar-num">67</span>
+        </div>
+      </div>
+      <span class="bar-count">67</span>
+    </div>
+  
+    <div class="bar-row">
+      <span class="bar-label" style="color:#ff6b4a">Červená</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:43%;background:#ff6b4a99">
+          <span class="bar-num">66</span>
+        </div>
+      </div>
+      <span class="bar-count">66</span>
+    </div>
+  
+    <div class="bar-row">
+      <span class="bar-label" style="color:#52c96e">Zelená</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:42%;background:#52c96e99">
+          <span class="bar-num">65</span>
+        </div>
+      </div>
+      <span class="bar-count">65</span>
+    </div>
+  
+    <div class="bar-row">
+      <span class="bar-label" style="color:#e88040">Multicolor</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:100%;background:#e8804099">
+          <span class="bar-num">153</span>
+        </div>
+      </div>
+      <span class="bar-count">153</span>
+    </div>
+  
+    <div class="bar-row">
+      <span class="bar-label" style="color:#c9a84c">Artefakty</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:37%;background:#c9a84c99">
+          <span class="bar-num">56</span>
+        </div>
+      </div>
+      <span class="bar-count">56</span>
+    </div>
+  
+    <div class="bar-row">
+      <span class="bar-label" style="color:#8d9e7a">Země</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:39%;background:#8d9e7a99">
+          <span class="bar-num">60</span>
+        </div>
+      </div>
+      <span class="bar-count">60</span>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ARCHETYPES -->
+<section id="archetypes" class="section">
+  <div class="archetypes-grid" id="archetypes-grid">
+    <div class="arch-card" style="border-color:#ffab9144">
+      <div class="arch-header" style="border-color:#ffab9133;background:#ffab9111">
+        <span class="arch-icon">⚔️</span>
+        <div>
+          <div class="arch-title" style="color:#ffab91">Aggro / Combat</div>
+          <div class="arch-guild">RW · RW</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Nejagresivnější archetyp cubu. Přeplaví stůl tokens a combat-triků. Klíčové je mít silné 1-2 dropové creatures a payoffs jako Hellrider nebo Purphoros.</p>
+        <p style="color:#9898c0">Dropp creatures, útočíš každý turn, využíváš Melee a Dethrone mechaniky. Disrupt Decorum nebo Besmirch ti dají extra útok přes neochotné hráče.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#ffab91;border-color:#ffab91">Aggro</span><span class="arch-tag" style="color:#ffab91;border-color:#ffab91">Tokens</span><span class="arch-tag" style="color:#ffab91;border-color:#ffab91">Combat Tricks</span><span class="arch-tag" style="color:#ffab91;border-color:#ffab91">Haste</span><span class="arch-tag" style="color:#ffab91;border-color:#ffab91">Extra Combat</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Purphoros</span><span class="keycard">Hellrider</span><span class="keycard">Aurelia</span><span class="keycard">Hero of Bladehold</span><span class="keycard">Grenzo's Ruffians</span><span class="keycard">Disrupt Decorum</span><span class="keycard">Assemble the Legion</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arch-card" style="border-color:#f48fb144">
+      <div class="arch-header" style="border-color:#f48fb133;background:#f48fb111">
+        <span class="arch-icon">🩸</span>
+        <div>
+          <div class="arch-title" style="color:#f48fb1">Drain / Lifegain</div>
+          <div class="arch-guild">WB · WB</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Kontrolní midrange archetyp. Drainuješ životy přes Extort, Drain efekty a Lifegain payoffs. Vyhrává přes Exquisite Blood combo nebo lethal drain.</p>
+        <p style="color:#9898c0">Builduj board z malých flyers a lifelink creatures. Exquisite Blood + Sanguine Bond je instant win. Gray Merchant nebo Debt to the Deathless jako finishery.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#f48fb1;border-color:#f48fb1">Drain</span><span class="arch-tag" style="color:#f48fb1;border-color:#f48fb1">Lifegain</span><span class="arch-tag" style="color:#f48fb1;border-color:#f48fb1">Extort</span><span class="arch-tag" style="color:#f48fb1;border-color:#f48fb1">Control</span><span class="arch-tag" style="color:#f48fb1;border-color:#f48fb1">Combo</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Exquisite Blood</span><span class="keycard">Sanguine Bond</span><span class="keycard">Gray Merchant</span><span class="keycard">Kambal</span><span class="keycard">Pontiff of Blight</span><span class="keycard">Debt to the Deathless</span><span class="keycard">Archangel of Thune</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arch-card" style="border-color:#90caf944">
+      <div class="arch-header" style="border-color:#90caf933;background:#90caf911">
+        <span class="arch-icon">✨</span>
+        <div>
+          <div class="arch-title" style="color:#90caf9">Blink / ETB</div>
+          <div class="arch-guild">WU · WU</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Value engine archetyp. Blinkuješ creatures s powerful ETB efekty znovu a znovu. Brago je nejsilnější commander – může blinknout celý board každý turn.</p>
+        <p style="color:#9898c0">Draftuješ ETB creatures (Cloudblazer, Lavinia, Venser) a blink enablers (Ghostly Flicker, Displace). Brago jako commander je must-have.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#90caf9;border-color:#90caf9">Blink</span><span class="arch-tag" style="color:#90caf9;border-color:#90caf9">ETB</span><span class="arch-tag" style="color:#90caf9;border-color:#90caf9">Value</span><span class="arch-tag" style="color:#90caf9;border-color:#90caf9">Control</span><span class="arch-tag" style="color:#90caf9;border-color:#90caf9">Flicker</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Brago</span><span class="keycard">Restoration Angel</span><span class="keycard">Venser the Sojourner</span><span class="keycard">Panharmonicon</span><span class="keycard">Ghostly Flicker</span><span class="keycard">Felidar Guardian</span><span class="keycard">Ephara</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arch-card" style="border-color:#ffcc8044">
+      <div class="arch-header" style="border-color:#ffcc8033;background:#ffcc8011">
+        <span class="arch-icon">⚡</span>
+        <div>
+          <div class="arch-title" style="color:#ffcc80">Spellslinger</div>
+          <div class="arch-guild">UR · UR</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Spell-based combo archetyp. Každý cast generuje value přes Young Pyromancer, Guttersnipe nebo Mizzix. Wheel efekty doplňují ruky pro masivní turn.</p>
+        <p style="color:#9898c0">Builduješ kolem spell payoffs. Mizzix snižuje cenu spellů s každým experience counterem. Past in Flames nebo Mizzix's Mastery jako finisher.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#ffcc80;border-color:#ffcc80">Spellslinger</span><span class="arch-tag" style="color:#ffcc80;border-color:#ffcc80">Wheels</span><span class="arch-tag" style="color:#ffcc80;border-color:#ffcc80">Storm</span><span class="arch-tag" style="color:#ffcc80;border-color:#ffcc80">Instant/Sorcery</span><span class="arch-tag" style="color:#ffcc80;border-color:#ffcc80">Tokens</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Mizzix</span><span class="keycard">Young Pyromancer</span><span class="keycard">Guttersnipe</span><span class="keycard">Past in Flames</span><span class="keycard">Wheel of Fortune</span><span class="keycard">The Locust God</span><span class="keycard">Primal Amulet</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arch-card" style="border-color:#b39ddb44">
+      <div class="arch-header" style="border-color:#b39ddb33;background:#b39ddb11">
+        <span class="arch-icon">💀</span>
+        <div>
+          <div class="arch-title" style="color:#b39ddb">Reanimator</div>
+          <div class="arch-guild">UB · UB</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Graveyard-based combo/control archetyp. Discardneš nebo mleješ velké creatures a reanimáš je levně. The Scarab God nebo Taigam jako commandeři.</p>
+        <p style="color:#9898c0">Bury Alive + Reanimate/Living Death je core combo. Meren generuje recursion každý turn. Prioritizuj discard outlets a reanimation spells.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#b39ddb;border-color:#b39ddb">Reanimator</span><span class="arch-tag" style="color:#b39ddb;border-color:#b39ddb">Graveyard</span><span class="arch-tag" style="color:#b39ddb;border-color:#b39ddb">Mill</span><span class="arch-tag" style="color:#b39ddb;border-color:#b39ddb">Control</span><span class="arch-tag" style="color:#b39ddb;border-color:#b39ddb">Combo</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Reanimate</span><span class="keycard">Living Death</span><span class="keycard">The Scarab God</span><span class="keycard">Meren</span><span class="keycard">Buried Alive</span><span class="keycard">Recurring Nightmare</span><span class="keycard">Sheoldred</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arch-card" style="border-color:#ef9a9a44">
+      <div class="arch-header" style="border-color:#ef9a9a33;background:#ef9a9a11">
+        <span class="arch-icon">🗡️</span>
+        <div>
+          <div class="arch-title" style="color:#ef9a9a">Aristocrats</div>
+          <div class="arch-guild">BR · BR</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Sac-based value archetyp. Sacrifikuješ creatures pro zisk – mana, cards, damage. Mikaeus + persist creatures tvoří infinite kombos.</p>
+        <p style="color:#9898c0">Sac outlets (Ashnod's Altar, Phyrexian Altar) + token generators + payoffs (Blood Artist, Impact Tremors). Infinite loops s Mikaeus nebo Murderous Redcap.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#ef9a9a;border-color:#ef9a9a">Aristocrats</span><span class="arch-tag" style="color:#ef9a9a;border-color:#ef9a9a">Sacrifice</span><span class="arch-tag" style="color:#ef9a9a;border-color:#ef9a9a">Tokens</span><span class="arch-tag" style="color:#ef9a9a;border-color:#ef9a9a">Combo</span><span class="arch-tag" style="color:#ef9a9a;border-color:#ef9a9a">Drain</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Blood Artist</span><span class="keycard">Zulaport Cutthroat</span><span class="keycard">Mikaeus</span><span class="keycard">Ashnod's Altar</span><span class="keycard">Phyrexian Altar</span><span class="keycard">Prossh</span><span class="keycard">Falkenrath Aristocrat</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arch-card" style="border-color:#a5d6a744">
+      <div class="arch-header" style="border-color:#a5d6a733;background:#a5d6a711">
+        <span class="arch-icon">🌋</span>
+        <div>
+          <div class="arch-title" style="color:#a5d6a7">Stompy / Landfall</div>
+          <div class="arch-guild">RG · RG</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Ramp do velkých threats archetyp. Narambuješ se přes mana dorks a ramp spelly na Primeval Titan nebo Craterhoof. Landfall jako bonus subtheme.</p>
+        <p style="color:#9898c0">Mana dorks turn 1-2, ramp spells turn 2-3, velký threat turn 4-5. Omnath jako commander generuje elementaly a damage z každého land dropu.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#a5d6a7;border-color:#a5d6a7">Ramp</span><span class="arch-tag" style="color:#a5d6a7;border-color:#a5d6a7">Big Creatures</span><span class="arch-tag" style="color:#a5d6a7;border-color:#a5d6a7">Landfall</span><span class="arch-tag" style="color:#a5d6a7;border-color:#a5d6a7">Stompy</span><span class="arch-tag" style="color:#a5d6a7;border-color:#a5d6a7">Trample</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Primeval Titan</span><span class="keycard">Craterhoof</span><span class="keycard">Omnath</span><span class="keycard">Xenagos</span><span class="keycard">Natural Order</span><span class="keycard">Selvala Heart of Wilds</span><span class="keycard">Triumph of the Hordes</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arch-card" style="border-color:#fff17644">
+      <div class="arch-header" style="border-color:#fff17633;background:#fff17611">
+        <span class="arch-icon">🌿</span>
+        <div>
+          <div class="arch-title" style="color:#fff176">Tokens / Go Wide</div>
+          <div class="arch-guild">GW · GW</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Token swarm archetyp. Vytváříš masivní množství tokenů a pumps je přes Craterhoof nebo Beastmaster Ascension. Ghave je nejflexibilnější commander.</p>
+        <p style="color:#9898c0">Token generators + anthems. Doubling Season zdvojí každý token a counter. Rhys the Redeemed jako commander generuje exponenciální počet tokenů.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#fff176;border-color:#fff176">Tokens</span><span class="arch-tag" style="color:#fff176;border-color:#fff176">Go Wide</span><span class="arch-tag" style="color:#fff176;border-color:#fff176">Anthems</span><span class="arch-tag" style="color:#fff176;border-color:#fff176">Pump</span><span class="arch-tag" style="color:#fff176;border-color:#fff176">Combo</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Doubling Season</span><span class="keycard">Ghave</span><span class="keycard">Rhys the Redeemed</span><span class="keycard">Craterhoof</span><span class="keycard">Beastmaster Ascension</span><span class="keycard">Mycoloth</span><span class="keycard">Avenger of Zendikar</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arch-card" style="border-color:#80deea44">
+      <div class="arch-header" style="border-color:#80deea33;background:#80deea11">
+        <span class="arch-icon">🔬</span>
+        <div>
+          <div class="arch-title" style="color:#80deea">+1/+1 Counters</div>
+          <div class="arch-guild">UG · UG</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Counter-accumulation archetyp. Distribuuješ +1/+1 countery přes Evolve, proliferate a ETB efekty. Ezuri nebo Atraxa jako commandeři.</p>
+        <p style="color:#9898c0">Low-power creatures s Evolve triggerují na silnější creatures. Ezuri dává experience counters a pumps vaše board. Atraxa proliferuje každý turn.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#80deea;border-color:#80deea">+1/+1 Counters</span><span class="arch-tag" style="color:#80deea;border-color:#80deea">Proliferate</span><span class="arch-tag" style="color:#80deea;border-color:#80deea">Evolve</span><span class="arch-tag" style="color:#80deea;border-color:#80deea">Value</span><span class="arch-tag" style="color:#80deea;border-color:#80deea">Combo</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Ezuri</span><span class="keycard">Atraxa</span><span class="keycard">Master Biomancer</span><span class="keycard">Doubling Season</span><span class="keycard">Kalonian Hydra</span><span class="keycard">Hardened Scales</span><span class="keycard">Walking Ballista</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arch-card" style="border-color:#80cbc444">
+      <div class="arch-header" style="border-color:#80cbc433;background:#80cbc411">
+        <span class="arch-icon">🕸️</span>
+        <div>
+          <div class="arch-title" style="color:#80cbc4">Counters / Graveyard</div>
+          <div class="arch-guild">BG · BG</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>Midrange hybrid archetyp. Kombinuje +1/+1 counters s graveyard value. Reyhan přesouvá countery při death, Meren rekurzuje creatures každý turn.</p>
+        <p style="color:#9898c0">Skullbriar drží countery i v zóně mimo hru. Varolz scavenguje z hřbitova. Mazirek pumps celý board při každém sacrifice.</p>
+      </div>
+      <div class="arch-tags">
+        <span class="arch-tag" style="color:#80cbc4;border-color:#80cbc4">Counters</span><span class="arch-tag" style="color:#80cbc4;border-color:#80cbc4">Graveyard</span><span class="arch-tag" style="color:#80cbc4;border-color:#80cbc4">Midrange</span><span class="arch-tag" style="color:#80cbc4;border-color:#80cbc4">Scavenge</span><span class="arch-tag" style="color:#80cbc4;border-color:#80cbc4">Recursion</span>
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          <span class="keycard">Meren</span><span class="keycard">Reyhan</span><span class="keycard">Skullbriar</span><span class="keycard">Varolz</span><span class="keycard">Mazirek</span><span class="keycard">Corpsejack Menace</span><span class="keycard">Winding Constrictor</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COLOR SECTIONS -->
+<section id="white" class="section"><div id="white-content"></div></section>
+<section id="blue" class="section"><div id="blue-content"></div></section>
+<section id="black" class="section"><div id="black-content"></div></section>
+<section id="red" class="section"><div id="red-content"></div></section>
+<section id="green" class="section"><div id="green-content"></div></section>
+<section id="multi" class="section"><div id="multi-content"></div></section>
+<section id="artifacts" class="section"><div id="artifacts-content"></div></section>
+<section id="lands" class="section"><div id="lands-content"></div></section>
+
+<!-- SEARCH -->
+<section id="search" class="section">
+  <div class="search-bar">
+    <input class="search-input" type="text" placeholder="Hledat kartu..." id="search-input" oninput="doSearch()">
+    <span class="search-results" id="search-count"></span>
+  </div>
+  <div class="filter-row" id="filter-cmc"><span class="filter-label">CMC</span><button class="filter-btn" data-group="cmc" data-val="0" onclick="toggleFilter(&#39;cmc&#39;,&#39;0&#39;,this)">0</button><button class="filter-btn" data-group="cmc" data-val="1" onclick="toggleFilter(&#39;cmc&#39;,&#39;1&#39;,this)">1</button><button class="filter-btn" data-group="cmc" data-val="2" onclick="toggleFilter(&#39;cmc&#39;,&#39;2&#39;,this)">2</button><button class="filter-btn" data-group="cmc" data-val="3" onclick="toggleFilter(&#39;cmc&#39;,&#39;3&#39;,this)">3</button><button class="filter-btn" data-group="cmc" data-val="4" onclick="toggleFilter(&#39;cmc&#39;,&#39;4&#39;,this)">4</button><button class="filter-btn" data-group="cmc" data-val="5" onclick="toggleFilter(&#39;cmc&#39;,&#39;5&#39;,this)">5</button><button class="filter-btn" data-group="cmc" data-val="6" onclick="toggleFilter(&#39;cmc&#39;,&#39;6&#39;,this)">6</button><button class="filter-btn" data-group="cmc" data-val="7+" onclick="toggleFilter(&#39;cmc&#39;,&#39;7+&#39;,this)">7+</button></div>
+  <div class="filter-row" id="filter-type"><span class="filter-label">Typ</span><button class="filter-btn" data-group="type" data-val="creature" onclick="toggleFilter(&#39;type&#39;,&#39;creature&#39;,this)">Creature</button><button class="filter-btn" data-group="type" data-val="instant" onclick="toggleFilter(&#39;type&#39;,&#39;instant&#39;,this)">Instant</button><button class="filter-btn" data-group="type" data-val="sorcery" onclick="toggleFilter(&#39;type&#39;,&#39;sorcery&#39;,this)">Sorcery</button><button class="filter-btn" data-group="type" data-val="enchantment" onclick="toggleFilter(&#39;type&#39;,&#39;enchantment&#39;,this)">Enchantment</button><button class="filter-btn" data-group="type" data-val="artifact" onclick="toggleFilter(&#39;type&#39;,&#39;artifact&#39;,this)">Artifact</button><button class="filter-btn" data-group="type" data-val="planeswalker" onclick="toggleFilter(&#39;type&#39;,&#39;planeswalker&#39;,this)">Planeswalker</button><button class="filter-btn" data-group="type" data-val="land" onclick="toggleFilter(&#39;type&#39;,&#39;land&#39;,this)">Land</button></div>
+  <div class="filter-row" id="filter-color"><span class="filter-label">Barva</span><button class="filter-btn" data-group="color" data-val="white" onclick="toggleFilter(&#39;color&#39;,&#39;white&#39;,this)">⬜ Bílá</button><button class="filter-btn" data-group="color" data-val="blue" onclick="toggleFilter(&#39;color&#39;,&#39;blue&#39;,this)">🔵 Modrá</button><button class="filter-btn" data-group="color" data-val="black" onclick="toggleFilter(&#39;color&#39;,&#39;black&#39;,this)">⚫ Černá</button><button class="filter-btn" data-group="color" data-val="red" onclick="toggleFilter(&#39;color&#39;,&#39;red&#39;,this)">🔴 Červená</button><button class="filter-btn" data-group="color" data-val="green" onclick="toggleFilter(&#39;color&#39;,&#39;green&#39;,this)">🟢 Zelená</button><button class="filter-btn" data-group="color" data-val="multi" onclick="toggleFilter(&#39;color&#39;,&#39;multi&#39;,this)">🌈 Multi</button><button class="filter-btn" data-group="color" data-val="artifacts" onclick="toggleFilter(&#39;color&#39;,&#39;artifacts&#39;,this)">⚙️ Art</button><button class="filter-btn" data-group="color" data-val="lands" onclick="toggleFilter(&#39;color&#39;,&#39;lands&#39;,this)">🏔️ Země</button></div>
+  <div class="card-grid" id="search-results"><div style="color:var(--muted);font-family:&#39;Cinzel&#39;,serif;font-size:11px;letter-spacing:1px;padding:20px 0">Zadej text nebo vyber filtr...</div></div>
+</section>
+
+</main>
+
+<footer>Commander Cube Primer · All cards © Wizards of the Coast</footer>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const ARCHETYPES = [
+  {
+    id:'rw', guild:'RW', name:'Aggro / Combat', icon:'⚔️',
+    color:'#ffab91',
+    desc:'Nejagresivnější archetyp cubu. Přeplaví stůl tokens a combat-triků. Klíčové je mít silné 1-2 dropové creatures a payoffs jako Hellrider nebo Purphoros.',
+    strategy:'Dropp creatures, útočíš každý turn, využíváš Melee a Dethrone mechaniky. Disrupt Decorum nebo Besmirch ti dají extra útok přes neochotné hráče.',
+    tags:['Aggro','Tokens','Combat Tricks','Haste','Extra Combat'],
+    keys:['Purphoros','Hellrider','Aurelia','Hero of Bladehold','Grenzo\'s Ruffians','Disrupt Decorum','Assemble the Legion']
+  },
+  {
+    id:'wb', guild:'WB', name:'Drain / Lifegain', icon:'🩸',
+    color:'#f48fb1',
+    desc:'Kontrolní midrange archetyp. Drainuješ životy přes Extort, Drain efekty a Lifegain payoffs. Vyhrává přes Exquisite Blood combo nebo lethal drain.',
+    strategy:'Builduj board z malých flyers a lifelink creatures. Exquisite Blood + Sanguine Bond je instant win. Gray Merchant nebo Debt to the Deathless jako finishery.',
+    tags:['Drain','Lifegain','Extort','Control','Combo'],
+    keys:['Exquisite Blood','Sanguine Bond','Gray Merchant','Kambal','Pontiff of Blight','Debt to the Deathless','Archangel of Thune']
+  },
+  {
+    id:'wu', guild:'WU', name:'Blink / ETB', icon:'✨',
+    color:'#90caf9',
+    desc:'Value engine archetyp. Blinkuješ creatures s powerful ETB efekty znovu a znovu. Brago je nejsilnější commander – může blinknout celý board každý turn.',
+    strategy:'Draftuješ ETB creatures (Cloudblazer, Lavinia, Venser) a blink enablers (Ghostly Flicker, Displace). Brago jako commander je must-have.',
+    tags:['Blink','ETB','Value','Control','Flicker'],
+    keys:['Brago','Restoration Angel','Venser the Sojourner','Panharmonicon','Ghostly Flicker','Felidar Guardian','Ephara']
+  },
+  {
+    id:'ur', guild:'UR', name:'Spellslinger', icon:'⚡',
+    color:'#ffcc80',
+    desc:'Spell-based combo archetyp. Každý cast generuje value přes Young Pyromancer, Guttersnipe nebo Mizzix. Wheel efekty doplňují ruky pro masivní turn.',
+    strategy:'Builduješ kolem spell payoffs. Mizzix snižuje cenu spellů s každým experience counterem. Past in Flames nebo Mizzix\'s Mastery jako finisher.',
+    tags:['Spellslinger','Wheels','Storm','Instant/Sorcery','Tokens'],
+    keys:['Mizzix','Young Pyromancer','Guttersnipe','Past in Flames','Wheel of Fortune','The Locust God','Primal Amulet']
+  },
+  {
+    id:'ub', guild:'UB', name:'Reanimator', icon:'💀',
+    color:'#b39ddb',
+    desc:'Graveyard-based combo/control archetyp. Discardneš nebo mleješ velké creatures a reanimáš je levně. The Scarab God nebo Taigam jako commandeři.',
+    strategy:'Bury Alive + Reanimate/Living Death je core combo. Meren generuje recursion každý turn. Prioritizuj discard outlets a reanimation spells.',
+    tags:['Reanimator','Graveyard','Mill','Control','Combo'],
+    keys:['Reanimate','Living Death','The Scarab God','Meren','Buried Alive','Recurring Nightmare','Sheoldred']
+  },
+  {
+    id:'br', guild:'BR', name:'Aristocrats', icon:'🗡️',
+    color:'#ef9a9a',
+    desc:'Sac-based value archetyp. Sacrifikuješ creatures pro zisk – mana, cards, damage. Mikaeus + persist creatures tvoří infinite kombos.',
+    strategy:'Sac outlets (Ashnod\'s Altar, Phyrexian Altar) + token generators + payoffs (Blood Artist, Impact Tremors). Infinite loops s Mikaeus nebo Murderous Redcap.',
+    tags:['Aristocrats','Sacrifice','Tokens','Combo','Drain'],
+    keys:['Blood Artist','Zulaport Cutthroat','Mikaeus','Ashnod\'s Altar','Phyrexian Altar','Prossh','Falkenrath Aristocrat']
+  },
+  {
+    id:'rg', guild:'RG', name:'Stompy / Landfall', icon:'🌋',
+    color:'#a5d6a7',
+    desc:'Ramp do velkých threats archetyp. Narambuješ se přes mana dorks a ramp spelly na Primeval Titan nebo Craterhoof. Landfall jako bonus subtheme.',
+    strategy:'Mana dorks turn 1-2, ramp spells turn 2-3, velký threat turn 4-5. Omnath jako commander generuje elementaly a damage z každého land dropu.',
+    tags:['Ramp','Big Creatures','Landfall','Stompy','Trample'],
+    keys:['Primeval Titan','Craterhoof','Omnath','Xenagos','Natural Order','Selvala Heart of Wilds','Triumph of the Hordes']
+  },
+  {
+    id:'gw', guild:'GW', name:'Tokens / Go Wide', icon:'🌿',
+    color:'#fff176',
+    desc:'Token swarm archetyp. Vytváříš masivní množství tokenů a pumps je přes Craterhoof nebo Beastmaster Ascension. Ghave je nejflexibilnější commander.',
+    strategy:'Token generators + anthems. Doubling Season zdvojí každý token a counter. Rhys the Redeemed jako commander generuje exponenciální počet tokenů.',
+    tags:['Tokens','Go Wide','Anthems','Pump','Combo'],
+    keys:['Doubling Season','Ghave','Rhys the Redeemed','Craterhoof','Beastmaster Ascension','Mycoloth','Avenger of Zendikar']
+  },
+  {
+    id:'ug', guild:'UG', name:'+1/+1 Counters', icon:'🔬',
+    color:'#80deea',
+    desc:'Counter-accumulation archetyp. Distribuuješ +1/+1 countery přes Evolve, proliferate a ETB efekty. Ezuri nebo Atraxa jako commandeři.',
+    strategy:'Low-power creatures s Evolve triggerují na silnější creatures. Ezuri dává experience counters a pumps vaše board. Atraxa proliferuje každý turn.',
+    tags:['+1/+1 Counters','Proliferate','Evolve','Value','Combo'],
+    keys:['Ezuri','Atraxa','Master Biomancer','Doubling Season','Kalonian Hydra','Hardened Scales','Walking Ballista']
+  },
+  {
+    id:'bg', guild:'BG', name:'Counters / Graveyard', icon:'🕸️',
+    color:'#80cbc4',
+    desc:'Midrange hybrid archetyp. Kombinuje +1/+1 counters s graveyard value. Reyhan přesouvá countery při death, Meren rekurzuje creatures každý turn.',
+    strategy:'Skullbriar drží countery i v zóně mimo hru. Varolz scavenguje z hřbitova. Mazirek pumps celý board při každém sacrifice.',
+    tags:['Counters','Graveyard','Midrange','Scavenge','Recursion'],
+    keys:['Meren','Reyhan','Skullbriar','Varolz','Mazirek','Corpsejack Menace','Winding Constrictor']
+  },
+];
+
+const ALL_CARDS = {
+  white: {
+    color: '#f5f0dc',
+    label: 'Bílá',
+    groups: {
+      'Lifegain / Soul Sisters': ['Mother of Runes','Serra Ascendant','Skymarcher Aspirant','Soul Warden',"Soul's Attendant",'Thraben Inspector','Adanto Vanguard',"Ajani's Pridemate",'Auriok Champion','Suture Priest'],
+      'Hatebears & Taxers': ['Grand Abolisher','Imposing Sovereign','Selfless Spirit','Stoneforge Mystic','Thalia, Guardian of Thraben','Thalia, Heretic Cathar','Linvala, Keeper of Silence','Alms Collector'],
+      'Value Creatures (3 drop)': ['Knight of the White Orchid','Wall of Omens','War Priest of Thune','Blade Splicer','Brimaz, King of Oreskos','Flickerwisp','Mentor of the Meek','Mirror Entity','Orzhov Advokist','Porcelain Legionnaire','Recruiter of the Guard','Rune-Tail, Kitsune Ascendant','Silverblade Paladin'],
+      'Midrange & Blink Targets': ['Archangel of Tithes','Felidar Guardian','Hero of Bladehold','Kor Cartographer','Odric, Lunarch Marshal','Palace Jailer','Restoration Angel','Archangel of Thune','Baneslayer Angel','Karmic Guide','Reveillark'],
+      'Finishers': ['Captain of the Watch','Sun Titan','Angel of Serenity','Elesh Norn, Grand Cenobite','Avacyn, Angel of Hope'],
+      'Planeswalkers': ['Gideon, Ally of Zendikar',"Elspeth, Sun's Champion"],
+      'Removal': ['Cloudshift','Swords to Plowshares','Pride of Conquerors',"Council's Judgment",'Spectral Grasp'],
+      'Sweepers': ['Austere Command','Phyrexian Rebirth','Dusk // Dawn'],
+      'Enchantments & Other': ['Land Tax',"Legion's Landing",'Blind Obedience','Duelist\'s Heritage','Grasp of Fate',"Cathars' Crusade",'Secure the Wastes',"Teferi's Protection",'Approach of the Second Sun'],
+    }
+  },
+  blue: {
+    color: '#4a9eff',
+    label: 'Modrá',
+    groups: {
+      'Cantrips': ['Opt','Thought Scour','Ponder','Preordain','Serum Visions','Sleight of Hand'],
+      'Early Creatures': ['Jace, Vryn\'s Prodigy','Looter il-Kor','Thrummingbird','Champion of Wits','Chasm Skulker','Sea Gate Oracle','Siren Lookout'],
+      'Value Creatures': ['Trinket Mage','Archaeomancer','Faerie Artisans','Herald of Secret Streams','Phyrexian Metamorph','Venser, Shaper Savant','Whirler Rogue','Deepglow Skate','Mulldrifter','Snapcaster Mage','Thing in the Ice'],
+      'Finishers': ['Deadeye Navigator','Nezahal, Primal Tide','Palinchron','Scourge of Fleets'],
+      'Counterspells': ['Arcane Denial','Brain Freeze','Counterspell','Impulse','Mana Drain','Miscalculation','Remand','Think Twice','Force of Will'],
+      'Bounce & Blink': ['Essence Flux','Displace','Ghostly Flicker','Evacuation','Cyclonic Rift'],
+      'Card Draw': ['Pull from Tomorrow','Chart a Course','Compulsive Research','Thirst for Knowledge','Fact or Fiction','Gifts Ungiven','Dig Through Time','Treasure Cruise','Windfall','Plea for Power'],
+      'Big Spells': ['High Tide','Show and Tell','Rite of Replication',"Tezzeret's Gambit","Baral's Expertise",'Bribery','Crush of Tentacles','Expropriate'],
+      'Utility': ['Mystical Tutor','Frantic Search','Steady Progress'],
+      'Enchantments': ['Mystic Remora','Search for Azcanta','Rhystic Study','Treachery'],
+    }
+  },
+  black: {
+    color: '#b06eff',
+    label: 'Černá',
+    groups: {
+      'Sac Outlets': ['Carrion Feeder','Viscera Seer','Cryptbreaker'],
+      'Drain & Blood': ['Blood Artist','Zulaport Cutthroat','Falkenrath Noble','Sangromancer'],
+      'Recursive Threats': ['Bloodghast','Nether Traitor','Ophiomancer','Bitterblossom'],
+      'Early Value': ['Dusk Legion Zealot',"Seekers' Squire",'Pawn of Ulamog','Stinkweed Imp','Yahenni, Undying Partisan'],
+      'Midrange': ['Drana, Liberator of Malakir','Fleshbag Marauder','Merciless Executioner','Necrotic Ooze','Pitiless Plunderer','Ravenous Chupacabra','Crypt Ghast','Twilight Prophet'],
+      'Finishers': ['Ghoulcaller Gisa','Gray Merchant of Asphodel','Ogre Slumlord','Shriekmaw','Kokusho, the Evening Star','Massacre Wurm','Mikaeus, the Unhallowed','Necropolis Regent','Noxious Gearhulk','Pontiff of Blight','Sepulchral Primordial','Sheoldred, Whispering One','Griselbrand'],
+      'Planeswalkers': ['Liliana, the Last Hope'],
+      'Removal': ['Culling the Weak','Go for the Throat',"Hero's Downfall",'Murderous Cut',"Curtains' Call",'Innocent Blood','Diabolic Intent','Toxic Deluge'],
+      'Reanimation': ['Reanimate','Victimize','Dread Return','Living Death','Necromantic Selection','Rise of the Dark Realms','Animate Dead','Dance of the Dead','Necromancy'],
+      'Finisher Spells': ['Exsanguinate','Night\'s Whisper','Buried Alive','Capital Punishment','Torment of Hailfire'],
+      'Enchantments': ['Dark Prophecy','Feast on the Fallen','Phyrexian Arena','Recurring Nightmare','Dictate of Erebos','Exquisite Blood','Sanguine Bond','Attrition'],
+    }
+  },
+  red: {
+    color: '#ff6b4a',
+    label: 'Červená',
+    groups: {
+      'Aggro 1-drops': ['Grim Lavamancer','Legion Loyalist','Monastery Swiftspear','Firebrand Archer'],
+      'Token Generators': ['Goblin Instigator','Mogg War Marshal','Young Pyromancer','Goblin Rabblemaster','Hanweir Garrison','Krenko, Mob Boss'],
+      'Spellslinger': ['Thermo-Alchemist','Guttersnipe','Bedlam Reveler','Magus of the Wheel'],
+      'Midrange': ['Grenzo, Havoc Raiser','Captivating Crew',"Grenzo's Ruffians",'Hellrider','Ogre Battledriver','Goblin Sharpshooter'],
+      'Finishers': ['Purphoros, God of the Forge','Rekindling Phoenix','Neheb, the Eternal','Siege-Gang Commander','Zealous Conscripts','Etali, Primal Storm','Scourge of the Throne','Balefire Dragon','Molten Primordial'],
+      'Removal': ['Lava Dart','Lightning Bolt','Abrade','Chaos Warp','Subterranean Tremors','Blasphemous Act'],
+      'Pump & Tricks': ['Expedite','Increasing Vengeance','Price of Progress','Temur Battle Rage','Massive Raid'],
+      'Wheels & Loot': ['Faithless Looting','Gamble','Wheel of Fortune','Collective Defiance',"Pirate's Pillage"],
+      'Token Spells': ['Howl of the Horde',"Kari Zev's Expertise",'Empty the Warrens','Besmirch'],
+      'Storm / Combo': ['Grapeshot','Past in Flames',"Mizzix's Mastery",'Fiery Confluence'],
+      'Multiplayer': ['Disrupt Decorum','Mass Mutiny',"Brass's Bounty",'Mana Geyser','Relentless Assault'],
+      'Enchantments': ['Goblin Bombardment','Impact Tremors','Repercussion','Shared Animosity','Sulfuric Vortex','Manabarbs','Outpost Siege','Warstorm Surge'],
+    }
+  },
+  green: {
+    color: '#52c96e',
+    label: 'Zelená',
+    groups: {
+      'Mana Dorks': ['Birds of Paradise','Elvish Mystic','Joraga Treespeaker','Llanowar Elves'],
+      'Explore': ['Merfolk Branchwalker','Jadelight Ranger'],
+      'Counters Creatures': ['Experiment One','Gyre Sage','Hardened Scales','Rishkar, Peema Renegade','Champion of Lambholt','Managorger Hydra','Forgotten Ancient','Kalonian Hydra','Verdurous Gearhulk','Inspiring Call','Ordeal of Nylea'],
+      'Hydras': ['Genesis Hydra','Hooded Hydra','Primordial Hydra'],
+      'Tokens': ['Mycoloth','Tendershoot Dryad','Master of the Wild Hunt','Nissa, Voice of Zendikar','Garruk Wildspeaker','Awakening Zone','Sprout Swarm','Arachnogenesis','Cryptolith Rite','Growing Rites of Itlimoc','Beastmaster Ascension'],
+      'Stompy / Landfall': ['Lotus Cobra','Sakura-Tribe Elder','Selvala, Heart of the Wilds','Tireless Tracker','Ramunap Excavator','Primeval Titan','Rampaging Baloths','Vigor','Hornet Queen','Craterhoof Behemoth','Ghalta, Primal Hunger'],
+      'Graveyard': ['Fauna Shaman','Golgari Grave-Troll','Evolutionary Leap','Greater Good','Survival of the Fittest'],
+      'Ramp Spells': ['Rampant Growth','Cultivate',"Kodama's Reach",'Skyshroud Claim','Exploration','Birthing Pod'],
+      'Payoff Spells': ['Triumph of the Hordes','Shamanic Revelation',"Rishkar's Expertise","Ezuri's Predation"],
+      'Enchantments': ['Sylvan Library','Doubling Season','Primal Vigor','Primeval Bounty','Elemental Bond','Path of Discovery'],
+      'Utility': ['Traverse the Ulvenwald','Skullwinder','Seedborn Muse','Bane of Progress'],
+    }
+  },
+  multi: {
+    color: '#e88040',
+    label: 'Multicolor',
+    groups: {
+      'WU – Blink': ['Daxos of Meletis','Reflector Mage','Brago, King Eternal','Ishai, Ojutai Dragonspeaker','Ephara, God of the Polis','Cloudblazer','Lavinia of the Tenth','Fractured Identity','Venser, the Sojourner','Azor, the Lawbringer','Detention Sphere','Momentary Blink','Azorius Signet','Talisman of Progress'],
+      'UB – Reanimator': ['Baleful Strix','Silas Renn, Seeker Adept','Lazav, Dimir Mastermind','Notion Thief','Whispering Madness','Extract from Darkness',"Taigam, Sidisi's Hand",'The Scarab God','Dragonlord Silumgar','Wrexial, the Risen Deep','Ancient Excavation','Hostage Taker','Dimir Signet','Talisman of Dominance'],
+      'BR – Aristocrats': ['Tymaret, the Murder King','Falkenrath Aristocrat','Mogis, God of Slaughter','Murderous Redcap','Angrath, the Flame-Chained','The Scorpion God','Vial Smasher the Fierce','Grenzo, Dungeon Warden',"Kolaghan's Command",'Cut // Ribbons','Rakdos Charm','Terminate','Rakdos Signet','Talisman of Indulgence'],
+      'RG – Stompy': ['Radha, Heir to Keld','Zhur-Taa Druid','Tana, the Bloodsower','Xenagos, God of Revels','Mina and Denn, Wildborn','Rubblehulk','Ruric Thar, the Unbowed','Gruul Ragebeast','Omnath, Locus of Rage','Heaven // Earth','Decimate','Treacherous Terrain','Gruul Signet','Talisman of Impulse'],
+      'GW – Tokens': ['Rhys the Redeemed','Voice of Resurgence','Dauntless Escort','Mirri, Weatherlight Duelist','Selvala, Explorer Returned','Huatli, Radiant Champion','Sidar Kondo of Jamuraa','Wilt-Leaf Liege',"Mirari's Wake",'Sigarda, Heron\'s Grace','Armada Wurm','Collective Blessing','Appeal // Authority','Selesnya Signet','Talisman of Unity'],
+      'WB – Drain': ['Ayli, Eternal Pilgrim','Kambal, Consul of Allocation','Tymna the Weaver','Elenda, the Dusk Rose','Kaya, Ghost Assassin','Ravos, Soultender','Vona, Butcher of Magan','Magister of Worth','Profane Procession','Vindicate','Debt to the Deathless','Merciless Eviction','Sorin, Grim Nemesis','Orzhov Signet'],
+      'UR – Spellslinger': ['Goblin Electromancer','Ludevic, Necro-Alchemist','Mizzix of the Izmagnus',"Kraum, Ludevic's Opus",'Enigma Drake','Fevered Visions','Storm the Vault','Keranos, God of Storms','Niv-Mizzet, Dracogenius','The Locust God','Dack Fayden','Izzet Charm','Steam Augury','Izzet Signet'],
+      'BG – Counters/Grave': ['Elves of Deep Shadow','Grim Flayer','Lotleth Troll','Skullbriar, the Walking Grave','Winding Constrictor','Journey to Eternity','Reyhan, Last of the Abzan','Varolz, the Scar-Striped','Corpsejack Menace','Ikra Shidiqi, the Usurper','Mazirek, Kraul Death Priest','Grisly Salvage','Maelstrom Pulse','Golgari Signet'],
+      'RW – Aggro': ['Figure of Destiny','Akiri, Line-Slinger','Honored Crop-Captain','Sky Terror','Bruse Tarl, Boorish Herder','Iroas, God of Victory','Adriana, Captain of the Guard','Anya, Merciless Angel','Archangel Avacyn','Aurelia, the Warleader','Gisela, Blade of Goldnight',"Legion's Initiative",'Boros Charm','Boros Signet'],
+      'UG – Counters': ['Coiling Oracle',"Kiora's Follower",'Noble Hierarch','Thrasios, Triton Hero','Edric, Spymaster of Trest',"Hadana's Climb",'Plaxcaster Frogling','Ezuri, Claw of Progress','Fathom Mage','Kydele, Chosen of Kruphix','Master Biomancer','Prophet of Kruphix','Prime Speaker Zegana','Progenitor Mimic','Roon of the Hidden Realm','Simic Signet'],
+      '3+ Barvy': ['Oloro, Ageless Ascetic','Kess, Dissident Mage','Marchesa, the Black Rose','Prossh, Skyraider of Kher','Zacama, Primal Calamity','Alesha, Who Smiles at Death','Queen Marchesa','Animar, Soul of Elements','Ghave, Guru of Spores','Shu Yun, the Silent Tempest','The Mimeoplasm'],
+    }
+  },
+  artifacts: {
+    color: '#c9a84c',
+    label: 'Artefakty',
+    groups: {
+      'Creature Artefakty': ['Hangarback Walker','Walking Ballista','Metallic Mimic','Solemn Simulacrum','Precursor Golem','Wurmcoil Engine','Myr Battlesphere','Blightsteel Colossus','Emrakul, the Aeons Torn'],
+      'Mana Cheat': ['Chrome Mox','Lotus Bloom','Lotus Petal','Mana Crypt'],
+      'Equipment – Utility': ['Basilisk Collar','Blade of the Bloodchief','Bloodforged Battle-Axe','Skullclamp','Blade of Selves','Illusionist\'s Bracers','Isochron Scepter','Lightning Greaves','Smuggler\'s Copter','Strionic Resonator','Swiftfoot Boots','Sword of the Animist','Umezawa\'s Jitte','Champion\'s Helm','Hammer of Nazahn','Dowsing Dagger'],
+      'Sac Outlets': ['Altar of Dementia','Ashnod\'s Altar','Phyrexian Altar'],
+      'Mana Rocks': ['Sol Ring','Chromatic Lantern','Coalition Relic',"Commander's Sphere",'Rings of Brighthearth'],
+      'Counters Synergie': ['Animation Module','Oketra\'s Monument'],
+      'Value Engines': ['Mesmeric Orb','Coercive Portal','Panharmonicon','Primal Amulet','Trading Post',"Alhammarret's Archive","Conjurer's Closet"],
+      'Swords': ['Sword of Body and Mind','Sword of Feast and Famine','Sword of Fire and Ice','Sword of Light and Shadow','Sword of War and Peace'],
+      'Finisher Artefakty': ['Aetherflux Reservoir','Memory Jar',"Mind's Eye",'Mindslaver','The Immortal Sun'],
+    }
+  },
+  lands: {
+    color: '#8d9e7a',
+    label: 'Země',
+    groups: {
+      'Check Lands': ['Glacial Fortress','Drowned Catacomb','Dragonskull Summit','Rootbound Crag','Sunpetal Grove','Isolated Chapel','Sulfur Falls','Woodland Cemetery','Clifftop Retreat','Hinterland Harbor'],
+      'Shock Lands': ['Hallowed Fountain','Watery Grave','Blood Crypt','Stomping Ground','Temple Garden','Godless Shrine','Steam Vents','Overgrown Tomb','Sacred Foundry','Breeding Pool'],
+      'Pain Lands': ['Adarkar Wastes','Underground River','Sulfurous Springs','Karplusan Forest','Brushland','Caves of Koilos','Shivan Reef','Llanowar Wastes','Battlefield Forge','Yavimaya Coast'],
+      'Temple Lands': ['Temple of Enlightenment','Temple of Deceit','Temple of Malice','Temple of Abandon','Temple of Plenty','Temple of Silence','Temple of Epiphany','Temple of Malady','Temple of Triumph','Temple of Mystery'],
+      'Fetch Lands': ['Arid Mesa','Bloodstained Mire','Flooded Strand','Marsh Flats','Misty Rainforest','Polluted Delta','Scalding Tarn','Verdant Catacombs','Windswept Heath','Wooded Foothills'],
+      '3-Color Lands': ['Seaside Citadel','Arcane Sanctum','Crumbling Necropolis','Savage Lands','Jungle Shrine'],
+      'Utility Lands': ['Command Tower','Exotic Orchard','Evolving Wilds','Ash Barrens','Path of Ancestry','Temple of the False God'],
+    }
+  }
+};
+
+// ============================================================
+// COMPUTED STATS
+// ============================================================
+function countCards(section) {
+  let n = 0;
+  for (const grp of Object.values(section.groups)) n += grp.length;
+  return n;
+}
+
+const counts = {};
+for (const [key, sec] of Object.entries(ALL_CARDS)) counts[key] = countCards(sec);
+const total = Object.values(counts).reduce((a,b) => a+b, 0);
+
+// ============================================================
+// RENDER OVERVIEW
+// ============================================================
+function renderOverview() {
+  const statsEl = document.getElementById('overview-stats');
+  const colorData = [
+    { label:'Bílá', key:'white', color:'#f5f0dc' },
+    { label:'Modrá', key:'blue', color:'#4a9eff' },
+    { label:'Černá', key:'black', color:'#b06eff' },
+    { label:'Červená', key:'red', color:'#ff6b4a' },
+    { label:'Zelená', key:'green', color:'#52c96e' },
+    { label:'Multicolor', key:'multi', color:'#e88040' },
+    { label:'Artefakty', key:'artifacts', color:'#c9a84c' },
+    { label:'Země', key:'lands', color:'#8d9e7a' },
+  ];
+
+  // Real counts from the actual list
+  const REAL_COUNTS = { white:66, blue:67, black:67, red:66, green:65, multi:153, artifacts:56, lands:60 };
+
+  statsEl.innerHTML = [
+    { val: 600, lbl: 'Celkem karet', color: '#c9a84c' },
+    { val: 540, lbl: 'Bez zemí', color: '#90caf9' },
+    { val: 10, lbl: 'Archetypů', color: '#7b68ee' },
+    { val: 153, lbl: 'Multicolor', color: '#e88040' },
+    { val: 56, lbl: 'Artefaktů', color: '#c9a84c' },
+    { val: 60, lbl: 'Zemí', color: '#8d9e7a' },
+  ].map(s => `
+    <div class="stat-card" style="border-color:${s.color}33">
+      <span class="val" style="color:${s.color}">${s.val}</span>
+      <span class="lbl">${s.lbl}</span>
+    </div>
+  `).join('');
+
+  const maxCount = Math.max(...colorData.map(c => REAL_COUNTS[c.key]));
+  document.getElementById('color-bars-content').innerHTML = colorData.map(c => `
+    <div class="bar-row">
+      <span class="bar-label" style="color:${c.color}">${c.label}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${Math.round(REAL_COUNTS[c.key]/maxCount*100)}%;background:${c.color}99">
+          <span class="bar-num">${REAL_COUNTS[c.key]}</span>
+        </div>
+      </div>
+      <span class="bar-count">${REAL_COUNTS[c.key]}</span>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// RENDER ARCHETYPES
+// ============================================================
+function renderArchetypes() {
+  document.getElementById('archetypes-grid').innerHTML = ARCHETYPES.map(a => `
+    <div class="arch-card" style="border-color:${a.color}44">
+      <div class="arch-header" style="border-color:${a.color}33;background:${a.color}11">
+        <span class="arch-icon">${a.icon}</span>
+        <div>
+          <div class="arch-title" style="color:${a.color}">${a.name}</div>
+          <div class="arch-guild">${a.guild} · ${a.id.toUpperCase()}</div>
+        </div>
+      </div>
+      <div class="arch-body">
+        <p>${a.desc}</p>
+        <p style="color:#9898c0">${a.strategy}</p>
+      </div>
+      <div class="arch-tags">
+        ${a.tags.map(t => `<span class="arch-tag" style="color:${a.color};border-color:${a.color}">${t}</span>`).join('')}
+      </div>
+      <div class="arch-keycard">
+        <div class="arch-keycard-label">Klíčové karty</div>
+        <div class="keycards">
+          ${a.keys.map(k => `<span class="keycard">${k}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// RENDER CARD SECTION with inline filters
+// ============================================================
+const sectionFilters = {}; // sectionId -> { cmc: null, type: null }
+
+function renderCardSection(sectionId, containerId) {
+  const sec = ALL_CARDS[sectionId];
+  if (!sec) return;
+  if (!sectionFilters[sectionId]) sectionFilters[sectionId] = { cmc: null, type: null };
+
+  // Collect all cards in section with metadata
+  const allSectionCards = [];
+  for (const [grp, cards] of Object.entries(sec.groups)) {
+    for (const c of cards) {
+      const meta = CARD_META[c] || { cmc: null, type: 'unknown' };
+      allSectionCards.push({ name: c, group: grp, cmc: meta.cmc, type: meta.type });
+    }
+  }
+
+  // Get unique types in section
+  const typesInSection = [...new Set(allSectionCards.map(c => c.type))].sort();
+  // Get unique CMC buckets in section
+  const cmcsInSection = [...new Set(allSectionCards.map(c => c.cmc !== null ? (c.cmc >= 7 ? '7+' : String(c.cmc)) : null).filter(Boolean))].sort((a,b) => {
+    if (a==='7+') return 1; if (b==='7+') return -1; return parseInt(a)-parseInt(b);
+  });
+
+  const f = sectionFilters[sectionId];
+
+  const filterBar = `
+    <div class="section-filter-bar" id="sfb-${sectionId}">
+      <div class="section-filter-row">
+        <span class="filter-label">CMC</span>
+        ${cmcsInSection.map(v => `
+          <button class="filter-btn ${f.cmc===v?'cmc-active':''}"
+            onclick="setSectionFilter('${sectionId}','${containerId}','cmc','${v}',this)">
+            ${v}
+          </button>`).join('')}
+        ${f.cmc ? `<button class="filter-clear" onclick="setSectionFilter('${sectionId}','${containerId}','cmc',null,this)">✕</button>` : ''}
+      </div>
+      <div class="section-filter-row">
+        <span class="filter-label">Typ</span>
+        ${typesInSection.map(v => `
+          <button class="filter-btn ${f.type===v?'type-active':''}"
+            onclick="setSectionFilter('${sectionId}','${containerId}','type','${v}',this)">
+            ${v.charAt(0).toUpperCase()+v.slice(1)}
+          </button>`).join('')}
+        ${f.type ? `<button class="filter-clear" onclick="setSectionFilter('${sectionId}','${containerId}','type',null,this)">✕</button>` : ''}
+      </div>
+    </div>
+  `;
+
+  // Filter cards
+  let filtered = allSectionCards;
+  if (f.cmc) filtered = filtered.filter(c => {
+    const bucket = c.cmc !== null ? (c.cmc >= 7 ? '7+' : String(c.cmc)) : null;
+    return bucket === f.cmc;
+  });
+  if (f.type) filtered = filtered.filter(c => c.type === f.type);
+
+  const filteredNames = new Set(filtered.map(c => c.name));
+  const activeFilter = f.cmc || f.type;
+  const totalVisible = filtered.length;
+
+  let cardsHtml = '';
+  if (activeFilter) {
+    // Flat view when filtered
+    cardsHtml = `
+      <div class="card-section-header">
+        <div class="csh-dot" style="background:${sec.color}"></div>
+        <span class="csh-title" style="color:${sec.color}">Výsledky filtru</span>
+        <span class="csh-count">${totalVisible} karet</span>
+      </div>
+      <div class="card-grid">
+        ${filtered.map(c => `
+          <div class="card-item">
+            <div class="card-dot" style="background:${sec.color}88"></div>
+            <span class="card-name">${c.name}</span>
+            <span class="card-badge" style="color:#90caf9;border-color:#4a9eff55">${c.cmc !== null ? c.cmc : '?'}</span>
+            <span class="card-badge" style="color:#ce93d8;border-color:#b06eff55">${c.type}</span>
+          </div>`).join('')}
+      </div>`;
+  } else {
+    // Normal grouped view
+    for (const [grp, cards] of Object.entries(sec.groups)) {
+      cardsHtml += `
+        <div class="card-section-header">
+          <div class="csh-dot" style="background:${sec.color}"></div>
+          <span class="csh-title" style="color:${sec.color}">${grp}</span>
+          <span class="csh-count">${cards.length} karet</span>
+        </div>
+        <div class="card-grid">
+          ${cards.map(c => `
+            <div class="card-item">
+              <div class="card-dot" style="background:${sec.color}88"></div>
+              <span class="card-name">${c}</span>
+            </div>`).join('')}
+        </div>`;
+    }
+  }
+
+  document.getElementById(containerId).innerHTML = filterBar + cardsHtml;
+}
+
+function setSectionFilter(sectionId, containerId, key, val, btn) {
+  if (!sectionFilters[sectionId]) sectionFilters[sectionId] = { cmc: null, type: null };
+  sectionFilters[sectionId][key] = sectionFilters[sectionId][key] === val ? null : val;
+  renderCardSection(sectionId, containerId);
+}
+
+// ============================================================
+// CARD METADATA: cmc + type
+// ============================================================
+const CARD_META = {
+  // WHITE
+  'Mother of Runes':{cmc:1,type:'creature'},'Serra Ascendant':{cmc:1,type:'creature'},'Skymarcher Aspirant':{cmc:1,type:'creature'},'Soul Warden':{cmc:1,type:'creature'},"Soul's Attendant":{cmc:1,type:'creature'},'Thraben Inspector':{cmc:1,type:'creature'},'Adanto Vanguard':{cmc:2,type:'creature'},"Ajani's Pridemate":{cmc:2,type:'creature'},'Auriok Champion':{cmc:2,type:'creature'},'Suture Priest':{cmc:2,type:'creature'},'Grand Abolisher':{cmc:2,type:'creature'},'Imposing Sovereign':{cmc:2,type:'creature'},'Selfless Spirit':{cmc:2,type:'creature'},'Stoneforge Mystic':{cmc:2,type:'creature'},'Thalia, Guardian of Thraben':{cmc:2,type:'creature'},'Thalia, Heretic Cathar':{cmc:3,type:'creature'},'Alms Collector':{cmc:4,type:'creature'},'Knight of the White Orchid':{cmc:2,type:'creature'},'Wall of Omens':{cmc:2,type:'creature'},'War Priest of Thune':{cmc:2,type:'creature'},'Blade Splicer':{cmc:3,type:'creature'},'Brimaz, King of Oreskos':{cmc:3,type:'creature'},'Flickerwisp':{cmc:3,type:'creature'},'Mentor of the Meek':{cmc:3,type:'creature'},'Mirror Entity':{cmc:3,type:'creature'},'Orzhov Advokist':{cmc:3,type:'creature'},'Porcelain Legionnaire':{cmc:3,type:'creature'},'Recruiter of the Guard':{cmc:3,type:'creature'},'Rune-Tail, Kitsune Ascendant':{cmc:3,type:'creature'},'Silverblade Paladin':{cmc:3,type:'creature'},'Archangel of Tithes':{cmc:4,type:'creature'},'Felidar Guardian':{cmc:4,type:'creature'},'Hero of Bladehold':{cmc:4,type:'creature'},'Kor Cartographer':{cmc:4,type:'creature'},'Linvala, Keeper of Silence':{cmc:4,type:'creature'},'Odric, Lunarch Marshal':{cmc:4,type:'creature'},'Palace Jailer':{cmc:4,type:'creature'},'Restoration Angel':{cmc:4,type:'creature'},'Archangel of Thune':{cmc:5,type:'creature'},'Baneslayer Angel':{cmc:5,type:'creature'},'Karmic Guide':{cmc:5,type:'creature'},'Reveillark':{cmc:5,type:'creature'},'Captain of the Watch':{cmc:6,type:'creature'},'Sun Titan':{cmc:6,type:'creature'},'Angel of Serenity':{cmc:7,type:'creature'},'Elesh Norn, Grand Cenobite':{cmc:7,type:'creature'},'Avacyn, Angel of Hope':{cmc:8,type:'creature'},'Gideon, Ally of Zendikar':{cmc:4,type:'planeswalker'},"Elspeth, Sun's Champion":{cmc:6,type:'planeswalker'},'Cloudshift':{cmc:1,type:'instant'},'Swords to Plowshares':{cmc:1,type:'instant'},'Pride of Conquerors':{cmc:2,type:'instant'},"Council's Judgment":{cmc:3,type:'sorcery'},'Spectral Grasp':{cmc:2,type:'instant'},'Austere Command':{cmc:6,type:'sorcery'},'Phyrexian Rebirth':{cmc:6,type:'sorcery'},'Dusk // Dawn':{cmc:4,type:'sorcery'},'Land Tax':{cmc:1,type:'enchantment'},"Legion's Landing":{cmc:1,type:'enchantment'},'Blind Obedience':{cmc:2,type:'enchantment'},"Duelist's Heritage":{cmc:2,type:'enchantment'},'Grasp of Fate':{cmc:3,type:'enchantment'},"Cathars' Crusade":{cmc:5,type:'enchantment'},'Secure the Wastes':{cmc:5,type:'instant'},"Teferi's Protection":{cmc:3,type:'instant'},'Approach of the Second Sun':{cmc:7,type:'sorcery'},
+  // BLUE
+  'Jace, Vryn\'s Prodigy':{cmc:2,type:'creature'},'Looter il-Kor':{cmc:2,type:'creature'},'Thrummingbird':{cmc:2,type:'creature'},'Champion of Wits':{cmc:3,type:'creature'},'Chasm Skulker':{cmc:3,type:'creature'},'Sea Gate Oracle':{cmc:3,type:'creature'},'Siren Lookout':{cmc:3,type:'creature'},'Trinket Mage':{cmc:3,type:'creature'},'Archaeomancer':{cmc:4,type:'creature'},'Faerie Artisans':{cmc:4,type:'creature'},'Herald of Secret Streams':{cmc:4,type:'creature'},'Phyrexian Metamorph':{cmc:4,type:'creature'},'Venser, Shaper Savant':{cmc:4,type:'creature'},'Whirler Rogue':{cmc:4,type:'creature'},'Deepglow Skate':{cmc:5,type:'creature'},'Mulldrifter':{cmc:5,type:'creature'},'Snapcaster Mage':{cmc:2,type:'creature'},'Thing in the Ice':{cmc:2,type:'creature'},'Deadeye Navigator':{cmc:6,type:'creature'},'Nezahal, Primal Tide':{cmc:7,type:'creature'},'Palinchron':{cmc:7,type:'creature'},'Scourge of Fleets':{cmc:7,type:'creature'},'Opt':{cmc:1,type:'instant'},'Thought Scour':{cmc:1,type:'instant'},'Ponder':{cmc:1,type:'sorcery'},'Preordain':{cmc:1,type:'sorcery'},'Serum Visions':{cmc:1,type:'sorcery'},'Sleight of Hand':{cmc:1,type:'sorcery'},'Essence Flux':{cmc:1,type:'instant'},'Mystical Tutor':{cmc:1,type:'instant'},'Arcane Denial':{cmc:2,type:'instant'},'Brain Freeze':{cmc:2,type:'instant'},'Counterspell':{cmc:2,type:'instant'},'Impulse':{cmc:2,type:'instant'},'Miscalculation':{cmc:2,type:'instant'},'Remand':{cmc:2,type:'instant'},'Think Twice':{cmc:2,type:'instant'},'Frantic Search':{cmc:3,type:'instant'},'Displace':{cmc:3,type:'instant'},'Mana Drain':{cmc:2,type:'instant'},'Force of Will':{cmc:5,type:'instant'},'Cyclonic Rift':{cmc:2,type:'instant'},'Ghostly Flicker':{cmc:3,type:'instant'},'Evacuation':{cmc:5,type:'instant'},'Pull from Tomorrow':{cmc:2,type:'instant'},'Fact or Fiction':{cmc:4,type:'instant'},'Gifts Ungiven':{cmc:4,type:'instant'},'Thirst for Knowledge':{cmc:3,type:'instant'},'Dig Through Time':{cmc:8,type:'instant'},'Treasure Cruise':{cmc:8,type:'sorcery'},'Chart a Course':{cmc:2,type:'sorcery'},'Compulsive Research':{cmc:3,type:'sorcery'},'High Tide':{cmc:1,type:'instant'},'Steady Progress':{cmc:3,type:'instant'},'Show and Tell':{cmc:3,type:'sorcery'},'Windfall':{cmc:3,type:'sorcery'},'Plea for Power':{cmc:4,type:'sorcery'},'Rite of Replication':{cmc:5,type:'sorcery'},"Tezzeret's Gambit":{cmc:4,type:'sorcery'},"Baral's Expertise":{cmc:5,type:'sorcery'},'Bribery':{cmc:5,type:'sorcery'},'Crush of Tentacles':{cmc:6,type:'sorcery'},'Expropriate':{cmc:9,type:'sorcery'},'Mystic Remora':{cmc:1,type:'enchantment'},'Search for Azcanta':{cmc:2,type:'enchantment'},'Rhystic Study':{cmc:3,type:'enchantment'},'Treachery':{cmc:5,type:'enchantment'},
+  // BLACK
+  'Carrion Feeder':{cmc:1,type:'creature'},'Viscera Seer':{cmc:1,type:'creature'},'Cryptbreaker':{cmc:1,type:'creature'},'Blood Artist':{cmc:2,type:'creature'},'Bloodghast':{cmc:2,type:'creature'},'Dusk Legion Zealot':{cmc:2,type:'creature'},'Nether Traitor':{cmc:2,type:'creature'},"Seekers' Squire":{cmc:2,type:'creature'},'Zulaport Cutthroat':{cmc:2,type:'creature'},'Drana, Liberator of Malakir':{cmc:3,type:'creature'},'Fleshbag Marauder':{cmc:3,type:'creature'},'Merciless Executioner':{cmc:3,type:'creature'},'Ophiomancer':{cmc:3,type:'creature'},'Pawn of Ulamog':{cmc:3,type:'creature'},'Stinkweed Imp':{cmc:3,type:'creature'},'Yahenni, Undying Partisan':{cmc:3,type:'creature'},'Crypt Ghast':{cmc:4,type:'creature'},'Falkenrath Noble':{cmc:4,type:'creature'},'Necrotic Ooze':{cmc:4,type:'creature'},'Pitiless Plunderer':{cmc:4,type:'creature'},'Ravenous Chupacabra':{cmc:4,type:'creature'},'Sangromancer':{cmc:4,type:'creature'},'Twilight Prophet':{cmc:4,type:'creature'},'Ghoulcaller Gisa':{cmc:5,type:'creature'},'Gray Merchant of Asphodel':{cmc:5,type:'creature'},'Ogre Slumlord':{cmc:5,type:'creature'},'Shriekmaw':{cmc:5,type:'creature'},'Kokusho, the Evening Star':{cmc:6,type:'creature'},'Massacre Wurm':{cmc:6,type:'creature'},'Mikaeus, the Unhallowed':{cmc:6,type:'creature'},'Necropolis Regent':{cmc:6,type:'creature'},'Noxious Gearhulk':{cmc:6,type:'creature'},'Pontiff of Blight':{cmc:6,type:'creature'},'Sepulchral Primordial':{cmc:7,type:'creature'},'Sheoldred, Whispering One':{cmc:7,type:'creature'},'Griselbrand':{cmc:8,type:'creature'},'Liliana, the Last Hope':{cmc:3,type:'planeswalker'},'Culling the Weak':{cmc:1,type:'instant'},'Go for the Throat':{cmc:2,type:'instant'},"Hero's Downfall":{cmc:3,type:'instant'},'Murderous Cut':{cmc:5,type:'instant'},"Curtains' Call":{cmc:6,type:'instant'},'Innocent Blood':{cmc:1,type:'sorcery'},'Reanimate':{cmc:1,type:'sorcery'},'Diabolic Intent':{cmc:2,type:'sorcery'},'Night\'s Whisper':{cmc:2,type:'sorcery'},'Buried Alive':{cmc:3,type:'sorcery'},'Exsanguinate':{cmc:3,type:'sorcery'},'Toxic Deluge':{cmc:3,type:'sorcery'},'Victimize':{cmc:3,type:'sorcery'},'Torment of Hailfire':{cmc:4,type:'sorcery'},'Dread Return':{cmc:4,type:'sorcery'},'Capital Punishment':{cmc:6,type:'sorcery'},'Necromantic Selection':{cmc:6,type:'sorcery'},'Rise of the Dark Realms':{cmc:9,type:'sorcery'},'Animate Dead':{cmc:2,type:'enchantment'},'Bitterblossom':{cmc:2,type:'enchantment'},'Dance of the Dead':{cmc:2,type:'enchantment'},'Attrition':{cmc:3,type:'enchantment'},'Dark Prophecy':{cmc:3,type:'enchantment'},'Feast on the Fallen':{cmc:3,type:'enchantment'},'Necromancy':{cmc:3,type:'enchantment'},'Phyrexian Arena':{cmc:3,type:'enchantment'},'Recurring Nightmare':{cmc:3,type:'enchantment'},'Dictate of Erebos':{cmc:5,type:'enchantment'},'Exquisite Blood':{cmc:5,type:'enchantment'},'Sanguine Bond':{cmc:5,type:'enchantment'},
+  // RED
+  'Grim Lavamancer':{cmc:1,type:'creature'},'Legion Loyalist':{cmc:1,type:'creature'},'Monastery Swiftspear':{cmc:1,type:'creature'},'Firebrand Archer':{cmc:2,type:'creature'},'Goblin Instigator':{cmc:2,type:'creature'},'Mogg War Marshal':{cmc:2,type:'creature'},'Young Pyromancer':{cmc:2,type:'creature'},'Thermo-Alchemist':{cmc:2,type:'creature'},'Goblin Rabblemaster':{cmc:3,type:'creature'},'Goblin Sharpshooter':{cmc:3,type:'creature'},'Guttersnipe':{cmc:3,type:'creature'},'Hanweir Garrison':{cmc:3,type:'creature'},'Magus of the Wheel':{cmc:3,type:'creature'},'Grenzo, Havoc Raiser':{cmc:2,type:'creature'},'Captivating Crew':{cmc:4,type:'creature'},"Grenzo's Ruffians":{cmc:4,type:'creature'},'Hellrider':{cmc:4,type:'creature'},'Ogre Battledriver':{cmc:4,type:'creature'},'Purphoros, God of the Forge':{cmc:4,type:'creature'},'Rekindling Phoenix':{cmc:4,type:'creature'},'Neheb, the Eternal':{cmc:5,type:'creature'},'Siege-Gang Commander':{cmc:5,type:'creature'},'Zealous Conscripts':{cmc:5,type:'creature'},'Etali, Primal Storm':{cmc:6,type:'creature'},'Scourge of the Throne':{cmc:6,type:'creature'},'Balefire Dragon':{cmc:7,type:'creature'},'Molten Primordial':{cmc:7,type:'creature'},'Bedlam Reveler':{cmc:8,type:'creature'},'Expedite':{cmc:1,type:'instant'},'Lava Dart':{cmc:1,type:'instant'},'Lightning Bolt':{cmc:1,type:'instant'},'Abrade':{cmc:2,type:'instant'},'Chaos Warp':{cmc:3,type:'instant'},'Increasing Vengeance':{cmc:2,type:'instant'},'Price of Progress':{cmc:2,type:'instant'},'Temur Battle Rage':{cmc:2,type:'instant'},'Massive Raid':{cmc:3,type:'instant'},'Faithless Looting':{cmc:1,type:'sorcery'},'Gamble':{cmc:1,type:'sorcery'},'Subterranean Tremors':{cmc:4,type:'sorcery'},'Grapeshot':{cmc:2,type:'sorcery'},'Besmirch':{cmc:3,type:'sorcery'},'Collective Defiance':{cmc:3,type:'sorcery'},"Kari Zev's Expertise":{cmc:3,type:'sorcery'},'Wheel of Fortune':{cmc:3,type:'sorcery'},'Disrupt Decorum':{cmc:4,type:'sorcery'},'Empty the Warrens':{cmc:4,type:'sorcery'},'Fiery Confluence':{cmc:4,type:'sorcery'},"Mizzix's Mastery":{cmc:4,type:'sorcery'},'Past in Flames':{cmc:4,type:'sorcery'},"Pirate's Pillage":{cmc:4,type:'sorcery'},'Relentless Assault':{cmc:4,type:'sorcery'},'Mana Geyser':{cmc:5,type:'sorcery'},'Mass Mutiny':{cmc:5,type:'sorcery'},"Brass's Bounty":{cmc:7,type:'sorcery'},'Blasphemous Act':{cmc:9,type:'sorcery'},'Howl of the Horde':{cmc:3,type:'sorcery'},'Goblin Bombardment':{cmc:2,type:'enchantment'},'Impact Tremors':{cmc:2,type:'enchantment'},'Repercussion':{cmc:3,type:'enchantment'},'Shared Animosity':{cmc:3,type:'enchantment'},'Sulfuric Vortex':{cmc:3,type:'enchantment'},'Manabarbs':{cmc:4,type:'enchantment'},'Outpost Siege':{cmc:4,type:'enchantment'},'Warstorm Surge':{cmc:6,type:'enchantment'},
+  // GREEN
+  'Birds of Paradise':{cmc:1,type:'creature'},'Elvish Mystic':{cmc:1,type:'creature'},'Joraga Treespeaker':{cmc:1,type:'creature'},'Llanowar Elves':{cmc:1,type:'creature'},'Experiment One':{cmc:1,type:'creature'},'Merfolk Branchwalker':{cmc:2,type:'creature'},'Jadelight Ranger':{cmc:3,type:'creature'},'Gyre Sage':{cmc:2,type:'creature'},'Champion of Lambholt':{cmc:3,type:'creature'},'Managorger Hydra':{cmc:3,type:'creature'},'Ramunap Excavator':{cmc:3,type:'creature'},'Rishkar, Peema Renegade':{cmc:3,type:'creature'},'Selvala, Heart of the Wilds':{cmc:3,type:'creature'},'Skullwinder':{cmc:3,type:'creature'},'Tireless Tracker':{cmc:3,type:'creature'},'Fauna Shaman':{cmc:2,type:'creature'},'Lotus Cobra':{cmc:2,type:'creature'},'Forgotten Ancient':{cmc:4,type:'creature'},'Master of the Wild Hunt':{cmc:4,type:'creature'},'Golgari Grave-Troll':{cmc:5,type:'creature'},'Kalonian Hydra':{cmc:5,type:'creature'},'Mycoloth':{cmc:5,type:'creature'},'Seedborn Muse':{cmc:5,type:'creature'},'Tendershoot Dryad':{cmc:5,type:'creature'},'Verdurous Gearhulk':{cmc:5,type:'creature'},'Bane of Progress':{cmc:6,type:'creature'},'Primeval Titan':{cmc:6,type:'creature'},'Rampaging Baloths':{cmc:6,type:'creature'},'Vigor':{cmc:6,type:'creature'},'Hornet Queen':{cmc:7,type:'creature'},'Craterhoof Behemoth':{cmc:8,type:'creature'},'Ghalta, Primal Hunger':{cmc:12,type:'creature'},'Genesis Hydra':{cmc:2,type:'creature'},'Hooded Hydra':{cmc:2,type:'creature'},'Primordial Hydra':{cmc:2,type:'creature'},'Nissa, Voice of Zendikar':{cmc:3,type:'planeswalker'},'Garruk Wildspeaker':{cmc:4,type:'planeswalker'},'Rampant Growth':{cmc:2,type:'sorcery'},'Cultivate':{cmc:3,type:'sorcery'},"Kodama's Reach":{cmc:3,type:'sorcery'},'Skyshroud Claim':{cmc:4,type:'sorcery'},'Traverse the Ulvenwald':{cmc:1,type:'sorcery'},'Triumph of the Hordes':{cmc:4,type:'sorcery'},'Shamanic Revelation':{cmc:5,type:'sorcery'},"Rishkar's Expertise":{cmc:6,type:'sorcery'},"Ezuri's Predation":{cmc:8,type:'sorcery'},'Birthing Pod':{cmc:4,type:'artifact'},'Exploration':{cmc:1,type:'enchantment'},'Hardened Scales':{cmc:1,type:'enchantment'},'Cryptolith Rite':{cmc:2,type:'enchantment'},'Evolutionary Leap':{cmc:2,type:'enchantment'},'Ordeal of Nylea':{cmc:2,type:'enchantment'},'Survival of the Fittest':{cmc:2,type:'enchantment'},'Sylvan Library':{cmc:2,type:'enchantment'},'Awakening Zone':{cmc:3,type:'enchantment'},'Beastmaster Ascension':{cmc:3,type:'enchantment'},'Elemental Bond':{cmc:3,type:'enchantment'},'Growing Rites of Itlimoc':{cmc:3,type:'enchantment'},'Greater Good':{cmc:4,type:'enchantment'},'Path of Discovery':{cmc:4,type:'enchantment'},'Doubling Season':{cmc:5,type:'enchantment'},'Primal Vigor':{cmc:5,type:'enchantment'},'Primeval Bounty':{cmc:6,type:'enchantment'},'Sprout Swarm':{cmc:2,type:'instant'},'Arachnogenesis':{cmc:3,type:'instant'},'Inspiring Call':{cmc:3,type:'instant'},
+  // ARTIFACTS
+  'Hangarback Walker':{cmc:2,type:'artifact'},'Walking Ballista':{cmc:2,type:'artifact'},'Metallic Mimic':{cmc:2,type:'artifact'},'Solemn Simulacrum':{cmc:4,type:'artifact'},'Precursor Golem':{cmc:5,type:'artifact'},'Wurmcoil Engine':{cmc:6,type:'artifact'},'Myr Battlesphere':{cmc:7,type:'artifact'},'Blightsteel Colossus':{cmc:12,type:'artifact'},'Emrakul, the Aeons Torn':{cmc:15,type:'creature'},'Chrome Mox':{cmc:0,type:'artifact'},'Lotus Bloom':{cmc:0,type:'artifact'},'Lotus Petal':{cmc:0,type:'artifact'},'Mana Crypt':{cmc:0,type:'artifact'},'Animation Module':{cmc:1,type:'artifact'},'Basilisk Collar':{cmc:1,type:'artifact'},'Blade of the Bloodchief':{cmc:1,type:'artifact'},'Bloodforged Battle-Axe':{cmc:1,type:'artifact'},'Skullclamp':{cmc:1,type:'artifact'},'Sol Ring':{cmc:1,type:'artifact'},'Altar of Dementia':{cmc:2,type:'artifact'},'Blade of Selves':{cmc:2,type:'artifact'},'Dowsing Dagger':{cmc:2,type:'artifact'},"Illusionist's Bracers":{cmc:2,type:'artifact'},'Isochron Scepter':{cmc:2,type:'artifact'},'Lightning Greaves':{cmc:2,type:'artifact'},'Mesmeric Orb':{cmc:2,type:'artifact'},"Smuggler's Copter":{cmc:2,type:'artifact'},'Strionic Resonator':{cmc:2,type:'artifact'},'Swiftfoot Boots':{cmc:2,type:'artifact'},'Sword of the Animist':{cmc:2,type:'artifact'},"Umezawa's Jitte":{cmc:2,type:'artifact'},"Ashnod's Altar":{cmc:3,type:'artifact'},"Champion's Helm":{cmc:2,type:'artifact'},'Chromatic Lantern':{cmc:3,type:'artifact'},'Coalition Relic':{cmc:3,type:'artifact'},"Commander's Sphere":{cmc:3,type:'artifact'},"Oketra's Monument":{cmc:3,type:'artifact'},'Phyrexian Altar':{cmc:3,type:'artifact'},'Rings of Brighthearth':{cmc:3,type:'artifact'},'Sword of Body and Mind':{cmc:3,type:'artifact'},'Sword of Feast and Famine':{cmc:3,type:'artifact'},'Sword of Fire and Ice':{cmc:3,type:'artifact'},'Sword of Light and Shadow':{cmc:3,type:'artifact'},'Sword of War and Peace':{cmc:3,type:'artifact'},'Aetherflux Reservoir':{cmc:4,type:'artifact'},'Coercive Portal':{cmc:4,type:'artifact'},'Hammer of Nazahn':{cmc:4,type:'artifact'},'Panharmonicon':{cmc:4,type:'artifact'},'Primal Amulet':{cmc:4,type:'artifact'},'Trading Post':{cmc:4,type:'artifact'},"Alhammarret's Archive":{cmc:5,type:'artifact'},"Conjurer's Closet":{cmc:5,type:'artifact'},'Memory Jar':{cmc:5,type:'artifact'},"Mind's Eye":{cmc:5,type:'artifact'},'Mindslaver':{cmc:6,type:'artifact'},'The Immortal Sun':{cmc:6,type:'artifact'},
+  // MULTICOLOR (sample CMCs)
+  'Azorius Signet':{cmc:2,type:'artifact'},'Talisman of Progress':{cmc:2,type:'artifact'},'Daxos of Meletis':{cmc:3,type:'creature'},'Detention Sphere':{cmc:3,type:'enchantment'},'Reflector Mage':{cmc:3,type:'creature'},'Brago, King Eternal':{cmc:4,type:'creature'},'Ephara, God of the Polis':{cmc:4,type:'creature'},'Ishai, Ojutai Dragonspeaker':{cmc:4,type:'creature'},'Cloudblazer':{cmc:5,type:'creature'},'Fractured Identity':{cmc:5,type:'sorcery'},'Lavinia of the Tenth':{cmc:4,type:'creature'},'Momentary Blink':{cmc:2,type:'instant'},'Venser, the Sojourner':{cmc:5,type:'planeswalker'},'Azor, the Lawbringer':{cmc:6,type:'creature'},'Baleful Strix':{cmc:2,type:'creature'},'Dimir Signet':{cmc:2,type:'artifact'},'Talisman of Dominance':{cmc:2,type:'artifact'},'Silas Renn, Seeker Adept':{cmc:4,type:'creature'},'Ancient Excavation':{cmc:4,type:'instant'},'Hostage Taker':{cmc:4,type:'creature'},'Lazav, Dimir Mastermind':{cmc:4,type:'creature'},'Notion Thief':{cmc:4,type:'creature'},'Whispering Madness':{cmc:4,type:'sorcery'},'Extract from Darkness':{cmc:5,type:'sorcery'},"Taigam, Sidisi's Hand":{cmc:5,type:'creature'},'The Scarab God':{cmc:5,type:'creature'},'Dragonlord Silumgar':{cmc:6,type:'creature'},'Wrexial, the Risen Deep':{cmc:8,type:'creature'},'Grenzo, Dungeon Warden':{cmc:4,type:'creature'},'Rakdos Charm':{cmc:2,type:'instant'},'Rakdos Signet':{cmc:2,type:'artifact'},'Talisman of Indulgence':{cmc:2,type:'artifact'},'Terminate':{cmc:2,type:'instant'},'Tymaret, the Murder King':{cmc:2,type:'creature'},"Kolaghan's Command":{cmc:3,type:'instant'},'Vial Smasher the Fierce':{cmc:4,type:'creature'},'Cut // Ribbons':{cmc:2,type:'sorcery'},'Falkenrath Aristocrat':{cmc:4,type:'creature'},'Mogis, God of Slaughter':{cmc:4,type:'creature'},'Murderous Redcap':{cmc:4,type:'creature'},'Angrath, the Flame-Chained':{cmc:5,type:'planeswalker'},'The Scorpion God':{cmc:5,type:'creature'},'Gruul Signet':{cmc:2,type:'artifact'},'Radha, Heir to Keld':{cmc:2,type:'creature'},'Talisman of Impulse':{cmc:2,type:'artifact'},'Zhur-Taa Druid':{cmc:2,type:'creature'},'Heaven // Earth':{cmc:4,type:'sorcery'},'Decimate':{cmc:4,type:'sorcery'},'Mina and Denn, Wildborn':{cmc:4,type:'creature'},'Tana, the Bloodsower':{cmc:4,type:'creature'},'Xenagos, God of Revels':{cmc:5,type:'creature'},'Rubblehulk':{cmc:6,type:'creature'},'Ruric Thar, the Unbowed':{cmc:6,type:'creature'},'Gruul Ragebeast':{cmc:7,type:'creature'},'Omnath, Locus of Rage':{cmc:5,type:'creature'},'Treacherous Terrain':{cmc:8,type:'sorcery'},'Rhys the Redeemed':{cmc:1,type:'creature'},'Selesnya Signet':{cmc:2,type:'artifact'},'Talisman of Unity':{cmc:2,type:'artifact'},'Appeal // Authority':{cmc:2,type:'sorcery'},'Dauntless Escort':{cmc:3,type:'creature'},'Mirri, Weatherlight Duelist':{cmc:3,type:'creature'},'Selvala, Explorer Returned':{cmc:3,type:'creature'},'Huatli, Radiant Champion':{cmc:4,type:'planeswalker'},'Sidar Kondo of Jamuraa':{cmc:4,type:'creature'},'Wilt-Leaf Liege':{cmc:4,type:'creature'},"Mirari's Wake":{cmc:5,type:'enchantment'},"Sigarda, Heron's Grace":{cmc:5,type:'creature'},'Armada Wurm':{cmc:6,type:'creature'},'Collective Blessing':{cmc:6,type:'enchantment'},'Ayli, Eternal Pilgrim':{cmc:2,type:'creature'},'Orzhov Signet':{cmc:2,type:'artifact'},'Kambal, Consul of Allocation':{cmc:3,type:'creature'},'Profane Procession':{cmc:3,type:'enchantment'},'Tymna the Weaver':{cmc:3,type:'creature'},'Vindicate':{cmc:3,type:'sorcery'},'Debt to the Deathless':{cmc:4,type:'sorcery'},'Elenda, the Dusk Rose':{cmc:4,type:'creature'},'Kaya, Ghost Assassin':{cmc:4,type:'planeswalker'},'Ravos, Soultender':{cmc:5,type:'creature'},'Vona, Butcher of Magan':{cmc:5,type:'creature'},'Magister of Worth':{cmc:6,type:'creature'},'Merciless Eviction':{cmc:6,type:'sorcery'},'Sorin, Grim Nemesis':{cmc:6,type:'planeswalker'},'Goblin Electromancer':{cmc:2,type:'creature'},'Izzet Charm':{cmc:2,type:'instant'},'Izzet Signet':{cmc:2,type:'artifact'},'Dack Fayden':{cmc:3,type:'planeswalker'},'Enigma Drake':{cmc:3,type:'creature'},'Fevered Visions':{cmc:3,type:'enchantment'},'Ludevic, Necro-Alchemist':{cmc:4,type:'creature'},'Mizzix of the Izmagnus':{cmc:4,type:'creature'},'Steam Augury':{cmc:4,type:'instant'},'Storm the Vault':{cmc:4,type:'enchantment'},'Keranos, God of Storms':{cmc:5,type:'creature'},"Kraum, Ludevic's Opus":{cmc:5,type:'creature'},'Niv-Mizzet, Dracogenius':{cmc:6,type:'creature'},'The Locust God':{cmc:6,type:'creature'},'Elves of Deep Shadow':{cmc:1,type:'creature'},'Golgari Signet':{cmc:2,type:'artifact'},'Grim Flayer':{cmc:2,type:'creature'},'Grisly Salvage':{cmc:2,type:'instant'},'Lotleth Troll':{cmc:2,type:'creature'},'Skullbriar, the Walking Grave':{cmc:2,type:'creature'},'Winding Constrictor':{cmc:2,type:'creature'},'Journey to Eternity':{cmc:2,type:'enchantment'},'Maelstrom Pulse':{cmc:3,type:'sorcery'},'Reyhan, Last of the Abzan':{cmc:3,type:'creature'},'Varolz, the Scar-Striped':{cmc:3,type:'creature'},'Corpsejack Menace':{cmc:4,type:'creature'},'Ikra Shidiqi, the Usurper':{cmc:5,type:'creature'},'Mazirek, Kraul Death Priest':{cmc:5,type:'creature'},'Figure of Destiny':{cmc:1,type:'creature'},'Akiri, Line-Slinger':{cmc:3,type:'creature'},'Boros Charm':{cmc:2,type:'instant'},'Boros Signet':{cmc:2,type:'artifact'},'Honored Crop-Captain':{cmc:2,type:'creature'},"Legion's Initiative":{cmc:2,type:'enchantment'},'Sky Terror':{cmc:2,type:'creature'},'Bruse Tarl, Boorish Herder':{cmc:4,type:'creature'},'Iroas, God of Victory':{cmc:4,type:'creature'},'Adriana, Captain of the Guard':{cmc:5,type:'creature'},'Anya, Merciless Angel':{cmc:5,type:'creature'},'Archangel Avacyn':{cmc:5,type:'creature'},'Aurelia, the Warleader':{cmc:6,type:'creature'},'Gisela, Blade of Goldnight':{cmc:7,type:'creature'},'Coiling Oracle':{cmc:2,type:'creature'},"Kiora's Follower":{cmc:2,type:'creature'},'Simic Signet':{cmc:2,type:'artifact'},'Thrasios, Triton Hero':{cmc:2,type:'creature'},'Edric, Spymaster of Trest':{cmc:3,type:'creature'},"Hadana's Climb":{cmc:3,type:'enchantment'},'Plaxcaster Frogling':{cmc:3,type:'creature'},'Ezuri, Claw of Progress':{cmc:4,type:'creature'},'Fathom Mage':{cmc:4,type:'creature'},'Kydele, Chosen of Kruphix':{cmc:4,type:'creature'},'Master Biomancer':{cmc:4,type:'creature'},'Prophet of Kruphix':{cmc:5,type:'creature'},'Prime Speaker Zegana':{cmc:6,type:'creature'},'Progenitor Mimic':{cmc:6,type:'creature'},'Noble Hierarch':{cmc:1,type:'creature'},'Roon of the Hidden Realm':{cmc:5,type:'creature'},'Oloro, Ageless Ascetic':{cmc:6,type:'creature'},'Kess, Dissident Mage':{cmc:4,type:'creature'},'Marchesa, the Black Rose':{cmc:4,type:'creature'},'Prossh, Skyraider of Kher':{cmc:6,type:'creature'},'Zacama, Primal Calamity':{cmc:9,type:'creature'},'Alesha, Who Smiles at Death':{cmc:3,type:'creature'},'Queen Marchesa':{cmc:4,type:'creature'},'Animar, Soul of Elements':{cmc:3,type:'creature'},'Ghave, Guru of Spores':{cmc:5,type:'creature'},'Shu Yun, the Silent Tempest':{cmc:3,type:'creature'},'The Mimeoplasm':{cmc:5,type:'creature'},
+  // LANDS
+  'Adarkar Wastes':{cmc:0,type:'land'},'Glacial Fortress':{cmc:0,type:'land'},'Hallowed Fountain':{cmc:0,type:'land'},'Temple of Enlightenment':{cmc:0,type:'land'},'Drowned Catacomb':{cmc:0,type:'land'},'Temple of Deceit':{cmc:0,type:'land'},'Underground River':{cmc:0,type:'land'},'Watery Grave':{cmc:0,type:'land'},'Blood Crypt':{cmc:0,type:'land'},'Dragonskull Summit':{cmc:0,type:'land'},'Sulfurous Springs':{cmc:0,type:'land'},'Temple of Malice':{cmc:0,type:'land'},'Karplusan Forest':{cmc:0,type:'land'},'Rootbound Crag':{cmc:0,type:'land'},'Stomping Ground':{cmc:0,type:'land'},'Temple of Abandon':{cmc:0,type:'land'},'Brushland':{cmc:0,type:'land'},'Sunpetal Grove':{cmc:0,type:'land'},'Temple Garden':{cmc:0,type:'land'},'Temple of Plenty':{cmc:0,type:'land'},'Caves of Koilos':{cmc:0,type:'land'},'Godless Shrine':{cmc:0,type:'land'},'Isolated Chapel':{cmc:0,type:'land'},'Temple of Silence':{cmc:0,type:'land'},'Shivan Reef':{cmc:0,type:'land'},'Steam Vents':{cmc:0,type:'land'},'Sulfur Falls':{cmc:0,type:'land'},'Temple of Epiphany':{cmc:0,type:'land'},'Llanowar Wastes':{cmc:0,type:'land'},'Overgrown Tomb':{cmc:0,type:'land'},'Temple of Malady':{cmc:0,type:'land'},'Woodland Cemetery':{cmc:0,type:'land'},'Battlefield Forge':{cmc:0,type:'land'},'Clifftop Retreat':{cmc:0,type:'land'},'Sacred Foundry':{cmc:0,type:'land'},'Temple of Triumph':{cmc:0,type:'land'},'Breeding Pool':{cmc:0,type:'land'},'Hinterland Harbor':{cmc:0,type:'land'},'Temple of Mystery':{cmc:0,type:'land'},'Yavimaya Coast':{cmc:0,type:'land'},'Seaside Citadel':{cmc:0,type:'land'},'Arcane Sanctum':{cmc:0,type:'land'},'Crumbling Necropolis':{cmc:0,type:'land'},'Savage Lands':{cmc:0,type:'land'},'Jungle Shrine':{cmc:0,type:'land'},'Arid Mesa':{cmc:0,type:'land'},'Bloodstained Mire':{cmc:0,type:'land'},'Command Tower':{cmc:0,type:'land'},'Evolving Wilds':{cmc:0,type:'land'},'Exotic Orchard':{cmc:0,type:'land'},'Flooded Strand':{cmc:0,type:'land'},'Marsh Flats':{cmc:0,type:'land'},'Misty Rainforest':{cmc:0,type:'land'},'Path of Ancestry':{cmc:0,type:'land'},'Polluted Delta':{cmc:0,type:'land'},'Scalding Tarn':{cmc:0,type:'land'},'Temple of the False God':{cmc:0,type:'land'},'Verdant Catacombs':{cmc:0,type:'land'},'Windswept Heath':{cmc:0,type:'land'},'Wooded Foothills':{cmc:0,type:'land'},
+};
+
+// ============================================================
+// SEARCH + FILTERS
+// ============================================================
+function buildAllCards() {
+  const all = [];
+  for (const [key, sec] of Object.entries(ALL_CARDS)) {
+    for (const [grp, cards] of Object.entries(sec.groups)) {
+      for (const card of cards) {
+        const meta = CARD_META[card] || {cmc:null,type:'unknown'};
+        all.push({ name: card, color: sec.color, label: sec.label, group: grp, key, cmc: meta.cmc, type: meta.type });
+      }
+    }
+  }
+  return all;
+}
+const ALL_FLAT = buildAllCards();
+
+// Active filters
+const activeFilters = { cmc: null, type: null, color: null };
+
+function initFilters() {
+  // CMC buckets
+  const cmcBuckets = [
+    {label:'0', val:'0'}, {label:'1', val:'1'}, {label:'2', val:'2'},
+    {label:'3', val:'3'}, {label:'4', val:'4'}, {label:'5', val:'5'},
+    {label:'6', val:'6'}, {label:'7+', val:'7+'},
+  ];
+  document.getElementById('filter-cmc').innerHTML =
+    `<span class="filter-label">CMC</span>` +
+    cmcBuckets.map(b => `<button class="filter-btn" data-group="cmc" data-val="${b.val}" onclick="toggleFilter('cmc','${b.val}',this)">${b.label}</button>`).join('');
+
+  // Types
+  const types = ['creature','instant','sorcery','enchantment','artifact','planeswalker','land'];
+  document.getElementById('filter-type').innerHTML =
+    `<span class="filter-label">Typ</span>` +
+    types.map(t => `<button class="filter-btn" data-group="type" data-val="${t}" onclick="toggleFilter('type','${t}',this)">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('');
+
+  // Colors
+  const colors = [
+    {label:'⬜ Bílá', val:'white'}, {label:'🔵 Modrá', val:'blue'},
+    {label:'⚫ Černá', val:'black'}, {label:'🔴 Červená', val:'red'},
+    {label:'🟢 Zelená', val:'green'}, {label:'🌈 Multi', val:'multi'},
+    {label:'⚙️ Art', val:'artifacts'}, {label:'🏔️ Země', val:'lands'},
+  ];
+  document.getElementById('filter-color').innerHTML =
+    `<span class="filter-label">Barva</span>` +
+    colors.map(c => `<button class="filter-btn" data-group="color" data-val="${c.val}" onclick="toggleFilter('color','${c.val}',this)">${c.label}</button>`).join('');
+}
+
+function toggleFilter(group, val, btn) {
+  if (activeFilters[group] === val) {
+    activeFilters[group] = null;
+    btn.classList.remove('active','cmc-active','type-active','color-active');
+  } else {
+    // deactivate previous
+    document.querySelectorAll(`[data-group="${group}"]`).forEach(b => b.classList.remove('active','cmc-active','type-active','color-active'));
+    activeFilters[group] = val;
+    const cls = group === 'cmc' ? 'cmc-active' : group === 'type' ? 'type-active' : 'color-active';
+    btn.classList.add(cls);
+  }
+  doSearch();
+}
+
+function cmcMatch(cardCmc, filter) {
+  if (filter === null) return true;
+  if (filter === '7+') return cardCmc !== null && cardCmc >= 7;
+  return cardCmc === parseInt(filter);
+}
+
+function doSearch() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  let results = ALL_FLAT;
+
+  // text filter
+  if (q.length >= 1) results = results.filter(c => c.name.toLowerCase().includes(q));
+
+  // cmc filter
+  if (activeFilters.cmc !== null) results = results.filter(c => cmcMatch(c.cmc, activeFilters.cmc));
+
+  // type filter
+  if (activeFilters.type !== null) results = results.filter(c => c.type === activeFilters.type);
+
+  // color filter
+  if (activeFilters.color !== null) results = results.filter(c => c.key === activeFilters.color);
+
+  const hasFilter = q.length >= 1 || activeFilters.cmc || activeFilters.type || activeFilters.color;
+  document.getElementById('search-count').textContent = hasFilter ? `${results.length} karet` : '';
+
+  if (!hasFilter) {
+    document.getElementById('search-results').innerHTML = `<div style="color:var(--muted);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;padding:20px 0">Zadej text nebo vyber filtr...</div>`;
+    return;
+  }
+
+  document.getElementById('search-results').innerHTML = results.length === 0
+    ? `<div style="color:var(--muted);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;padding:20px 0">Žádné výsledky.</div>`
+    : results.map(c => {
+        const cmcBadge = c.cmc !== null ? `<span class="card-badge" style="color:#90caf9;border-color:#4a9eff66">${c.cmc}</span>` : '';
+        const typeBadge = `<span class="card-badge" style="color:#ce93d8;border-color:#b06eff66">${c.type}</span>`;
+        return `
+          <div class="card-item">
+            <div class="card-dot" style="background:${c.color}88"></div>
+            <span class="card-name">${c.name}</span>
+            ${cmcBadge}
+            ${typeBadge}
+            <span class="card-badge" style="color:${c.color};border-color:${c.color}66">${c.label}</span>
+          </div>`;
+      }).join('');
+}
+
+// ============================================================
+// NAV
+// ============================================================
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector(`[onclick="showSection('${id}')"]`).classList.add('active');
+
+  // Lazy render card sections
+  const map = { white:'white-content', blue:'blue-content', black:'black-content', red:'red-content', green:'green-content', multi:'multi-content', artifacts:'artifacts-content', lands:'lands-content' };
+  if (map[id]) renderCardSection(id, map[id]);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderOverview();
+renderArchetypes();
+initFilters();
+doSearch();
+</script>
+
+
+</body></html>
