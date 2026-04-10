@@ -2,238 +2,239 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stalker DayZ Reboot — Roadmapa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kam na pivo?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, sans-serif; background: #111; color: #e0ddd6; padding: 24px 16px; max-width: 780px; margin: 0 auto; }
-h1 { font-size: 18px; font-weight: 500; color: #e0ddd6; margin-bottom: 4px; }
-.subtitle { font-size: 12px; color: #888; margin-bottom: 18px; }
-.pilot-banner { background: #0c2a3a; border: 0.5px solid #1e5a7a; border-radius: 10px; padding: 8px 12px; font-size: 12px; color: #7ec8e3; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
-.legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #888; }
-.legend-dot { width: 10px; height: 10px; border-radius: 3px; }
-.phase-block { border: 0.5px solid #2a2a28; border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
-.phase-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; user-select: none; }
-.phase-header:hover { background: #1a1a18; }
-.phase-badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
-.phase-title { font-size: 14px; font-weight: 500; color: #e0ddd6; flex: 1; }
-.phase-meta { font-size: 11px; color: #666; flex-shrink: 0; }
-.chevron { width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.2s; color: #666; }
-.chevron.open { transform: rotate(90deg); }
-.phase-body { display: none; padding: 0 14px 14px; }
-.phase-body.open { display: block; }
-.section-label { font-size: 11px; font-weight: 500; color: #666; text-transform: uppercase; letter-spacing: 0.06em; margin: 12px 0 4px; }
-.tasks { display: flex; flex-direction: column; gap: 6px; }
-.task { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; background: #1a1a18; border-radius: 8px; border: 0.5px solid #2a2a28; }
-.task-icon { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; border-radius: 3px; display: flex; align-items: center; justify-content: center; }
-.task-text { font-size: 13px; color: #e0ddd6; line-height: 1.5; }
-.task-note { font-size: 11px; color: #666; margin-top: 2px; }
-</style>
-</head>
-<body>
-<h1>Stalker DayZ Reboot — Roadmapa</h1>
-<p class="subtitle">Sievert Zone · Setting 2008–2009 · Border Zone jako pilotní lokace</p>
-
-<div class="pilot-banner">
-  &#9432;&nbsp; Fáze 1–4 = pilotní lokace <strong style="margin:0 3px">Border Zone</strong>. Fáze 5–8 = zbytek mapy podle stejné šablony.
-</div>
-
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#3B8BD4"></div> Lore &amp; design</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div> Tech &amp; konfigurace</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#BA7517"></div> Obsah (dialogy, stashe, loot)</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#A32D2D"></div> Testování &amp; QA</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#534AB7"></div> Launch &amp; meta</div>
-</div>
-
-<div id="phases"></div>
-
-<script>
-const phases = [
-  {
-    title: "World bible — Border Zone",
-    badge: "Fáze 1", bc: "#0c1e30", bt: "#7ec8e3",
-    meta: "Čistě lore & design",
-    sections: [
-      { label: "Lore & design", color: "#3B8BD4", tasks: [
-        { text: "Rozepsat timeline 2008–2009", note: "Co se děje v Zóně, co ví svět venku, proč je Border Zone uzavřená" },
-        { text: "Border Zone world brief", note: "Atmosféra, kdo tu žije, denní rutina, korupce na checkpointu" },
-        { text: "Tři skupiny obyvatel — civilisté, obchodníci, armáda", note: "Každá skupina má jiný vztah k Zóně a k hráči" },
-        { text: "Hráčova výchozí role: civilista s motivací vstoupit", note: "Proč tu je, co chce, co riskuje" },
-        { text: "Styl a tón — dobový, ne tacticool", note: "Reference: Shadow of Chernobyl, Lost Alpha — atmosféra, ne gear porn" },
-      ]}
-    ]
-  },
-  {
-    title: "Border Zone — tech konfigurace",
-    badge: "Fáze 2", bc: "#0c2010", bt: "#5dcaa5",
-    meta: "Vše od nuly na Sievert Zone",
-    sections: [
-      { label: "Tech & konfigurace", color: "#1D9E75", tasks: [
-        { text: "NPC spawny — rozmístění pro Border Zone", note: "Civilisté v kempu, obchodníci u checkpointu, vojáci na hranici" },
-        { text: "NPC chování — rutiny odpovídající settingu", note: "Vojáci hlídkují, obchodníci stojí, civilisté čekají" },
-        { text: "Tradeři — inventory 2008", note: "Žádný taktický gear: civil oblečení, základní výbava, sovětský surplus" },
-        { text: "Stash konfigurace pro Border Zone", note: "Pár statických stashů jako introdukce systému" },
-        { text: "Loot tabulky — Border Zone specifické", note: "Chudší než Zóna, spíš civil a military surplus" },
-      ]}
-    ]
-  },
-  {
-    title: "Border Zone — questline",
-    badge: "Fáze 3", bc: "#2a1a00", bt: "#FAC775",
-    meta: "Největší fáze pilotu",
-    sections: [
-      { label: "Lore & design", color: "#3B8BD4", tasks: [
-        { text: "Hlavní questline: vstup do Zóny (8–12 kroků)", note: "Hráč musí získat průchod — legálně, korupcí nebo načerno" },
-        { text: "Větvení — alespoň 2 klíčové volby s reálným dopadem", note: "Jiný způsob vstupu = jiný start uvnitř Zóny" },
-        { text: "Vedlejší questy: 4–6 story hooks", note: "Pašeráci, dezertér, civilista hledající příbuzného, černý trh" },
-        { text: "1–2 secret questy — podmíněné triggery", note: "Přijít v noci, mít specifický item, prerekvizita z vedlejšího questu" },
-        { text: "Quest design doc — 1 stránka na quest", note: "Cíl, větve, odměna, jak navazuje na vstup do Zóny" },
-      ]},
-      { label: "Tech & konfigurace", color: "#1D9E75", tasks: [
-        { text: "Scripting hlavní questline v JSON/XML", note: "" },
-        { text: "Scripting vedlejších questů", note: "" },
-        { text: "Podmíněné triggery pro secret questy", note: "Čas, item v inventáři, quest flag" },
-        { text: "Quest state persistence", note: "" },
-      ]},
-      { label: "Obsah", color: "#BA7517", tasks: [
-        { text: "Dialogy pro všechny quest NPC", note: "Dobový tón, každý NPC má svůj hlas a motivaci" },
-        { text: "Quest rewards navázané na loot tabulky", note: "" },
-        { text: "Stashe navázané na questy", note: "" },
-      ]}
-    ]
-  },
-  {
-    title: "QA — Border Zone pilot",
-    badge: "Fáze 4", bc: "#2a0a0a", bt: "#f09595",
-    meta: "Gate před expanzí na zbytek mapy",
-    sections: [
-      { label: "Testování & QA", color: "#A32D2D", tasks: [
-        { text: "Interní playtest — celá questline end-to-end", note: "Všechny větve, všechny secret triggery" },
-        { text: "Bug bash: quest state, NPC spawny, loot, stashe", note: "" },
-        { text: "2–3 externí testeři — lore čitelnost, tempo, obtížnost", note: "" },
-        { text: "Iterace — fix kritických bugů a lore děr", note: "" },
-        { text: "Retrospektiva: šablona a checklist pro Fáze 5–8", note: "Co funguje, co změnit" },
-      ]}
-    ]
-  },
-  {
-    title: "Zóna — lokace a skupinky (jih → sever)",
-    badge: "Fáze 5", bc: "#0c2010", bt: "#5dcaa5",
-    meta: "Uvnitř Zóny — první lokace",
-    sections: [
-      { label: "Lore & design", color: "#3B8BD4", tasks: [
-        { text: "Mapa questových checkpointů jih → elektrárna", note: "Každá oblast = jedna mini-arc, logicky navazující" },
-        { text: "Skupinky stalkerů s ideály a vůdci", note: "Zárodky budoucích frakcí — zatím jen loose gangy" },
-        { text: "Každá skupinka: co chce, konflikty, vztah k hráči", note: "" },
-        { text: "Jak skupinky formují identitu přes main questline", note: "Hráč to sleduje, případně ovlivní" },
-      ]},
-      { label: "Tech & konfigurace", color: "#1D9E75", tasks: [
-        { text: "NPC a tradeři pro každou klíčovou lokaci", note: "Podle šablony z Border Zone" },
-        { text: "Stash systém — statické + quest-bound stashe", note: "" },
-        { text: "Anomálie a artefakty — konfigurace pro Sievert Zone", note: "2008: ne-prozkoumaná, vzácnost a záhada" },
-      ]}
-    ]
-  },
-  {
-    title: "Hlavní questline — průchod celou mapou",
-    badge: "Fáze 6", bc: "#2a1a00", bt: "#FAC775",
-    meta: "Od vstupu do Zóny k elektrárně",
-    sections: [
-      { label: "Lore & design", color: "#3B8BD4", tasks: [
-        { text: "Kompletní arc main questline", note: "Větvení s trvalými dopady — skupinky, lokace, přístup k elektrárně" },
-        { text: "Finální akt u elektrárny — lore payoff", note: "Prequel hook: co hráč nalézá naznačuje budoucnost (hry)" },
-        { text: "Vedlejší questy pro každou skupinku / lokaci", note: "" },
-        { text: "3–5 secret/random questů napříč mapou", note: "" },
-      ]},
-      { label: "Tech & konfigurace", color: "#1D9E75", tasks: [
-        { text: "Scripting kompletní main questline", note: "" },
-        { text: "Scripting vedlejších a secret questů", note: "" },
-        { text: "World state flags — volby hráče mění svět", note: "Skupinka přežije nebo zanikne podle rozhodnutí" },
-      ]}
-    ]
-  },
-  {
-    title: "Economy, balance & server config",
-    badge: "Fáze 7", bc: "#2a1a00", bt: "#FAC775",
-    meta: "Celá mapa",
-    sections: [
-      { label: "Tech & konfigurace", color: "#1D9E75", tasks: [
-        { text: "Loot tabulky — finální balance pro celou mapu", note: "Progression: Border Zone chudá → elektrárna bohatá a nebezpečná" },
-        { text: "Economy smyčka: civilista → stalker → veterán", note: "Kde se vyplatí farmit vs. questit" },
-        { text: "Respawn a persistence konfigurace", note: "" },
-      ]},
-      { label: "Obsah", color: "#BA7517", tasks: [
-        { text: "Server rules a onboarding pro nový setting", note: "Jak komunikovat reboot stávajícím hráčům" },
-      ]}
-    ]
-  },
-  {
-    title: "Full QA & launch",
-    badge: "Fáze 8", bc: "#2a0a0a", bt: "#f09595",
-    meta: "Release",
-    sections: [
-      { label: "Testování & QA", color: "#A32D2D", tasks: [
-        { text: "Playtest celé mapy — main + side + secret questy", note: "" },
-        { text: "Performance test specifický pro Sievert Zone", note: "Velká mapa, bottlenecky se stashe a NPC" },
-        { text: "Lore konzistence pass — celá mapa", note: "Jména, dialogy, timeline" },
-        { text: "Bug fix sprint", note: "" },
-      ]},
-      { label: "Launch & meta", color: "#534AB7", tasks: [
-        { text: "Announce — reboot komunikace komunitě", note: "" },
-        { text: "Patch notes pro stávající hráče", note: "" },
-        { text: "Feedback smyčka po launchi — iterace v1.1", note: "" },
-      ]}
-    ]
+  :root {
+    --bg: #1a1208;
+    --surface: #251a0a;
+    --surface2: #2e2010;
+    --amber: #e8a020;
+    --amber-light: #f5c050;
+    --amber-dim: #8a5a0a;
+    --cream: #f0e6c8;
+    --cream-dim: #9a8a6a;
+    --red: #c0392b;
+    --green: #27ae60;
+    --border: rgba(232,160,32,0.2);
   }
-];
 
-const wrap = document.getElementById('phases');
-phases.forEach(p => {
-  const block = document.createElement('div');
-  block.className = 'phase-block';
-  const header = document.createElement('div');
-  header.className = 'phase-header';
-  header.innerHTML = `
-    <span class="phase-badge" style="background:${p.bc};color:${p.bt}">${p.badge}</span>
-    <span class="phase-title">${p.title}</span>
-    <span class="phase-meta">${p.meta}</span>
-    <svg class="chevron" viewBox="0 0 14 14" fill="none"><path d="M4 3l5 4-5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  `;
-  const body = document.createElement('div');
-  body.className = 'phase-body';
-  p.sections.forEach(s => {
-    const sl = document.createElement('div');
-    sl.className = 'section-label';
-    sl.textContent = s.label;
-    body.appendChild(sl);
-    const tasks = document.createElement('div');
-    tasks.className = 'tasks';
-    s.tasks.forEach(t => {
-      const task = document.createElement('div');
-      task.className = 'task';
-      task.innerHTML = `
-        <div class="task-icon" style="background:${s.color}22;border:0.5px solid ${s.color}55">
-          <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><circle cx="4" cy="4" r="2.5" fill="${s.color}"/></svg>
-        </div>
-        <div>
-          <div class="task-text">${t.text}</div>
-          ${t.note ? `<div class="task-note">${t.note}</div>` : ''}
-        </div>
-      `;
-      tasks.appendChild(task);
-    });
-    body.appendChild(tasks);
-  });
-  header.addEventListener('click', () => {
-    const open = body.classList.toggle('open');
-    header.querySelector('.chevron').classList.toggle('open', open);
-  });
-  block.appendChild(header);
-  block.appendChild(body);
-  wrap.appendChild(block);
-});
-</script>
-</body>
-</html>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(232,160,32,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 20%, rgba(232,160,32,0.04) 0%, transparent 70%);
+  }
+
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  header::after {
+    content: '\ud83c\udf7a';
+    position: absolute;
+    font-size: 2rem;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.08;
+    font-size: 8rem;
+    top: -1rem;
+    pointer-events: none;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 900;
+    color: var(--amber);
+    letter-spacing: -1px;
+    position: relative;
+  }
+  .subtitle {
+    color: var(--cream-dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 0.4rem;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    min-height: calc(100vh - 140px);
+  }
+
+  .panel {
+    padding: 1.5rem;
+    border-right: 1px solid var(--border);
+  }
+  .panel:last-child { border-right: none; }
+
+  .panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--amber-light);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .panel-title span { font-size: 1.2rem; }
+
+  /* ADD PUB FORM */
+  .add-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .add-form input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .add-form input:focus { border-color: var(--amber); }
+  .add-form input::placeholder { color: var(--cream-dim); }
+  .btn {
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--amber-light); }
+  .btn:active { transform: scale(0.97); }
+  .btn.secondary {
+    background: transparent;
+    border: 1px solid var(--amber-dim);
+    color: var(--amber);
+  }
+  .btn.secondary:hover { background: rgba(232,160,32,0.1); }
+  .btn.danger {
+    background: transparent;
+    border: 1px solid rgba(192,57,43,0.4);
+    color: #e74c3c;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+  }
+  .btn.danger:hover { background: rgba(192,57,43,0.15); }
+
+  /* PUB LIST */
+  .pub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 200px;
+  }
+
+  .pub-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.7rem 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    cursor: grab;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
+    user-select: none;
+    animation: slideIn 0.25s ease;
+  }
+  .pub-card:active { cursor: grabbing; }
+  .pub-card:hover {
+    border-color: var(--amber-dim);
+    background: var(--surface2);
+  }
+  .pub-card.dragging {
+    opacity: 0.4;
+    transform: scale(0.97);
+  }
+  .pub-card.drag-over {
+    border-color: var(--amber);
+    background: rgba(232,160,32,0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(232,160,32,0.15);
+  }
+
+  .drag-handle {
+    color: var(--amber-dim);
+    font-size: 0.9rem;
+    cursor: grab;
+    line-height: 1;
+  }
+  .pub-name {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--cream);
+  }
+  .pub-emoji {
+    font-size: 1.1rem;
+  }
+  .pub-actions {
+    display: flex;
+    gap: 0.4rem;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .pub-card:hover .pub-actions { opacity: 1; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .empty-hint {
+    color: var(--cream-dim);
+    font-size: 0.78rem;
+    text-align: center;
+    padding: 2rem 1rem;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    line-height: 1.6;
+  }
+
+  /* VOTING PANEL */
+  .vote-date-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .vote-date-row input[type="date"] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 4px;
+    outline: none;
+    color-scheme: dark;
+  }
+  .vote-date-row input:focus { border-color: var(--amber); }
+
+  .vote-candidates
