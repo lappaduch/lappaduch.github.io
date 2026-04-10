@@ -39,7 +39,7 @@
     position: relative;
   }
   header::after {
-    content: '\ud83c\udf7a';
+    content: '🍺';
     position: absolute;
     font-size: 2rem;
     top: 2rem;
@@ -237,4 +237,502 @@
   }
   .vote-date-row input:focus { border-color: var(--amber); }
 
-  .vote-candidates
+  .vote-candidates {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-height: 120px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .vote-candidates.drop-active {
+    border-color: var(--amber);
+    background: rgba(232,160,32,0.05);
+  }
+  .drop-hint {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--amber-dim);
+    font-size: 0.78rem;
+    pointer-events: none;
+    flex-direction: column;
+    gap: 0.4rem;
+    letter-spacing: 0.08em;
+  }
+  .drop-hint .big { font-size: 2rem; }
+
+  .candidate-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .candidate-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.6rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    animation: slideIn 0.2s ease;
+  }
+  .candidate-name {
+    flex: 1;
+    font-size: 0.88rem;
+  }
+  .vote-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .vote-count {
+    font-size: 0.75rem;
+    color: var(--amber);
+    min-width: 1.5rem;
+    text-align: right;
+    font-weight: 500;
+  }
+  .vote-bar {
+    height: 4px;
+    width: 60px;
+    background: var(--surface);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .vote-bar-fill {
+    height: 100%;
+    background: var(--amber);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .vote-btn {
+    background: transparent;
+    border: 1px solid var(--amber-dim);
+    color: var(--amber);
+    font-size: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .vote-btn:hover { background: rgba(232,160,32,0.15); }
+  .vote-btn.voted {
+    background: var(--amber);
+    color: var(--bg);
+    border-color: var(--amber);
+  }
+
+  .winner-banner {
+    background: linear-gradient(135deg, rgba(232,160,32,0.15), rgba(245,192,80,0.08));
+    border: 1px solid var(--amber);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    text-align: center;
+    margin-top: 0.8rem;
+    display: none;
+  }
+  .winner-banner.show { display: block; animation: slideIn 0.3s ease; }
+  .winner-banner .winner-label {
+    font-size: 0.7rem;
+    color: var(--amber-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+  .winner-banner .winner-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--amber-light);
+  }
+
+  .vote-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* History */
+  .history-section {
+    border-top: 1px solid var(--border);
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+  }
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(232,160,32,0.08);
+    font-size: 0.78rem;
+  }
+  .history-date { color: var(--cream-dim); }
+  .history-pub { color: var(--amber-light); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--amber);
+    color: var(--bg);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 640px) {
+    .layout { grid-template-columns: 1fr; }
+    .panel { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Kam na pivo?</h1>
+  <p class="subtitle">Drag & drop hospodský průvodce</p>
+</header>
+
+<div class="layout">
+  <!-- LEFT: PUB LIST -->
+  <div class="panel">
+    <div class="panel-title"><span>🏠</span> Moje hospody</div>
+    <div class="add-form">
+      <input type="text" id="newPubInput" placeholder="Název hospody..." maxlength="50">
+      <button class="btn" onclick="addPub()">+ Přidat</button>
+    </div>
+    <div class="pub-list" id="pubList">
+      <!-- pubs rendered here -->
+    </div>
+  </div>
+
+  <!-- RIGHT: VOTING -->
+  <div class="panel">
+    <div class="panel-title"><span>🗳️</span> Hlasování</div>
+
+    <div class="vote-date-row">
+      <input type="date" id="voteDate">
+      <button class="btn secondary" onclick="startNewVote()">Nové hlasování</button>
+      <button class="btn danger" onclick="clearVote()">Smazat</button>
+    </div>
+
+    <div class="vote-candidates" id="voteDropZone"
+      ondragover="onDropZoneDragOver(event)"
+      ondragleave="onDropZoneDragLeave(event)"
+      ondrop="onDropZoneDrop(event)">
+      <div class="drop-hint" id="dropHint">
+        <span class="big">🍺</span>
+        Přetáhni sem hospodu z levého panelu
+      </div>
+      <div class="candidate-list" id="candidateList"></div>
+    </div>
+
+    <div class="winner-banner" id="winnerBanner">
+      <div class="winner-label">🏆 Vítěz dnešního večera</div>
+      <div class="winner-name" id="winnerName"></div>
+    </div>
+
+    <div class="vote-actions">
+      <button class="btn" onclick="pickWinner()">Vyhlásit vítěze</button>
+      <button class="btn secondary" onclick="saveToHistory()">Uložit do historie</button>
+    </div>
+
+    <div class="history-section" id="historySection" style="display:none">
+      <div class="panel-title" style="margin-bottom:0.8rem"><span>📜</span> Historie</div>
+      <div id="historyList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PUB_EMOJIS = ['🍺','🍻','🥃','🍷','🥂','🍸','🍹','🫗'];
+
+let pubs = JSON.parse(localStorage.getItem('pubs') || '[]');
+let vote = JSON.parse(localStorage.getItem('currentVote') || '{"candidates":[],"votes":{}}');
+let history = JSON.parse(localStorage.getItem('voteHistory') || '[]');
+let dragSrcId = null;
+let dragOverId = null;
+
+// === INIT ===
+document.getElementById('voteDate').value = vote.date || today();
+renderPubs();
+renderCandidates();
+renderHistory();
+
+function today() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function save() {
+  localStorage.setItem('pubs', JSON.stringify(pubs));
+  localStorage.setItem('currentVote', JSON.stringify(vote));
+  localStorage.setItem('voteHistory', JSON.stringify(history));
+}
+
+// === PUBS ===
+function addPub() {
+  const input = document.getElementById('newPubInput');
+  const name = input.value.trim();
+  if (!name) return;
+  if (pubs.find(p => p.name.toLowerCase() === name.toLowerCase())) {
+    toast('Taková hospoda už existuje!'); return;
+  }
+  const pub = {
+    id: Date.now().toString(),
+    name,
+    emoji: PUB_EMOJIS[Math.floor(Math.random() * PUB_EMOJIS.length)]
+  };
+  pubs.push(pub);
+  input.value = '';
+  save();
+  renderPubs();
+  toast(`Přidána hospoda "${name}"`);
+}
+
+function deletePub(id) {
+  pubs = pubs.filter(p => p.id !== id);
+  vote.candidates = vote.candidates.filter(c => c !== id);
+  if (vote.votes) delete vote.votes[id];
+  save();
+  renderPubs();
+  renderCandidates();
+}
+
+function renderPubs() {
+  const list = document.getElementById('pubList');
+  if (pubs.length === 0) {
+    list.innerHTML = '<div class="empty-hint">Zatím žádné hospody.<br>Přidej svou první oblíbenou!</div>';
+    return;
+  }
+  list.innerHTML = '';
+  pubs.forEach((pub, i) => {
+    const card = document.createElement('div');
+    card.className = 'pub-card';
+    card.draggable = true;
+    card.dataset.id = pub.id;
+    card.innerHTML = `
+      <span class="drag-handle">⠿</span>
+      <span class="pub-emoji">${pub.emoji}</span>
+      <span class="pub-name">${esc(pub.name)}</span>
+      <div class="pub-actions">
+        <button class="btn secondary" style="padding:0.25rem 0.6rem;font-size:0.72rem" onclick="addToVote('${pub.id}')">+ Hlasovat</button>
+        <button class="btn danger" onclick="deletePub('${pub.id}')">✕</button>
+      </div>
+    `;
+    // drag events
+    card.addEventListener('dragstart', e => {
+      dragSrcId = pub.id;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', pub.id);
+      setTimeout(() => card.classList.add('dragging'), 0);
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      dragSrcId = null;
+      // clear drag-over on all
+      document.querySelectorAll('.pub-card').forEach(c => c.classList.remove('drag-over'));
+    });
+    // reorder within list
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragSrcId && dragSrcId !== pub.id) {
+        document.querySelectorAll('.pub-card').forEach(c => c.classList.remove('drag-over'));
+        card.classList.add('drag-over');
+        dragOverId = pub.id;
+      }
+    });
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (dragSrcId && dragSrcId !== pub.id) {
+        reorderPubs(dragSrcId, pub.id);
+      }
+    });
+    list.appendChild(card);
+  });
+}
+
+function reorderPubs(srcId, targetId) {
+  const srcIdx = pubs.findIndex(p => p.id === srcId);
+  const tgtIdx = pubs.findIndex(p => p.id === targetId);
+  if (srcIdx < 0 || tgtIdx < 0) return;
+  const [removed] = pubs.splice(srcIdx, 1);
+  pubs.splice(tgtIdx, 0, removed);
+  save();
+  renderPubs();
+}
+
+// === VOTE DROP ZONE ===
+function onDropZoneDragOver(e) {
+  e.preventDefault();
+  document.getElementById('voteDropZone').classList.add('drop-active');
+}
+function onDropZoneDragLeave(e) {
+  if (!e.currentTarget.contains(e.relatedTarget)) {
+    document.getElementById('voteDropZone').classList.remove('drop-active');
+  }
+}
+function onDropZoneDrop(e) {
+  e.preventDefault();
+  document.getElementById('voteDropZone').classList.remove('drop-active');
+  const id = e.dataTransfer.getData('text/plain');
+  if (id) addToVote(id);
+}
+
+function addToVote(pubId) {
+  if (vote.candidates.includes(pubId)) {
+    toast('Tato hospoda je už v hlasování'); return;
+  }
+  vote.candidates.push(pubId);
+  if (!vote.votes) vote.votes = {};
+  vote.votes[pubId] = vote.votes[pubId] || 0;
+  save();
+  renderCandidates();
+  const pub = pubs.find(p => p.id === pubId);
+  if (pub) toast(`${pub.emoji} ${pub.name} přidána do hlasování`);
+}
+
+function removeFromVote(pubId) {
+  vote.candidates = vote.candidates.filter(c => c !== pubId);
+  delete vote.votes[pubId];
+  save();
+  renderCandidates();
+}
+
+function castVote(pubId) {
+  if (!vote.votes) vote.votes = {};
+  vote.votes[pubId] = (vote.votes[pubId] || 0) + 1;
+  save();
+  renderCandidates();
+}
+
+function renderCandidates() {
+  const list = document.getElementById('candidateList');
+  const hint = document.getElementById('dropHint');
+  const banner = document.getElementById('winnerBanner');
+  banner.classList.remove('show');
+
+  const candidates = vote.candidates
+    .map(id => pubs.find(p => p.id === id))
+    .filter(Boolean);
+
+  if (candidates.length === 0) {
+    hint.style.display = 'flex';
+    list.innerHTML = '';
+    return;
+  }
+  hint.style.display = 'none';
+
+  const maxVotes = Math.max(...candidates.map(c => vote.votes[c.id] || 0), 1);
+
+  list.innerHTML = '';
+  candidates.forEach(pub => {
+    const votes = vote.votes[pub.id] || 0;
+    const pct = maxVotes > 0 ? (votes / maxVotes) * 100 : 0;
+    const div = document.createElement('div');
+    div.className = 'candidate-card';
+    div.innerHTML = `
+      <span style="font-size:1.1rem">${pub.emoji}</span>
+      <span class="candidate-name">${esc(pub.name)}</span>
+      <div class="vote-bar-wrap">
+        <span class="vote-count">${votes}</span>
+        <div class="vote-bar"><div class="vote-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+      <button class="vote-btn" onclick="castVote('${pub.id}')">👍 Hlasovat</button>
+      <button class="btn danger" onclick="removeFromVote('${pub.id}')">✕</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function pickWinner() {
+  if (vote.candidates.length === 0) { toast('Nejprve přidej hospody do hlasování!'); return; }
+  const candidates = vote.candidates.map(id => pubs.find(p => p.id === id)).filter(Boolean);
+  const maxVotes = Math.max(...candidates.map(c => vote.votes[c.id] || 0));
+  const winners = candidates.filter(c => (vote.votes[c.id] || 0) === maxVotes);
+  const winner = winners[Math.floor(Math.random() * winners.length)];
+  document.getElementById('winnerName').textContent = `${winner.emoji} ${winner.name}`;
+  document.getElementById('winnerBanner').classList.add('show');
+  vote.winner = winner.id;
+  save();
+}
+
+function startNewVote() {
+  vote = { date: document.getElementById('voteDate').value, candidates: [], votes: {} };
+  document.getElementById('winnerBanner').classList.remove('show');
+  save();
+  renderCandidates();
+  toast('Nové hlasování zahájeno!');
+}
+
+function clearVote() {
+  if (!confirm('Smazat aktuální hlasování?')) return;
+  vote = { date: today(), candidates: [], votes: {} };
+  document.getElementById('winnerBanner').classList.remove('show');
+  document.getElementById('voteDate').value = today();
+  save();
+  renderCandidates();
+}
+
+function saveToHistory() {
+  const winner = vote.winner ? pubs.find(p => p.id === vote.winner) : null;
+  const date = document.getElementById('voteDate').value || today();
+  if (!winner) { toast('Nejprve vyhlás vítěze!'); return; }
+  history.unshift({ date, pub: winner.name, emoji: winner.emoji });
+  if (history.length > 20) history = history.slice(0, 20);
+  save();
+  renderHistory();
+  toast('Uloženo do historie 📜');
+}
+
+function renderHistory() {
+  const section = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+  if (history.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = history.map(h => `
+    <div class="history-item">
+      <span class="history-date">${h.date}</span>
+      <span class="history-pub">${h.emoji} ${esc(h.pub)}</span>
+    </div>
+  `).join('');
+}
+
+// === UTILS ===
+document.getElementById('newPubInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addPub();
+});
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
