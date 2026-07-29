@@ -1,3 +1,4 @@
+<!-- pasmo build 202607291527 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -931,7 +932,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout;
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291527";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
