@@ -1,4 +1,4 @@
-<!-- pasmo build 202607291720 -->
+<!-- pasmo build 202607291738 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -100,7 +100,19 @@
   #rozsudek .os2{ color:var(--slabe); font-style:italic; text-align:right }
   #rozsudek .ja{ font-size:16.5px; color:var(--papir); margin:2px 0 10px }
   #stampKonec{ display:inline-block; margin:2px 0 10px; padding:3px 12px; border:3px solid #c0392b; border-radius:3px;
-    color:#c0392b; font:bold 19px var(--stroj); letter-spacing:.14em; text-transform:uppercase; transform:rotate(-6deg) }
+    color:#c0392b; font:bold 19px var(--stroj); letter-spacing:.14em; text-transform:uppercase; transform:rotate(-6deg);
+    animation:dosednuti .26s ease-out }
+  @keyframes dosednuti{ 0%{ transform:rotate(-6deg) scale(1.55); opacity:0 } 55%{ opacity:1 } 100%{ transform:rotate(-6deg) scale(1) } }
+
+  /* dozvuk rozhodnutí se připisuje pod text téže karty (kurzívou jako dřív) */
+  .pripis{ margin-top:12px; font-style:italic; color:#4f4636; animation:pripisNaskok .25s ease-out }
+  body.noc .pripis{ color:#cdbf9f }
+  @keyframes pripisNaskok{ from{ opacity:0 } to{ opacity:1 } }
+  /* přetisk „xx" přes dnešek — jen při živém škrtnutí, ne při překreslení */
+  .den.cerstvy::after{ animation:pretisk .3s ease-out }
+  @keyframes pretisk{ from{ opacity:0 } to{ opacity:1 } }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important } }
   #jazyk{ position:absolute; top:calc(10px + env(safe-area-inset-top, 0px)); right:12px; z-index:7; font:10.5px "Courier New",monospace; letter-spacing:.08em;
     color:#b7ad97; background:rgba(20,16,10,.6); border:1px solid #2b241c; border-radius:2px; padding:3px 9px; cursor:pointer; user-select:none }
   #jazyk:hover{ color:#e7dfce; border-color:#b7ad97 }
@@ -286,7 +298,28 @@ const KAL=["PO","ÚT","ST","ČT","PÁ"], TYDNY=["TÝDEN PRVNÍ","TÝDEN DRUHÝ"]
 function hlava(){ $("tydenSlovo").textContent=TYDNY[S.t-1]; $("cislo").textContent="č. j. PS-117/52";
   $("kalendar").innerHTML=KAL.map((d,i)=>`<span class="den${i<S.i?" skrt":i===S.i?" dnes":""}">${d}</span>`).join("");
   $("hlava").style.display="block"; }
-function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{e.className=re?"re":"";e.innerHTML=t;e.style.opacity=1;},150); }
+function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{e.className=re?"re":"";e.innerHTML=t;$("telo").scrollTop=0;e.style.opacity=1;},150); }
+
+/* psací stroj — otázky a reakce u výslechu se vypisují znak po znaku; tap nebo tah dopíše hned */
+const MENE_POHYBU = typeof matchMedia!=="undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+let psani=null;
+function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(fn){fn();}}; }
+  let i=0; psani={el,t,done:null,tik:setInterval(()=>{ i++; el.textContent=t.slice(0,i);
+    if(i%12===0)$("telo").scrollTop=$("telo").scrollHeight;
+    if(i>=t.length){ clearInterval(psani.tik); const d=psani.done; psani=null; if(d)d(); } },28)};
+  return {pak(fn){ if(psani&&psani.el===el)psani.done=fn; else fn(); }}; }
+function dopisHned(){ if(!psani)return; clearInterval(psani.tik); psani.el.textContent=psani.t; const d=psani.done; psani=null; if(d)d(); }
+
+/* dozvuk na téže kartě: připíše se pod text a sroluje do záběru (u výslechu psaný strojem) */
+function pripis(t,typuj){ const e=$("text");
+  if(!document.createElement){ e.innerHTML+="\n\n"+t; return; }   // headless šim (test/persony.js)
+  const d=document.createElement("div"); d.className="pripis"; e.appendChild(d);
+  const dolu=()=>{ const telo=$("telo"); telo.scrollTo?telo.scrollTo({top:telo.scrollHeight,behavior:"smooth"}):telo.scrollTop=telo.scrollHeight; };
+  if(typuj){ pis(d,t).pak(dolu); } else d.textContent=t;
+  (typeof requestAnimationFrame!=="undefined"?requestAnimationFrame:f=>f())(dolu); }
+
+function skrtniDnes(){ if(!document.querySelector) return;
+  const d=document.querySelector("#kalendar .den.dnes"); if(d)d.classList.add("skrt","cerstvy"); }
 function volbyRe(txt){ hintTxt={l:txt,p:txt}; $("napoveda").textContent=txt+" - táhni kterýmkoli směrem"; }
 function volbyDve(hint){ $("napoveda").textContent=hint; }
 
@@ -309,8 +342,10 @@ function renderPrep(){ const k=S.prep[S.i];
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`sobota, výslech ${S.t}. týdne, otázka ${S.i+1} z ${S.karty.length}`;
-  merky(); textCross(q.ot,false); hintTxt={l:"ZAPŘU - nebyl jsem tam",p:"PŘIZNÁM - ano, byl"};
-  volbyDve("rychle - vlevo zapřu, vpravo přiznám"); S.vahal=false; spustCas();
+  merky(); hintTxt={l:"ZAPŘU - nebyl jsem tam",p:"PŘIZNÁM - ano, byl"};
+  volbyDve("rychle - vlevo zapřu, vpravo přiznám"); S.vahal=false;
+  const e=$("text"); e.className=""; e.textContent=""; $("telo").scrollTop=0;
+  pis(e,q.ot).pak(spustCas);   // otázka se píše na stroji; čas běží až od dopsání (tap dopíše hned)
 }
 
 /* ---------- týden ---------- */
@@ -318,7 +353,7 @@ function prepVyber(strana){ const k=S.prep[S.i], s=(strana==="l"?k.l:k.p);
   S.mam[k.need]=strana;
   S.stopy.push({need:k.need,kdo:s.kdo,typ:s.typ,usv:k.usv,ot:s.ot,ch:s.ch,strana,t:S.t});
   zaloguj({ev:"prep", tyden:S.t, potreba:k.need, volba:s.jm, kdo:s.kdo, typ:s.typ, usv:k.usv, solid:strana==="l"});
-  textCross(s.re,true);   // jen neutrální reakce — jestli po tobě zůstala stopa, zjistíš až u výslechu
+  pripis(s.re); skrtniDnes();   // jen neutrální reakce — jestli po tobě zůstala stopa, zjistíš až u výslechu
   volbyRe(S.i>=S.prep.length-1?"Přijde sobota":"Další den");
   S.faze="prep-re";
 }
@@ -373,7 +408,7 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=f
     $("nalada").textContent = S.vera>40?"Zvedl oči od papírů. Něco si připsal.":"Dívá se ti přímo do očí. Ví, že lžeš.";
     $("hra").classList.remove("zasah"); void $("hra").offsetWidth; $("hra").classList.add("zasah");
     $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls"); }
-  textCross(vysl,true); volbyRe(S.i>=S.karty.length-1?"Konec výslechu":"Další otázka"); S.faze="vyslech-re";
+  pripis(vysl,true); volbyRe(S.i>=S.karty.length-1?"Konec výslechu":"Další otázka"); S.faze="vyslech-re";
 }
 function vyslechDal(){ if(S.vera<=0) return finale("zatcen","vera"); if(S.spis>=PRAH_SPIS) return finale("zatcen","spis");
   S.i++; if(S.i<S.karty.length){S.faze="vyslech"; return render();} return vyslechSouhrn(); }
@@ -442,7 +477,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
   const fl=["Ticho. Prošel jsi.","Dech zadržený — a je to za tebou.","Nikdo. Jdeš dál.","Srdce až v krku, ale kolem klid."][S.i%4];
-  textCross(fl,true); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
+  pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš) — pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
@@ -504,21 +539,36 @@ function swipe(side, fn){ if(anim) return; anim=true; const k=$("karta");
   setTimeout(()=>{ fn(); k.style.transition="none"; k.style.transform="translateX(14%)"; k.style.opacity="0"; void k.offsetWidth;
     k.style.transition="transform .22s ease, opacity .22s ease"; k.style.transform="translateX(0)"; k.style.opacity="1"; anim=false; },260);
 }
+/* volba, po které karta zůstává: nakloní se na zvolenou stranu, dozvuk se připíše, karta dosedne zpět.
+   Když rozuzlení přepíše celou obrazovku (konec hry), dokončí se odhoz jako u běžného swipu. */
+function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(null);
+  k.style.transition="transform .13s ease-out";
+  k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`;
+  setTimeout(()=>{ fn();
+    if(S.faze==="konec"){
+      k.style.transition="transform .2s ease, opacity .2s"; k.style.transform=`translateX(${side==="l"?-135:135}%)`; k.style.opacity="0";
+      setTimeout(()=>{ k.style.transition="none"; k.style.transform="translateX(14%)"; void k.offsetWidth;
+        k.style.transition="transform .22s ease, opacity .22s"; k.style.transform="translateX(0)"; k.style.opacity="1"; anim=false; },200);
+      return; }
+    k.style.transition="transform .18s ease"; k.style.transform="translateX(0)"; setTimeout(()=>{anim=false;},180); },130);
+}
 function hint(side){ const L=$("hintL"),P=$("hintP"); L.textContent=hintTxt.l; P.textContent=hintTxt.p;
   L.style.opacity=side==="l"?1:0; P.style.opacity=side==="p"?1:0; }
 
 // co udělá tažení podle fáze
 function act(side){
   if(anim) return;
-  if(S.faze==="prep") return swipe(side, ()=>prepVyber(side));
-  if(S.faze==="vyslech") return swipe(side, ()=>vyslechVyber(side));
-  // fáze, kde swipe jen posouvá dál:
+  dopisHned();
+  // volby: karta zůstává, dozvuk se připíše pod text
+  if(S.faze==="prep") return potvrd(side, ()=>prepVyber(side));
+  if(S.faze==="vyslech") return potvrd(side, ()=>vyslechVyber(side));
+  if(S.faze==="prechod") return potvrd(side, ()=>prechodVyber(side));
+  // fáze, kde swipe posouvá na další kartu:
   if(S.faze==="intro") return swipe(side, ()=>{ S.introI++; if(S.introI<INTRO.length) render(); else spustTyden(); });
   if(S.faze==="prep-re") return swipe(side, prepDal);
   if(S.faze==="vyslech-intro") return swipe(side, ()=>{ if(!S.karty.length) return vyslechSouhrn(); S.faze="vyslech"; render(); });
   if(S.faze==="vyslech-re") return swipe(side, vyslechDal);
   if(S.faze==="vyslech-souhrn") return swipe(side, vyslechSouhrnDal);
-  if(S.faze==="prechod") return swipe(side, ()=>prechodVyber(side));
   if(S.faze==="prechod-intro") return swipe(side, ()=>{ S.faze="prechod"; render(); });
   if(S.faze==="prechod-re") return swipe(side, prechodDal);
   if(S.faze==="konec") return swipe(side, nova);
@@ -535,7 +585,7 @@ function tahniKartu(dx){ const k=$("karta");
   hint(Math.abs(dx)<25?null:(dx<0?"l":"p")); }
 function vratKartu(){ const k=$("karta");
   k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
-function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else vratKartu(); }
+function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else { if(Math.abs(dx)<8) dopisHned(); vratKartu(); } }
 
 /* dotyk — jeviště má touch-action:none, gesto je celé naše: vodorovně karta, svisle ruční scroll textu */
 jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
@@ -710,7 +760,28 @@ const KAL=["MO","TU","WE","TH","FR"], TYDNY=["WEEK ONE","WEEK TWO"];
 function hlava(){ $("tydenSlovo").textContent=TYDNY[S.t-1]; $("cislo").textContent="ref. no. PS-117/52";
   $("kalendar").innerHTML=KAL.map((d,i)=>`<span class="den${i<S.i?" skrt":i===S.i?" dnes":""}">${d}</span>`).join("");
   $("hlava").style.display="block"; }
-function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{e.className=re?"re":"";e.innerHTML=t;e.style.opacity=1;},150); }
+function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{e.className=re?"re":"";e.innerHTML=t;$("telo").scrollTop=0;e.style.opacity=1;},150); }
+
+/* psací stroj — otázky a reakce u výslechu se vypisují znak po znaku; tap nebo tah dopíše hned */
+const MENE_POHYBU = typeof matchMedia!=="undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+let psani=null;
+function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(fn){fn();}}; }
+  let i=0; psani={el,t,done:null,tik:setInterval(()=>{ i++; el.textContent=t.slice(0,i);
+    if(i%12===0)$("telo").scrollTop=$("telo").scrollHeight;
+    if(i>=t.length){ clearInterval(psani.tik); const d=psani.done; psani=null; if(d)d(); } },28)};
+  return {pak(fn){ if(psani&&psani.el===el)psani.done=fn; else fn(); }}; }
+function dopisHned(){ if(!psani)return; clearInterval(psani.tik); psani.el.textContent=psani.t; const d=psani.done; psani=null; if(d)d(); }
+
+/* dozvuk na téže kartě: připíše se pod text a sroluje do záběru (u výslechu psaný strojem) */
+function pripis(t,typuj){ const e=$("text");
+  if(!document.createElement){ e.innerHTML+="\n\n"+t; return; }   // headless šim (test/persony.js)
+  const d=document.createElement("div"); d.className="pripis"; e.appendChild(d);
+  const dolu=()=>{ const telo=$("telo"); telo.scrollTo?telo.scrollTo({top:telo.scrollHeight,behavior:"smooth"}):telo.scrollTop=telo.scrollHeight; };
+  if(typuj){ pis(d,t).pak(dolu); } else d.textContent=t;
+  (typeof requestAnimationFrame!=="undefined"?requestAnimationFrame:f=>f())(dolu); }
+
+function skrtniDnes(){ if(!document.querySelector) return;
+  const d=document.querySelector("#kalendar .den.dnes"); if(d)d.classList.add("skrt","cerstvy"); }
 function volbyRe(txt){ hintTxt={l:txt,p:txt}; $("napoveda").textContent=txt+" - swipe either way"; }
 function volbyDve(hint){ $("napoveda").textContent=hint; }
 
@@ -733,8 +804,10 @@ function renderPrep(){ const k=S.prep[S.i];
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`Saturday, interrogation, week ${S.t}, question ${S.i+1} of ${S.karty.length}`;
-  merky(); textCross(q.ot,false); hintTxt={l:"DENY - I was never there",p:"ADMIT - yes, I was"};
-  volbyDve("quick - left denies, right admits"); S.vahal=false; spustCas();
+  merky(); hintTxt={l:"DENY - I was never there",p:"ADMIT - yes, I was"};
+  volbyDve("quick - left denies, right admits"); S.vahal=false;
+  const e=$("text"); e.className=""; e.textContent=""; $("telo").scrollTop=0;
+  pis(e,q.ot).pak(spustCas);   // otázka se píše na stroji; čas běží až od dopsání (tap dopíše hned)
 }
 
 /* ---------- týden ---------- */
@@ -742,7 +815,7 @@ function prepVyber(strana){ const k=S.prep[S.i], s=(strana==="l"?k.l:k.p);
   S.mam[k.need]=strana;
   S.stopy.push({need:k.need,kdo:s.kdo,typ:s.typ,usv:k.usv,ot:s.ot,ch:s.ch,strana,t:S.t});
   zaloguj({ev:"prep", tyden:S.t, potreba:k.need, volba:s.jm, kdo:s.kdo, typ:s.typ, usv:k.usv, solid:strana==="l"});
-  textCross(s.re,true);   // jen neutrální reakce — jestli po tobě zůstala stopa, zjistíš až u výslechu
+  pripis(s.re); skrtniDnes();   // jen neutrální reakce — jestli po tobě zůstala stopa, zjistíš až u výslechu
   volbyRe(S.i>=S.prep.length-1?"Saturday comes":"Next day");
   S.faze="prep-re";
 }
@@ -797,7 +870,7 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=f
     $("nalada").textContent = S.vera>40?"He looked up from the papers. Made a note.":"He looks you straight in the eye. He knows you are lying.";
     $("hra").classList.remove("zasah"); void $("hra").offsetWidth; $("hra").classList.add("zasah");
     $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls"); }
-  textCross(vysl,true); volbyRe(S.i>=S.karty.length-1?"End of interrogation":"Next question"); S.faze="vyslech-re";
+  pripis(vysl,true); volbyRe(S.i>=S.karty.length-1?"End of interrogation":"Next question"); S.faze="vyslech-re";
 }
 function vyslechDal(){ if(S.vera<=0) return finale("zatcen","vera"); if(S.spis>=PRAH_SPIS) return finale("zatcen","spis");
   S.i++; if(S.i<S.karty.length){S.faze="vyslech"; return render();} return vyslechSouhrn(); }
@@ -866,7 +939,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
   const fl=["Silence. You are through.","Breath held — and it is behind you.","Nobody. You move on.","Heart in your throat, but all quiet."][S.i%4];
-  textCross(fl,true); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
+  pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš) — pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
@@ -928,21 +1001,36 @@ function swipe(side, fn){ if(anim) return; anim=true; const k=$("karta");
   setTimeout(()=>{ fn(); k.style.transition="none"; k.style.transform="translateX(14%)"; k.style.opacity="0"; void k.offsetWidth;
     k.style.transition="transform .22s ease, opacity .22s ease"; k.style.transform="translateX(0)"; k.style.opacity="1"; anim=false; },260);
 }
+/* volba, po které karta zůstává: nakloní se na zvolenou stranu, dozvuk se připíše, karta dosedne zpět.
+   Když rozuzlení přepíše celou obrazovku (konec hry), dokončí se odhoz jako u běžného swipu. */
+function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(null);
+  k.style.transition="transform .13s ease-out";
+  k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`;
+  setTimeout(()=>{ fn();
+    if(S.faze==="konec"){
+      k.style.transition="transform .2s ease, opacity .2s"; k.style.transform=`translateX(${side==="l"?-135:135}%)`; k.style.opacity="0";
+      setTimeout(()=>{ k.style.transition="none"; k.style.transform="translateX(14%)"; void k.offsetWidth;
+        k.style.transition="transform .22s ease, opacity .22s"; k.style.transform="translateX(0)"; k.style.opacity="1"; anim=false; },200);
+      return; }
+    k.style.transition="transform .18s ease"; k.style.transform="translateX(0)"; setTimeout(()=>{anim=false;},180); },130);
+}
 function hint(side){ const L=$("hintL"),P=$("hintP"); L.textContent=hintTxt.l; P.textContent=hintTxt.p;
   L.style.opacity=side==="l"?1:0; P.style.opacity=side==="p"?1:0; }
 
 // co udělá tažení podle fáze
 function act(side){
   if(anim) return;
-  if(S.faze==="prep") return swipe(side, ()=>prepVyber(side));
-  if(S.faze==="vyslech") return swipe(side, ()=>vyslechVyber(side));
-  // fáze, kde swipe jen posouvá dál:
+  dopisHned();
+  // volby: karta zůstává, dozvuk se připíše pod text
+  if(S.faze==="prep") return potvrd(side, ()=>prepVyber(side));
+  if(S.faze==="vyslech") return potvrd(side, ()=>vyslechVyber(side));
+  if(S.faze==="prechod") return potvrd(side, ()=>prechodVyber(side));
+  // fáze, kde swipe posouvá na další kartu:
   if(S.faze==="intro") return swipe(side, ()=>{ S.introI++; if(S.introI<INTRO.length) render(); else spustTyden(); });
   if(S.faze==="prep-re") return swipe(side, prepDal);
   if(S.faze==="vyslech-intro") return swipe(side, ()=>{ if(!S.karty.length) return vyslechSouhrn(); S.faze="vyslech"; render(); });
   if(S.faze==="vyslech-re") return swipe(side, vyslechDal);
   if(S.faze==="vyslech-souhrn") return swipe(side, vyslechSouhrnDal);
-  if(S.faze==="prechod") return swipe(side, ()=>prechodVyber(side));
   if(S.faze==="prechod-intro") return swipe(side, ()=>{ S.faze="prechod"; render(); });
   if(S.faze==="prechod-re") return swipe(side, prechodDal);
   if(S.faze==="konec") return swipe(side, nova);
@@ -959,7 +1047,7 @@ function tahniKartu(dx){ const k=$("karta");
   hint(Math.abs(dx)<25?null:(dx<0?"l":"p")); }
 function vratKartu(){ const k=$("karta");
   k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
-function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else vratKartu(); }
+function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else { if(Math.abs(dx)<8) dopisHned(); vratKartu(); } }
 
 /* dotyk — jeviště má touch-action:none, gesto je celé naše: vodorovně karta, svisle ruční scroll textu */
 jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
@@ -995,7 +1083,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291720";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291738";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
