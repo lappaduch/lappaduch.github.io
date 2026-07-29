@@ -1,4 +1,4 @@
-<!-- pasmo build 202607291759 -->
+<!-- pasmo build 202607291802 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -166,7 +166,7 @@ const NEED=[
  {t:1,need:"peníze",usv:false,img:"vlak.png",scena:"nádraží",
   uvod:"V zásuvce pod prádlem máš dvě stě třicet korun a v duchu počítáš: převaděč, jízdenka, stovka do správné dlaně. Vychází to černě, ať to skládáš jakkoli. Bez peněz se nehneš z místa.",
   lPool:[
-   {kdo:"zdena",jm:"teta Zdena",rod:"z",typ:"svedek",talk:.4,pitch:"Teta Zdena ti po mši stiskla ruku, ať se kdykoli ozveš — rodina je rodina. Důchod si skládá do plechovky od cikorky a každé ráno s babkami na lavičce u kostela proberou celé město.",re:"Vtiskla ti do dlaně svinuté bankovky.",ot:"„Půjčila Vám teta Zdena peníze?“",otO:"„Půjčil Vám někdo v poslední době peníze?“",ch:"„Vaše teta to potvrdila.“"},
+   {kdo:"zdena",jm:"teta Zdena",rod:"z",typ:"svedek",talk:.4,pitch:"Teta Zdena ti po mši stiskla ruku, ať se kdykoli ozveš — rodina je rodina. Důchod si skládá do plechovky od cikorky a každé ráno s babkami na lavičce u kostela proberou celé město.",re:"Vtiskla ti do dlaně svinuté bankovky.",ot:"„Půjčila Vám teta Zdena peníze?“",otO:"„Nějak jste si polepšil, slyšíme. Půjčil Vám někdo?“",ch:"„Vaše teta to potvrdila.“"},
    {kdo:"vavra",jm:"kmotr Vávra",rod:"m",typ:"svedek",talk:.5,pitch:"Kmotr Vávra má vždycky pár stovek stranou. Večer co večer sedí U Lípy nad třetím pivem, hraje mariáš a s každým, kdo si přisedne, se dá do řeči; půlka hospody mu říká strejdo.",re:"Odpočítal bankovky pod stolem.",ot:"„Bral jste peníze od Vávry?“",otO:"„Hrál jste minulý týden mariáš U Lípy?“",ch:"„Vávra o Vás mluvil.“"}],
   pPool:[
    {kdo:"vekslak",jm:"překupník",rod:"m",typ:"cisty",pitch:"Anebo překupník z nádraží — postává u stánku s límcem nahoru, koupí i prodá beze slova a bez jména. Nikdo neví, kde bydlí, a nikoho to nezajímá.",re:"Přepočítal a zmizel v davu.",ot:"„Prodal jste něco překupníkovi na nádraží?“",ch:""},
@@ -176,7 +176,7 @@ const NEED=[
   uvod:"Na dílně se od rána drbe, koho zase kde sebrali. Děláš, že posloucháš vrtačku, a myslíš na jediné — štípačky na ostnatý drát. Ve skladu jich leží celá police; v krámě takové nekoupíš.",
   lPool:[
    {kdo:"dolezal",jm:"mistr Doležal",rod:"m",typ:"papir",pitch:"O pauze se dvorem loudá mistr Doležal, klíče u pasu, párátko v zubech. Co se ve skladu šustne, jde přes něj. Stačilo by říct — zabručel by, přisunul knihu výdejů, naslinil tužku, tady podpis, a šel si po svých.",re:"Beze slova zamkl.",ot:"„Byl jste ve skladu u mistra Doležala?“",otO:"„Zdržel jste se v továrně po směně?“",ch:"„Tady je Vaše jméno v knize.“"},
-   {kdo:"kriz",jm:"zámečník Kříž",rod:"m",typ:"papir",pitch:"Zámečník Kříž na náměstí by je měl taky. Pořádkumilovný pavouk — každou zakázku vypíše na lístek a večer založí do knihy; zato práci odvede a klíče mu svěřuje půl města.",re:"Zabalil je do naolejovaného papíru.",ot:"„Objednal jste si něco u zámečníka Kříže?“",otO:"„Nechával jste si něco dělat u řemeslníka?“",ch:"„Máme lístek z jeho knihy.“"}],
+   {kdo:"kriz",jm:"zámečník Kříž",rod:"m",typ:"papir",pitch:"Zámečník Kříž na náměstí by je měl taky. Pořádkumilovný pavouk — každou zakázku vypíše na lístek a večer založí do knihy; zato práci odvede a klíče mu svěřuje půl města.",re:"Zabalil je do naolejovaného papíru.",ot:"„Objednal jste si něco u zámečníka Kříže?“",otO:"„Objednával jste si poslední dobou nějakou práci? U zámečníka, třeba.“",ch:"„Máme lístek z jeho knihy.“"}],
   pPool:[
    {kdo:"pepik",jm:"Pepík z dílny",rod:"m",typ:"svedek",talk:.52,pitch:"Anebo Pepík od ponku. Cigareta se mu chvěje v prstech — co mu zavřeli bratra, trhne sebou při každém bouchnutí dveří. Pošeptal ti, že by je vynesl v hadru mezi svačinami. Pak celý den klopil oči.",re:"Podal ti je v hadru, ruce se třásly.",ot:"„Vzal jste si nářadí od Pepíka?“",otO:"„Byl jste po směně ještě v dílně?“",ch:"„Pepík Vás viděl.“"},
    {kdo:"tonik",jm:"učeň Toník",rod:"m",typ:"svedek",talk:.56,pitch:"Anebo učeň Toník — vynesl by je pod kabátem s rozzářenýma očima, konečně dobrodružství jak z rodokapsů. Šikovné ruce, dobré srdce, jazyk rychlejší než rozum.",re:"Strčil ti je pod kabát a mrkl.",ot:"„Dal Vám nářadí učeň z dílny?“",otO:"„Chodí za Vámi někdo z učňů?“",ch:"„Ten kluk se pochlubil.“"}]},
@@ -403,15 +403,15 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=f
   if(!q.reask) S.otazky[q.need+q.str]={ot:q.ot,k:!!q.konkretni};   // zapamatuj formulaci pro případný reask
   if(q.reask){ const kl=q.need+q.str, ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat — v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
-      vysl=S.dokazano[kl]?"„Tohle máme v protokolu. Dokázané. A Vy to přede mnou dál zapíráte.“":"„Minule jste to říkal jinak.“  Rozpor — a to jim stačí.";}
+      vysl=S.dokazano[kl]?"„Tohle máme v protokolu. Dokázané. A Vy to přede mnou dál zapíráte.“":"„Minule jste to říkal jinak.“ Listoval zpátky a četl si to dvakrát.";}
     else vysl=S.dokazano[kl]?"„No proto. Aspoň už nezapíráte, co víme oba.“":"Držíš se své verze slovo od slova. „...dobře.“";
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[q.need+q.str]=strana;
-    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;vysl=q.ch+"  — usvědčili tě.";} else vysl="Ticho. „...dobře.“ Prošlo to."; }
+    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;vysl=q.ch+" Ani se nezlobil. Jen si to zapsal.";} else vysl="Ticho. Pak: „Dobře.“ Píše dál."; }
   else { S.reklJsem[q.need+q.str]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal — na falešné přiznání věci, co se nestala, nemají důkaz
-    if(q.usv&&q.pouzito){S.spis++;vysl="Psací stroj klapl. Zapsáno — a mají další kus.";} else vysl="Psací stroj klapl. Zapsáno."; }
+    if(q.usv&&q.pouzito){S.spis++;vysl="Psací stroj klapl. Zapsáno. Tenhle list si podtrhl.";} else vysl="Psací stroj klapl. Zapsáno."; }
   zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[q.need+q.str],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
@@ -428,7 +428,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
   const raz=S.razitkaTyden||0, spisNew=S.spis-(S.spisPred||0);
   obraz("dokumenty.png"); $("mery").style.display=""; merky(); $("scena").textContent=`konec výslechu ${S.t}. týdne`;
   let t;
-  if(raz===0&&spisNew===0) t="Vyšetřovatel zaklapl desky. „Zatím běžte.“\n\nNezavadil o nic — vyšels z toho čistý.";
+  if(raz===0&&spisNew===0) t="Vyšetřovatel zaklapl desky. „Zatím běžte.“\n\nNezavadil o nic. Vyšels z toho čistý.";
   else{ const c=[];
     if(raz>0) c.push(raz===1?"Jednou tě chytil při lži":"Chytil tě "+raz+"x při lži");
     if(spisNew>0) c.push((raz>0?"a ":"")+(spisNew===1?"jednu věc máš teď zapsanou ve spisu":spisNew+" věci máš teď zapsané ve spisu"));
@@ -644,7 +644,7 @@ const NEED=[
  {t:1,need:"peníze",usv:false,img:"vlak.png",scena:"the station",
   uvod:"In the drawer under your linen lie two hundred and thirty crowns, and you keep counting: the guide, the ticket, a hundred for the right palm. It comes out short no matter how you stack it. Without money you are not going anywhere.",
   lPool:[
-   {kdo:"zdena",jm:"aunt Zdena",rod:"z",typ:"svedek",talk:.4,pitch:"Aunt Zdena squeezed your hand after Mass — come to her anytime, family is family. She keeps her pension in an old chicory tin, and every morning she sits with the other grannies on the bench by the church, going over the whole town.",re:"She pressed a roll of banknotes into your palm.",ot:"“Did your aunt Zdena lend you money?”",otO:"“Has anyone lent you money recently?”",ch:"“Your aunt confirmed it.”"},
+   {kdo:"zdena",jm:"aunt Zdena",rod:"z",typ:"svedek",talk:.4,pitch:"Aunt Zdena squeezed your hand after Mass — come to her anytime, family is family. She keeps her pension in an old chicory tin, and every morning she sits with the other grannies on the bench by the church, going over the whole town.",re:"She pressed a roll of banknotes into your palm.",ot:"“Did your aunt Zdena lend you money?”",otO:"„Nějak jste si polepšil, slyšíme. Půjčil Vám někdo?“",ch:"“Your aunt confirmed it.”"},
    {kdo:"vavra",jm:"uncle Vávra",rod:"m",typ:"svedek",talk:.5,pitch:"Uncle Vávra always has a few hundred set aside. Every evening he sits in the Linden Tavern over his third beer, playing cards and chatting with anyone who sits down; half the pub calls him uncle.",re:"He counted out the notes under the table.",ot:"“Did you take money from Vávra?”",otO:"“Did you play cards at the Linden last week?”",ch:"“Vávra talked about you.”"}],
   pPool:[
    {kdo:"vekslak",jm:"the dealer",rod:"m",typ:"cisty",pitch:"Or the dealer at the station — he loiters by the newsstand, collar up, buys and sells without a word or a name. Nobody knows where he lives, and nobody cares.",re:"He counted it and vanished into the crowd.",ot:"“Did you sell something to the dealer at the station?”",ch:""},
@@ -654,7 +654,7 @@ const NEED=[
   uvod:"The shop floor has been buzzing all morning about who got picked up where. You pretend to listen to the drill and think of one thing — cutters for barbed wire. There is a whole shelf of them in the storeroom; you will not buy those in a shop.",
   lPool:[
    {kdo:"dolezal",jm:"foreman Doležal",rod:"m",typ:"papir",pitch:"At the break, foreman Doležal ambles across the yard, keys on his belt, toothpick in his teeth. Nothing moves in that storeroom without him. You would only have to ask — he would grumble, slide the issue ledger across, lick his pencil, sign here, and go about his business.",re:"He locked up without a word.",ot:"“Were you in the storeroom with foreman Doležal?”",otO:"“Did you stay at the factory after your shift?”",ch:"“Here is your name in the ledger.”"},
-   {kdo:"kriz",jm:"locksmith Kříž",rod:"m",typ:"papir",pitch:"Locksmith Kříž on the square would have them too. A tidy old spider — every job gets its slip, filed into his book each evening; but his work is good, and half the town trusts him with their keys.",re:"He wrapped them in oiled paper.",ot:"“Did you order something from locksmith Kříž?”",otO:"“Have you had any work done by a tradesman?”",ch:"“We have the slip from his book.”"}],
+   {kdo:"kriz",jm:"locksmith Kříž",rod:"m",typ:"papir",pitch:"Locksmith Kříž on the square would have them too. A tidy old spider — every job gets its slip, filed into his book each evening; but his work is good, and half the town trusts him with their keys.",re:"He wrapped them in oiled paper.",ot:"“Did you order something from locksmith Kříž?”",otO:"„Objednával jste si poslední dobou nějakou práci? U zámečníka, třeba.“",ch:"“We have the slip from his book.”"}],
   pPool:[
    {kdo:"pepik",jm:"Pepík from the shop floor",rod:"m",typ:"svedek",talk:.52,pitch:"Or Pepík from the next bench. His cigarette trembles in his fingers — since they took his brother, he flinches at every slammed door. He whispered he would carry them out in a rag between the sandwiches. Then he kept his eyes down all day.",re:"He handed them over in a rag, hands shaking.",ot:"“Did you take tools from Pepík?”",otO:"“Were you in the workshop after hours?”",ch:"“Pepík saw you.”"},
    {kdo:"tonik",jm:"Toník the apprentice",rod:"m",typ:"svedek",talk:.56,pitch:"Or Toník the apprentice — he would smuggle them out under his coat with shining eyes, an adventure straight out of his pulp westerns. Clever hands, a good heart, a tongue faster than his head.",re:"He slipped them under your coat and winked.",ot:"“Did the apprentice give you tools?”",otO:"“Do any of the apprentices come to see you?”",ch:"“The boy bragged about it.”"}]},
@@ -881,15 +881,15 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=f
   if(!q.reask) S.otazky[q.need+q.str]={ot:q.ot,k:!!q.konkretni};   // zapamatuj formulaci pro případný reask
   if(q.reask){ const kl=q.need+q.str, ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat — v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
-      vysl=S.dokazano[kl]?"“We have this in the record. Proven. And you sit here denying it still.”":"“Last time you said it differently.”  A contradiction — and that is all they need.";}
+      vysl=S.dokazano[kl]?"“We have this in the record. Proven. And you sit here denying it still.”":"„Minule jste to říkal jinak.“ Listoval zpátky a četl si to dvakrát.";}
     else vysl=S.dokazano[kl]?"“There we are. At least you have stopped denying what we both know.”":"You hold to your version word for word. “...very well.”";
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[q.need+q.str]=strana;
-    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;vysl=q.ch+"  — they have got you.";} else vysl="Silence. “...very well.” It passed."; }
+    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;vysl=q.ch+" Ani se nezlobil. Jen si to zapsal.";} else vysl="Ticho. Pak: „Dobře.“ Píše dál."; }
   else { S.reklJsem[q.need+q.str]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal — na falešné přiznání věci, co se nestala, nemají důkaz
-    if(q.usv&&q.pouzito){S.spis++;vysl="The typewriter clacks. On the record — another piece for their case.";} else vysl="The typewriter clacks. On the record."; }
+    if(q.usv&&q.pouzito){S.spis++;vysl="Psací stroj klapl. Zapsáno. Tenhle list si podtrhl.";} else vysl="The typewriter clacks. On the record."; }
   zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[q.need+q.str],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
@@ -906,7 +906,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
   const raz=S.razitkaTyden||0, spisNew=S.spis-(S.spisPred||0);
   obraz("dokumenty.png"); $("mery").style.display=""; merky(); $("scena").textContent=`end of interrogation, week ${S.t}`;
   let t;
-  if(raz===0&&spisNew===0) t="The interrogator snapped the folder shut. “Go. For now.”\n\nHe caught on nothing — you walked out clean.";
+  if(raz===0&&spisNew===0) t="Vyšetřovatel zaklapl desky. „Zatím běžte.“\n\nNezavadil o nic. Vyšels z toho čistý.";
   else{ const c=[];
     if(raz>0) c.push(raz===1?"He caught you lying once":"He caught you lying "+raz+"x");
     if(spisNew>0) c.push((raz>0?"and ":"")+(spisNew===1?"one thing is now written into your file":spisNew+" things are now written into your file"));
@@ -1116,7 +1116,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291759";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291802";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
