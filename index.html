@@ -1,4 +1,4 @@
-<!-- pasmo build 202607291803 -->
+<!-- pasmo build 202607292107 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Pásmo — týden a výslech</title>
+<title>Pásmo: týden a výslech</title>
 <style>
   :root{ --papir:#e7dfce; --inkoust:#20180f; --cerv:#8a2b1e; --slabe:#b7ad97; --ram:#2b241c; --zvyr:#d8cdb4;
     --stroj:"Courier New","Consolas",monospace; }
@@ -45,6 +45,13 @@
   #obraz::after{ content:""; position:absolute; inset:0; box-shadow:inset 0 -46px 40px -20px #d6cdbb; }
   body.noc #obraz::after{ box-shadow:inset 0 -46px 40px -20px #0d0b08; }
   #telo{ flex:1 1 auto; padding:16px 20px 12px; display:flex; flex-direction:column; overflow-y:auto; }
+  /* vlastní scrollbar — tenká inkoustová linka místo systémového */
+  body{ scrollbar-width:thin; scrollbar-color:#a89e8a transparent }
+  body.noc{ scrollbar-color:#4a4136 transparent }
+  #telo::-webkit-scrollbar{ width:6px }
+  #telo::-webkit-scrollbar-track{ background:transparent }
+  #telo::-webkit-scrollbar-thumb{ background:#a89e8a }
+  body.noc #telo::-webkit-scrollbar-thumb{ background:#4a4136 }
   #text br{ content:""; display:block; margin-top:.5em }
   #scena{ font:11px var(--stroj); letter-spacing:.12em; text-transform:uppercase; color:#5a5140; margin-bottom:8px }
   body.noc #scena{ color:var(--zvyr) }
@@ -57,7 +64,10 @@
   #cislo{ font-size:10px; color:#8a8070; letter-spacing:.08em }
   #kalendar{ font-size:11.5px; letter-spacing:.06em; margin-top:5px }
   #kalendar .den{ position:relative; display:inline-block; margin-right:11px }
-  #kalendar .den.skrt::after{ content:"xx"; position:absolute; left:1px; top:1px; color:#4f4636 }
+  /* odbytý den = šikmé škrtnutí perem, ne přetisk (glyf vypadal jako rozbitý font) */
+  #kalendar .den.skrt{ color:#8a8070 }
+  #kalendar .den.skrt::after{ content:""; position:absolute; left:-2px; right:-2px; top:52%; height:2px;
+    background:#4f4636; transform:rotate(-5deg); transform-origin:left center }
   #kalendar .den.dnes{ text-decoration:underline; text-underline-offset:2px }
   #text{ font-size:16.5px; line-height:1.45; transition:opacity .2s; white-space:pre-line }
   #text.re{ font-style:italic; color:#4f4636 }
@@ -110,8 +120,8 @@
   .pripis.rovny{ font-style:normal; color:inherit }   /* pokračování vyprávění (intro) — ne dozvuk */
   @keyframes pripisNaskok{ from{ opacity:0 } to{ opacity:1 } }
   /* přetisk „xx" přes dnešek — jen při živém škrtnutí, ne při překreslení */
-  .den.cerstvy::after{ animation:pretisk .3s ease-out }
-  @keyframes pretisk{ from{ opacity:0 } to{ opacity:1 } }
+  .den.cerstvy::after{ animation:pretisk .25s ease-out }
+  @keyframes pretisk{ from{ transform:rotate(-5deg) scaleX(0) } to{ transform:rotate(-5deg) scaleX(1) } }
 
   @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important } }
   #jazyk{ position:absolute; top:calc(10px + env(safe-area-inset-top, 0px)); right:12px; z-index:7; font:10.5px "Courier New",monospace; letter-spacing:.08em;
@@ -154,11 +164,11 @@ const IMG="tools/tisk/", DNY=["pondělí","úterý","středa","čtvrtek","pátek
 
 const INTRO=[
  {img:"nocni_ulice.png", scena:"jaro 1952, město u západní hranice",
-  text:"Je ti dvacet a přišel ti rozkaz. Za pár týdnů nástup k Pomocným technickým praporům — černí baroni, uran v Jáchymově, roky v dolech bez soudu a bez data konce. Znáš lidi, co se odtamtud vrátili s prázdnýma očima. A znáš i ty, co se nevrátili vůbec."},
+  text:"Je ti dvacet a přišel ti rozkaz. Za pár týdnů nástup k Pomocným technickým praporům: černí baroni, uran v Jáchymově, roky v dolech bez soudu a bez data konce. Znáš lidi, co se odtamtud vrátili s prázdnýma očima. A znáš i ty, co se nevrátili vůbec."},
  {img:"dvere.png", scena:"co ses rozhodl",
-  text:"Nebudeš čekat, až si tě přijdou vyzvednout. Padesát kilometrů na západ je hranice a za ní svět, kam Státní bezpečnost nedosáhne. Rozhodl ses ji přejít.\n\nJenže sám to nedáš — na cestu potřebuješ věci, které se neshánějí jen tak. A v tomhle městě má bezpečnost uši v každé druhé domácnosti. Jeden špatně oslovený člověk, a jsi hotový dřív, než se hneš z místa."},
+  text:"Nebudeš čekat, až si tě přijdou vyzvednout. Padesát kilometrů na západ je hranice a za ní svět, kam Státní bezpečnost nedosáhne. Rozhodl ses ji přejít.\n\nJenže sám to nedáš. Na cestu potřebuješ věci, které se neshánějí jen tak. A v tomhle městě má bezpečnost uši v každé druhé domácnosti. Jeden špatně oslovený člověk, a jsi hotový dřív, než se hneš z místa."},
  {img:"checkpoint.png", scena:"tvůj úkol",
-  text:"Máš dva týdny. Ve všední dny potají sháníš, co k útěku potřebuješ — peníze, kleště na dráty, mapu hlídek, úkryt, doklady, spojku na druhé straně. Každý kus po tobě nechá stopu: papír s tvým jménem, svědka, nebo někoho, kdo teď ví o tvém plánu.\n\nA každou sobotu si tě StB vezme na výslech. Co u nich vydržíš zapřít, závisí na tom, jak nenápadně jsi sháněl — čím míň stop, tím míň na tebe mají. Přežij oba výslechy s čistým štítem, a v neděli v noci přejdeš.\n\nTáhni kartu doleva, nebo doprava."},
+  text:"Máš dva týdny. Ve všední dny potají sháníš, co k útěku potřebuješ: peníze, kleště na dráty, mapu hlídek, úkryt, doklady, spojku na druhé straně. Každý kus po tobě nechá stopu: papír s tvým jménem, svědka, nebo někoho, kdo teď ví o tvém plánu.\n\nA každou sobotu si tě StB vezme na výslech. Co u nich vydržíš zapřít, závisí na tom, jak nenápadně jsi sháněl: čím míň stop, tím míň na tebe mají. Přežij oba výslechy s čistým štítem, a v neděli v noci přejdeš.\n\nTáhni kartu doleva, nebo doprava."},
 ];
 
 // usv = úsvědčující akt (přiznání staví jejich případ)
@@ -166,89 +176,89 @@ const NEED=[
  {t:1,need:"peníze",usv:false,img:"vlak.png",scena:"nádraží",
   uvod:"V zásuvce pod prádlem máš dvě stě třicet korun a v duchu počítáš: převaděč, jízdenka, stovka do správné dlaně. Vychází to černě, ať to skládáš jakkoli. Bez peněz se nehneš z místa.",
   lPool:[
-   {kdo:"zdena",jm:"teta Zdena",rod:"z",typ:"svedek",talk:.4,pitch:"Teta Zdena ti po mši stiskla ruku, ať se kdykoli ozveš — rodina je rodina. Důchod si skládá do plechovky od cikorky a každé ráno s babkami na lavičce u kostela proberou celé město.",re:"Vtiskla ti do dlaně svinuté bankovky.",ot:"„Půjčila Vám teta Zdena peníze?“",otO:"„Nějak jste si polepšil, slyšíme. Půjčil Vám někdo?“",ch:"„Vaše teta to potvrdila.“"},
+   {kdo:"zdena",jm:"teta Zdena",rod:"z",typ:"svedek",talk:.4,pitch:"Teta Zdena ti po mši stiskla ruku, ať se kdykoli ozveš: rodina je rodina. Důchod si skládá do plechovky od cikorky a každé ráno s babkami na lavičce u kostela proberou celé město.",re:"Vtiskla ti do dlaně svinuté bankovky.",ot:"„Půjčila Vám teta Zdena peníze?“",otO:"„Nějak jste si polepšil, slyšíme. Půjčil Vám někdo?“",ch:"„Vaše teta to potvrdila.“"},
    {kdo:"vavra",jm:"kmotr Vávra",rod:"m",typ:"svedek",talk:.5,pitch:"Kmotr Vávra má vždycky pár stovek stranou. Večer co večer sedí U Lípy nad třetím pivem, hraje mariáš a s každým, kdo si přisedne, se dá do řeči; půlka hospody mu říká strejdo.",re:"Odpočítal bankovky pod stolem.",ot:"„Bral jste peníze od Vávry?“",otO:"„Hrál jste minulý týden mariáš U Lípy?“",ch:"„Vávra o Vás mluvil.“"}],
   pPool:[
-   {kdo:"vekslak",jm:"překupník",rod:"m",typ:"cisty",pitch:"Anebo překupník z nádraží — postává u stánku s límcem nahoru, koupí i prodá beze slova a bez jména. Nikdo neví, kde bydlí, a nikoho to nezajímá.",re:"Přepočítal a zmizel v davu.",ot:"„Prodal jste něco překupníkovi na nádraží?“",ch:""},
-   {kdo:null,jm:"dědovy hodinky",rod:"m",typ:"cisty",pitch:"Anebo dědovy zlaté hodinky — deset let leží v šupleti v kapesníku. V okresním městě, kde tě neznají, by za ně u zlatníka něco dali.",re:"Schoval jsi peníze hluboko do bot.",ot:"„Zpeněžil jste něco cenného?“",ch:""}]},
+   {kdo:"vekslak",jm:"překupník",rod:"m",typ:"cisty",pitch:"Anebo překupník z nádraží. Postává u stánku s límcem nahoru, koupí i prodá beze slova a bez jména. Nikdo neví, kde bydlí, a nikoho to nezajímá.",re:"Přepočítal a zmizel v davu.",ot:"„Prodal jste něco překupníkovi na nádraží?“",ch:""},
+   {kdo:null,jm:"dědovy hodinky",rod:"m",typ:"cisty",pitch:"Anebo dědovy zlaté hodinky. Deset let leží v šupleti v kapesníku. V okresním městě, kde tě neznají, by za ně u zlatníka něco dali.",re:"Schoval jsi peníze hluboko do bot.",ot:"„Zpeněžil jste něco cenného?“",ch:""}]},
 
  {t:1,need:"kleště",usv:true,img:"dvere.png",scena:"dílna",
-  uvod:"Na dílně se od rána drbe, koho zase kde sebrali. Děláš, že posloucháš vrtačku, a myslíš na jediné — štípačky na ostnatý drát. Ve skladu jich leží celá police; v krámě takové nekoupíš.",
+  uvod:"Na dílně se od rána drbe, koho zase kde sebrali. Děláš, že posloucháš vrtačku, a myslíš na jediné: štípačky na ostnatý drát. Ve skladu jich leží celá police; v krámě takové nekoupíš.",
   lPool:[
-   {kdo:"dolezal",jm:"mistr Doležal",rod:"m",typ:"papir",pitch:"O pauze se dvorem loudá mistr Doležal, klíče u pasu, párátko v zubech. Co se ve skladu šustne, jde přes něj. Stačilo by říct — zabručel by, přisunul knihu výdejů, naslinil tužku, tady podpis, a šel si po svých.",re:"Beze slova zamkl.",ot:"„Byl jste ve skladu u mistra Doležala?“",otO:"„Zdržel jste se v továrně po směně?“",ch:"„Tady je Vaše jméno v knize.“"},
-   {kdo:"kriz",jm:"zámečník Kříž",rod:"m",typ:"papir",pitch:"Zámečník Kříž na náměstí by je měl taky. Pořádkumilovný pavouk — každou zakázku vypíše na lístek a večer založí do knihy; zato práci odvede a klíče mu svěřuje půl města.",re:"Zabalil je do naolejovaného papíru.",ot:"„Objednal jste si něco u zámečníka Kříže?“",otO:"„Objednával jste si poslední dobou nějakou práci? U zámečníka, třeba.“",ch:"„Máme lístek z jeho knihy.“"}],
+   {kdo:"dolezal",jm:"mistr Doležal",rod:"m",typ:"papir",pitch:"O pauze se dvorem loudá mistr Doležal, klíče u pasu, párátko v zubech. Co se ve skladu šustne, jde přes něj. Stačilo by říct: zabručel by, přisunul knihu výdejů, naslinil tužku, tady podpis, a šel si po svých.",re:"Beze slova zamkl.",ot:"„Byl jste ve skladu u mistra Doležala?“",otO:"„Zdržel jste se v továrně po směně?“",ch:"„Tady je Vaše jméno v knize.“"},
+   {kdo:"kriz",jm:"zámečník Kříž",rod:"m",typ:"papir",pitch:"Zámečník Kříž na náměstí by je měl taky. Pořádkumilovný pavouk: každou zakázku vypíše na lístek a večer založí do knihy; zato práci odvede a klíče mu svěřuje půl města.",re:"Zabalil je do naolejovaného papíru.",ot:"„Objednal jste si něco u zámečníka Kříže?“",otO:"„Objednával jste si poslední dobou nějakou práci? U zámečníka, třeba.“",ch:"„Máme lístek z jeho knihy.“"}],
   pPool:[
-   {kdo:"pepik",jm:"Pepík z dílny",rod:"m",typ:"svedek",talk:.52,pitch:"Anebo Pepík od ponku. Cigareta se mu chvěje v prstech — co mu zavřeli bratra, trhne sebou při každém bouchnutí dveří. Pošeptal ti, že by je vynesl v hadru mezi svačinami. Pak celý den klopil oči.",re:"Podal ti je v hadru, ruce se třásly.",ot:"„Vzal jste si nářadí od Pepíka?“",otO:"„Byl jste po směně ještě v dílně?“",ch:"„Pepík Vás viděl.“"},
-   {kdo:"tonik",jm:"učeň Toník",rod:"m",typ:"svedek",talk:.56,pitch:"Anebo učeň Toník — vynesl by je pod kabátem s rozzářenýma očima, konečně dobrodružství jak z rodokapsů. Šikovné ruce, dobré srdce, jazyk rychlejší než rozum.",re:"Strčil ti je pod kabát a mrkl.",ot:"„Dal Vám nářadí učeň z dílny?“",otO:"„Chodí za Vámi někdo z učňů?“",ch:"„Ten kluk se pochlubil.“"}]},
+   {kdo:"pepik",jm:"Pepík z dílny",rod:"m",typ:"svedek",talk:.52,pitch:"Anebo Pepík od ponku. Cigareta se mu chvěje v prstech. Co mu zavřeli bratra, trhne sebou při každém bouchnutí dveří. Pošeptal ti, že by je vynesl v hadru mezi svačinami. Pak celý den klopil oči.",re:"Podal ti je v hadru, ruce se třásly.",ot:"„Vzal jste si nářadí od Pepíka?“",otO:"„Byl jste po směně ještě v dílně?“",ch:"„Pepík Vás viděl.“"},
+   {kdo:"tonik",jm:"učeň Toník",rod:"m",typ:"svedek",talk:.56,pitch:"Anebo učeň Toník. Vynesl by je pod kabátem s rozzářenýma očima, konečně dobrodružství jak z rodokapsů. Šikovné ruce, dobré srdce, jazyk rychlejší než rozum.",re:"Strčil ti je pod kabát a mrkl.",ot:"„Dal Vám nářadí učeň z dílny?“",otO:"„Chodí za Vámi někdo z učňů?“",ch:"„Ten kluk se pochlubil.“"}]},
 
  {t:1,need:"mapa",usv:true,img:"mapa.png",scena:"skoro u drátů",
-  uvod:"Večer nad slepou mapou skládáš, co víš: pásmo je zorané a nasvícené, hlídky chodí na čas — a ten čas neznáš. Jedna špatná pěšina a je po všem. Tohle se nedá uhodnout, tohle musíš vědět.",
+  uvod:"Večer nad slepou mapou skládáš, co víš: pásmo je zorané a nasvícené, hlídky chodí na čas. A ten čas neznáš. Jedna špatná pěšina a je po všem. Tohle se nedá uhodnout, tohle musíš vědět.",
   lPool:[
-   {kdo:"rudolf",jm:"Rudolf, šofér",rod:"m",typ:"svedek",talk:.6,pitch:"Rudolf jezdí se svozem k závoře a s pohraničníky se zdraví jménem — ví, kdy střídají a kde si zapalují. Nakreslil by ti to i s časy; stačí prý říct, kudy a kterou noc půjdeš.",re:"Kývl a zeptal se jen na noc.",ot:"„Ptal jste se Rudolfa na hlídky?“",otO:"„Znáte se s řidiči od svozu?“",ch:"„Rudolf vypovídal.“"},
-   {kdo:"benes",jm:"hajný Beneš",rod:"m",typ:"svedek",talk:.5,pitch:"Hajný Beneš prochází les u pásma den co den a zná každý posed. Ukázal by ti tu pravou pěšinu — chce ale vědět, na kterou noc; les je prý jiný v pátek a jiný v neděli.",re:"Ukázal ti to klackem v hlíně.",ot:"„Mluvil jste s hajným o pásmu?“",otO:"„Chodíte do lesa za město?“",ch:"„Hajný Vás udal.“"}],
+   {kdo:"rudolf",jm:"Rudolf, šofér",rod:"m",typ:"svedek",talk:.6,pitch:"Rudolf jezdí se svozem k závoře a s pohraničníky se zdraví jménem: ví, kdy střídají a kde si zapalují. Nakreslil by ti to i s časy; stačí prý říct, kudy a kterou noc půjdeš.",re:"Kývl a zeptal se jen na noc.",ot:"„Ptal jste se Rudolfa na hlídky?“",otO:"„Znáte se s řidiči od svozu?“",ch:"„Rudolf vypovídal.“"},
+   {kdo:"benes",jm:"hajný Beneš",rod:"m",typ:"svedek",talk:.5,pitch:"Hajný Beneš prochází les u pásma den co den a zná každý posed. Ukázal by ti tu pravou pěšinu. Chce ale vědět, na kterou noc; les je prý jiný v pátek a jiný v neděli.",re:"Ukázal ti to klackem v hlíně.",ot:"„Mluvil jste s hajným o pásmu?“",otO:"„Chodíte do lesa za město?“",ch:"„Hajný Vás udal.“"}],
   pPool:[
    {kdo:"cetnik",jm:"starý četník",rod:"m",typ:"cisty",pitch:"Anebo starý četník z domku nad městem. Pásmo chodil ještě za republiky; s lidmi nemluví, ale tobě by z paměti načrtl cesty, strouhu i starý brod.",re:"Načrtl na noviny dvě čáry.",ot:"„Mluvil jste se starým četníkem o pásmu?“",ch:""},
    {kdo:null,jm:"vlastní průzkum",rod:"m",typ:"cisty",pitch:"Anebo vezmeš otcovo kukátko a v neděli se z návrší budeš dívat sám: kudy chodí sedláci, odkud je vidět na dráty. Co uvidíš, to máš.",re:"Zapamatuješ si dvě cesty a strouhu.",ot:"„Chodil jste se dívat k hranici?“",ch:""}]},
 
  {t:1,need:"proviant",usv:false,img:"chleb.png",scena:"krám",
-  uvod:"K lesu u hranice dva dny poli a strouhami — žádné dveře, na které by ses odvážil zaklepat. Chleba, špek, něco proti žízni; doma ve špíži stojí tři sklenice sádla a pytlík krup.",
+  uvod:"K lesu u hranice dva dny poli a strouhami, žádné dveře, na které by ses odvážil zaklepat. Chleba, špek, něco proti žízni; doma ve špíži stojí tři sklenice sádla a pytlík krup.",
   lPool:[
-   {kdo:"betka",jm:"hokyně Bětka",rod:"z",typ:"svedek",talk:.45,pitch:"Hokyně Bětka váží, stříhá lístky a vede řeč s celou frontou — ví, komu stůně tchyně. Naložila by ti všechno naráz a přihodila něco navrch, jako když jsi chodil pro kvasnice.",re:"Přidala i kus špeku.",ot:"„Dělal jste si zásoby u hokyně?“",otO:"„Nakupoval jste ve větším než obvykle?“",ch:"„Hokyně si Vás pamatuje.“"},
+   {kdo:"betka",jm:"hokyně Bětka",rod:"z",typ:"svedek",talk:.45,pitch:"Hokyně Bětka váží, stříhá lístky a vede řeč s celou frontou: ví, komu stůně tchyně. Naložila by ti všechno naráz a přihodila něco navrch, jako když jsi chodil pro kvasnice.",re:"Přidala i kus špeku.",ot:"„Dělal jste si zásoby u hokyně?“",otO:"„Nakupoval jste ve větším než obvykle?“",ch:"„Hokyně si Vás pamatuje.“"},
    {kdo:"chalupa",jm:"hostinský Chalupa",rod:"m",typ:"svedek",talk:.5,pitch:"Hostinský Chalupa umí zabalit balík do novin, že vypadá jako prádlo. Celý den za výčepem půl města poslouchá a druhou půlku hostí; co dáš na pult, zmizí pod ním, než dopiješ.",re:"Zabalil ti to do novin.",ot:"„Kupoval jste jídlo od hostinského?“",otO:"„Chodíte večer do hostince?“",ch:"„Hostinský Vás popsal.“"}],
   pPool:[
-   {kdo:null,jm:"z domácí špíže",rod:"m",typ:"cisty",pitch:"Anebo poneseš ze špíže po troškách — dnes sklenici, zítra půl bochníku, do pytlíku za trámem. Matka zatím počítá jen neděle, ne krajíce.",re:"Sbalil jsi, co doma bylo.",ot:"„Chystal jste si jídlo na cestu?“",ch:""},
-   {kdo:null,jm:"nasušené ze zahrady",rod:"m",typ:"cisty",pitch:"Anebo nasušíš, co dala zahrada: jablka za oknem, tvrdý sýr, starší chleba. Bude to jak dřevo, ale je to tvoje — od hlíny po kůrku.",re:"Zašil jsi to do plátěného pytlíku.",ot:"„Připravoval jste si potraviny?“",ch:""}]},
+   {kdo:null,jm:"z domácí špíže",rod:"m",typ:"cisty",pitch:"Anebo poneseš ze špíže po troškách: dnes sklenici, zítra půl bochníku, do pytlíku za trámem. Matka zatím počítá jen neděle, ne krajíce.",re:"Sbalil jsi, co doma bylo.",ot:"„Chystal jste si jídlo na cestu?“",ch:""},
+   {kdo:null,jm:"nasušené ze zahrady",rod:"m",typ:"cisty",pitch:"Anebo nasušíš, co dala zahrada: jablka za oknem, tvrdý sýr, starší chleba. Bude to jak dřevo, ale je to tvoje, od hlíny po kůrku.",re:"Zašil jsi to do plátěného pytlíku.",ot:"„Připravoval jste si potraviny?“",ch:""}]},
 
  {t:1,need:"boty",usv:false,img:"kufr.png",scena:"u ševce",
-  uvod:"Večer obracíš v rukou svoje boty: podrážka na třech flocích, švy pouštějí. A před tebou rozmoklá pole a celá noc chůze potmě. Došly ledacos — tohle by mohly nedojít.",
+  uvod:"Večer obracíš v rukou svoje boty: podrážka na třech flocích, švy pouštějí. A před tebou rozmoklá pole a celá noc chůze potmě. Došly ledacos. Tohle by mohly nedojít.",
   lPool:[
-   {kdo:"svec",jm:"švec Vaněk",rod:"m",typ:"svedek",talk:.5,pitch:"Švec Vaněk obrací boty proti světlu, mne podrážku palcem a vyptává se, na jakou cestu to má vydržet — jinak šije na tancovačku, jinak na hory. Co projde jeho verpánkem, vydrží roky.",re:"Přiklepl nové podrážky.",ot:"„Nechal jste si u ševce spravit boty?“",otO:"„Nechával jste si poslední dobou něco spravit?“",ch:"„Švec Vás popsal.“"},
-   {kdo:"pokorny",jm:"sedlář Pokorný",rod:"m",typ:"svedek",talk:.48,pitch:"Sedlář Pokorný by ušil vysoké boty jako pro myslivce. Bere provázkem míru na nárt a u toho se vyptává — řemeslo je prý půlka práce, druhá půlka znát člověka, co v nich půjde.",re:"Přeměřil ti nárt provázkem.",ot:"„Objednal jste si boty u sedláře?“",otO:"„Byl jste poslední dobou u sedláře?“",ch:"„Sedlář si Vás vybavil.“"}],
+   {kdo:"svec",jm:"švec Vaněk",rod:"m",typ:"svedek",talk:.5,pitch:"Švec Vaněk obrací boty proti světlu, mne podrážku palcem a vyptává se, na jakou cestu to má vydržet: jinak šije na tancovačku, jinak na hory. Co projde jeho verpánkem, vydrží roky.",re:"Přiklepl nové podrážky.",ot:"„Nechal jste si u ševce spravit boty?“",otO:"„Nechával jste si poslední dobou něco spravit?“",ch:"„Švec Vás popsal.“"},
+   {kdo:"pokorny",jm:"sedlář Pokorný",rod:"m",typ:"svedek",talk:.48,pitch:"Sedlář Pokorný by ušil vysoké boty jako pro myslivce. Bere provázkem míru na nárt a u toho se vyptává: řemeslo je prý půlka práce, druhá půlka znát člověka, co v nich půjde.",re:"Přeměřil ti nárt provázkem.",ot:"„Objednal jste si boty u sedláře?“",otO:"„Byl jste poslední dobou u sedláře?“",ch:"„Sedlář si Vás vybavil.“"}],
   pPool:[
-   {kdo:null,jm:"vlastní, obnošené",rod:"m",typ:"cisty",pitch:"Anebo necháš svoje, jak jsou. V mokru pouštějí, ale znáš je — víš, kde tlačí a co vydrží. Namažeš je sádlem a vycpeš novinami.",re:"Vezmeš, co doma je.",ot:"„Chystal jste si výbavu na cestu?“",ch:""},
-   {kdo:null,jm:"otcovy holínky",rod:"m",typ:"cisty",pitch:"Anebo otcovy holínky z půdy — těžké, o číslo větší, ale kůže poctivá, předválečná. Vycpeš špičky hadrem a doufáš, že si nohy zvyknou.",re:"Vycpal jsi je hadrem.",ot:"„Sháněl jste si nějakou obuv?“",ch:""}]},
+   {kdo:null,jm:"vlastní, obnošené",rod:"m",typ:"cisty",pitch:"Anebo necháš svoje, jak jsou. V mokru pouštějí, ale znáš je: víš, kde tlačí a co vydrží. Namažeš je sádlem a vycpeš novinami.",re:"Vezmeš, co doma je.",ot:"„Chystal jste si výbavu na cestu?“",ch:""},
+   {kdo:null,jm:"otcovy holínky",rod:"m",typ:"cisty",pitch:"Anebo otcovy holínky z půdy: těžké, o číslo větší, ale kůže poctivá, předválečná. Vycpeš špičky hadrem a doufáš, že si nohy zvyknou.",re:"Vycpal jsi je hadrem.",ot:"„Sháněl jste si nějakou obuv?“",ch:""}]},
 
  {t:2,need:"úkryt",usv:true,img:"kostel.png",scena:"fara",
-  uvod:"Poslední noc bude nejdelší: přečkat ji blízko drátů, počkat si na svou hodinu a nezmrznout. V pásmu se nedá postávat — potřebuješ díru, kde tě do rána neuvidí živá duše.",
+  uvod:"Poslední noc bude nejdelší: přečkat ji blízko drátů, počkat si na svou hodinu a nezmrznout. V pásmu se nedá postávat. Potřebuješ díru, kde tě do rána neuvidí živá duše.",
   lPool:[
    {kdo:"farar",jm:"farář Toman",rod:"m",typ:"svedek",talk:.42,pitch:"Farář Toman se při zpovědi dlouho odmlčel, pak řekl jen: zadní vrátka nechám odemčená a půjdu spát. Fara stojí poslední před polem a z okna sakristie je vidět na dráty.",re:"Řekl, že nechá otevřeno.",ot:"„Domlouval jste si nocleh u faráře?“",otO:"„Chodíte na mši pravidelně?“",ch:"„Farář to uvedl do protokolu.“"},
-   {kdo:"slavik",jm:"výhybkář Slavík",rod:"m",typ:"svedek",talk:.5,pitch:"Výhybkář Slavík má u trati boudu skoro v pásmu — kamna, lavice, petrolejka. Klíč by půjčil a nechal tě být; sám slouží noční a nad ránem obchází výhybky s lucernou.",re:"Podal ti klíč od boudy.",ot:"„Přespával jste u výhybkáře?“",otO:"„Znáte se s železničáři?“",ch:"„Výhybkář Vás uvedl.“"}],
+   {kdo:"slavik",jm:"výhybkář Slavík",rod:"m",typ:"svedek",talk:.5,pitch:"Výhybkář Slavík má u trati boudu skoro v pásmu: kamna, lavice, petrolejka. Klíč by půjčil a nechal tě být; sám slouží noční a nad ránem obchází výhybky s lucernou.",re:"Podal ti klíč od boudy.",ot:"„Přespával jste u výhybkáře?“",otO:"„Znáte se s železničáři?“",ch:"„Výhybkář Vás uvedl.“"}],
   pPool:[
-   {kdo:null,jm:"prázdná kůlna",rod:"m",typ:"cisty",pitch:"Anebo prázdná kůlna za městem — studená, děravá, roky do ní nikdo nevkročil. Plot se přelézá u bezinky; jako kluci jste si tam hráli na četníky.",re:"Vlezeš tam sám o půlnoci.",ot:"„Chtěl jste přespat v kůlně za městem?“",ch:""},
+   {kdo:null,jm:"prázdná kůlna",rod:"m",typ:"cisty",pitch:"Anebo prázdná kůlna za městem: studená, děravá, roky do ní nikdo nevkročil. Plot se přelézá u bezinky; jako kluci jste si tam hráli na četníky.",re:"Vlezeš tam sám o půlnoci.",ot:"„Chtěl jste přespat v kůlně za městem?“",ch:""},
    {kdo:null,jm:"opuštěná cihelna",rod:"z",typ:"cisty",pitch:"Anebo stará cihelna u řeky. V peci je výklenek, kam se vejde člověk i s rancem; táhne tam každou škvírou, ale živá duše tam nechodí.",re:"Zalezeš do výklenku v peci.",ot:"„Zdržoval jste se u staré cihelny?“",ch:""}]},
 
  {t:2,need:"doklady",usv:true,img:"pas.png",scena:"zadní pokoj",
-  uvod:"Ráno tě na mostě zastavil esenbák a beze slova natáhl ruku. Občanku vrátil a šel dál — jenže tvoje jméno stojí na povolávacím rozkaze. Budeš se muset něčím prokázat. Nebo nikým nebýt.",
+  uvod:"Ráno tě na mostě zastavil esenbák a beze slova natáhl ruku. Občanku vrátil a šel dál. Jenže tvoje jméno stojí na povolávacím rozkaze. Budeš se muset něčím prokázat. Nebo nikým nebýt.",
   lPool:[
-   {kdo:"falso",jm:"falšovatel",rod:"m",typ:"papir",pitch:"Nad holičstvím sedí člověk, co dělá legitimace na cizí jméno. Pracuje u lampy se štětečkem a lupou, razítko k nerozeznání — a mluví tak málo, že ani nevíš, jak se jmenuje.",re:"Podal ti ji, aniž zvedl oči.",ot:"„Máte u sebe falešné doklady?“",otO:"„Byl jste poslední dobou v domě nad holičstvím?“",ch:"„Tohle jsme u Vás našli.“"},
+   {kdo:"falso",jm:"falšovatel",rod:"m",typ:"papir",pitch:"Nad holičstvím sedí člověk, co dělá legitimace na cizí jméno. Pracuje u lampy se štětečkem a lupou, razítko k nerozeznání. A mluví tak málo, že ani nevíš, jak se jmenuje.",re:"Podal ti ji, aniž zvedl oči.",ot:"„Máte u sebe falešné doklady?“",otO:"„Byl jste poslední dobou v domě nad holičstvím?“",ch:"„Tohle jsme u Vás našli.“"},
    {kdo:"roubal",jm:"fotograf Roubal",rod:"m",typ:"papir",pitch:"Fotograf Roubal tě posadí pod lampu, cvakne a do týdne dodá legitimaci i s razítkem. V ateliéru voní vývojka a negativy zakládá do šuplíku ke všem ostatním.",re:"Zamkl fotku do zásuvky.",ot:"„Fotil Vás Roubal na nové doklady?“",otO:"„Nechal jste se v poslední době fotografovat?“",ch:"„U Roubala je Váš negativ.“"}],
   pPool:[
-   {kdo:null,jm:"jít bez",rod:"m",typ:"cisty",pitch:"Anebo půjdeš beze všech papírů. Nikým nebýt, nic u sebe nemít — jen tma, pole a jméno, které nahlas nevyslovíš.",re:"Spolehneš se na tmu.",ot:"„Opatřil jste si nové papíry?“",ch:""},
-   {kdo:null,jm:"stará legitimace",rod:"z",typ:"cisty",pitch:"Anebo si necháš svou starou legitimaci — pravou, se jménem a fotkou z vojny. Nosíš ji od osmnácti; zná tvou kapsu líp než ty.",re:"Zastrčíš ji do podšívky.",ot:"„Máte u sebe nějaké doklady?“",ch:""}]},
+   {kdo:null,jm:"jít bez",rod:"m",typ:"cisty",pitch:"Anebo půjdeš beze všech papírů. Nikým nebýt, nic u sebe nemít: jen tma, pole a jméno, které nahlas nevyslovíš.",re:"Spolehneš se na tmu.",ot:"„Opatřil jste si nové papíry?“",ch:""},
+   {kdo:null,jm:"stará legitimace",rod:"z",typ:"cisty",pitch:"Anebo si necháš svou starou legitimaci: pravou, se jménem a fotkou z vojny. Nosíš ji od osmnácti; zná tvou kapsu líp než ty.",re:"Zastrčíš ji do podšívky.",ot:"„Máte u sebe nějaké doklady?“",ch:""}]},
 
  {t:2,need:"propustka",usv:true,img:"checkpoint.png",scena:"okresní úřad",
-  uvod:"Silnice k hranici: závora, budka, voják s puškou. Jediná povolená cesta do pásma — bez propustky se od závory chodí zpátky. Stojíš u patníku a díváš se, koho pouštějí. Každého s papírem.",
+  uvod:"Silnice k hranici: závora, budka, voják s puškou. Jediná povolená cesta do pásma. Bez propustky se od závory chodí zpátky. Stojíš u patníku a díváš se, koho pouštějí. Každého s papírem.",
   lPool:[
-   {kdo:"urednik",jm:"úředník",rod:"m",typ:"papir",pitch:"Úředník na okrese vydává propustky přes přepážku tři. Vezme žádost i to, co je vložené navíc, otiskne razítko, žádost založí do šuplíku a volá dalšího — jedním pohybem, naučeným za dvacet let.",re:"Otiskl razítko a nastavil dlaň.",ot:"„Žádal jste o propustku do pásma?“",otO:"„Byl jste minulý týden na okresním úřadě?“",ch:"„Vaše žádost je v evidenci.“"},
-   {kdo:"hajkova",jm:"písařka Hájková",rod:"z",typ:"papir",pitch:"Písařka Hájková zůstává na úřadě po hodinách. Vyťuká propustku i s razítkem, průpisy založí do složek, jak je zvykem — a z toho, co jí lidé nechají, živí dvě děti.",re:"Podala ti ji přes pult, oči sklopené.",ot:"„Vyřizovala Vám propustku písařka Hájková?“",otO:"„Vyřizoval jste si něco na úřadě po úředních hodinách?“",ch:"„Průpis je ve složce.“"}],
+   {kdo:"urednik",jm:"úředník",rod:"m",typ:"papir",pitch:"Úředník na okrese vydává propustky přes přepážku tři. Vezme žádost i to, co je vložené navíc, otiskne razítko, žádost založí do šuplíku a volá dalšího: jedním pohybem, naučeným za dvacet let.",re:"Otiskl razítko a nastavil dlaň.",ot:"„Žádal jste o propustku do pásma?“",otO:"„Byl jste minulý týden na okresním úřadě?“",ch:"„Vaše žádost je v evidenci.“"},
+   {kdo:"hajkova",jm:"písařka Hájková",rod:"z",typ:"papir",pitch:"Písařka Hájková zůstává na úřadě po hodinách. Vyťuká propustku i s razítkem, průpisy založí do složek, jak je zvykem. A z toho, co jí lidé nechají, živí dvě děti.",re:"Podala ti ji přes pult, oči sklopené.",ot:"„Vyřizovala Vám propustku písařka Hájková?“",otO:"„Vyřizoval jste si něco na úřadě po úředních hodinách?“",ch:"„Průpis je ve složce.“"}],
   pPool:[
-   {kdo:null,jm:"obejít nocí",rod:"m",typ:"cisty",pitch:"Anebo se závoře vyhneš — v noci, polem, mimo cesty. Příkopem podél trati a obloukem kolem budky, kudy nechodí nikdo, kdo nemusí.",re:"Naplánuješ si obchvat.",ot:"„Vyřizoval jste si vstup do pásma?“",ch:""},
-   {kdo:null,jm:"projít se stádem",rod:"m",typ:"cisty",pitch:"Anebo za rozbřesku s pasákem, co žene stádo na luka u čáry. Chodí jich tam víc — jeden navíc vedle krav, v montérkách, s prutem.",re:"Půjdeš vedle dobytka jako čeledín.",ot:"„Pohyboval jste se u hranice s dobytkem?“",ch:""}]},
+   {kdo:null,jm:"obejít nocí",rod:"m",typ:"cisty",pitch:"Anebo se závoře vyhneš: v noci, polem, mimo cesty. Příkopem podél trati a obloukem kolem budky, kudy nechodí nikdo, kdo nemusí.",re:"Naplánuješ si obchvat.",ot:"„Vyřizoval jste si vstup do pásma?“",ch:""},
+   {kdo:null,jm:"projít se stádem",rod:"m",typ:"cisty",pitch:"Anebo za rozbřesku s pasákem, co žene stádo na luka u čáry. Chodí jich tam víc: jeden navíc vedle krav, v montérkách, s prutem.",re:"Půjdeš vedle dobytka jako čeledín.",ot:"„Pohyboval jste se u hranice s dobytkem?“",ch:""}]},
 
  {t:2,need:"svoz",usv:true,img:"auto.png",scena:"silnice",
-  uvod:"K lesu u hranice je den chůze po silnicích, kde je člověk vidět na kilometr. Den na nohou, na očích, s rancem — a večer musíš být na místě, ne polomrtvý v příkopu.",
+  uvod:"K lesu u hranice je den chůze po silnicích, kde je člověk vidět na kilometr. Den na nohou, na očích, s rancem. A večer musíš být na místě, ne polomrtvý v příkopu.",
   lPool:[
-   {kdo:"rudolf",jm:"Rudolf, šofér",rod:"m",typ:"svedek",talk:.6,pitch:"Rudolf by tě vzal dodávkou pod plachtu — k lesu jezdí pro dřevo a zná ho každý, i hlídky. Stačí říct, který večer a kam přesně; pozná prý, když někdo mlží.",re:"„Sedneš dozadu pod plachtu.“",ot:"„Vezl Vás někdo autem k hranici?“",otO:"„Svezl Vás minulý týden někdo autem?“",ch:"„Rudolf Vás vozil.“"},
-   {kdo:"masa",jm:"řidič Máša",rod:"m",typ:"svedek",talk:.52,pitch:"Řidič Máša jezdí k pile dvakrát týdně a vzal by tě mezi bedny — chlap od plic, srdce na dlani. U piva pak vypráví, koho kde potkal; vyprávět umí, to se mu musí nechat.",re:"Ukázal palcem dozadu na korbu.",ot:"„Svezl Vás náklaďák k hranici?“",otO:"„Byl jste poslední dobou u pily?“",ch:"„Ten řidič si Vás pamatoval.“"}],
+   {kdo:"rudolf",jm:"Rudolf, šofér",rod:"m",typ:"svedek",talk:.6,pitch:"Rudolf by tě vzal dodávkou pod plachtu. K lesu jezdí pro dřevo a zná ho každý, i hlídky. Stačí říct, který večer a kam přesně; pozná prý, když někdo mlží.",re:"„Sedneš dozadu pod plachtu.“",ot:"„Vezl Vás někdo autem k hranici?“",otO:"„Svezl Vás minulý týden někdo autem?“",ch:"„Rudolf Vás vozil.“"},
+   {kdo:"masa",jm:"řidič Máša",rod:"m",typ:"svedek",talk:.52,pitch:"Řidič Máša jezdí k pile dvakrát týdně a vzal by tě mezi bedny: chlap od plic, srdce na dlani. U piva pak vypráví, koho kde potkal; vyprávět umí, to se mu musí nechat.",re:"Ukázal palcem dozadu na korbu.",ot:"„Svezl Vás náklaďák k hranici?“",otO:"„Byl jste poslední dobou u pily?“",ch:"„Ten řidič si Vás pamatoval.“"}],
   pPool:[
-   {kdo:null,jm:"pěšky, sám",rod:"m",typ:"cisty",pitch:"Anebo pěšky, před rozedněním, sám. K mlýnu, podél potoka, mezi mezemi — do setmění můžeš být na dohled lesa, když nohy vydrží.",re:"Vyrazíš před rozedněním.",ot:"„Jak jste se chtěl dostat k lesu?“",ch:""},
+   {kdo:null,jm:"pěšky, sám",rod:"m",typ:"cisty",pitch:"Anebo pěšky, před rozedněním, sám. K mlýnu, podél potoka, mezi mezemi. Do setmění můžeš být na dohled lesa, když nohy vydrží.",re:"Vyrazíš před rozedněním.",ot:"„Jak jste se chtěl dostat k lesu?“",ch:""},
    {kdo:null,jm:"na kole, oklikou",rod:"m",typ:"cisty",pitch:"Anebo na kole přes Doubravku, kudy nejezdí nic než traktor. Kolo necháš v houští u posledního stavení a dál po svých.",re:"Nasedneš za tmy a šlapeš.",ot:"„Vyrážel jste někam na kole?“",ch:""}]},
 
  {t:2,need:"spojka",usv:true,img:"dopis.png",scena:"pošta",
-  uvod:"Za čárou to nekončí — bavorská strana je plná patrol a táborů pro ty, co přešli špatně. Potřebuješ někoho, kdo tam počká a schová tě. Jinak přejdeš dráty, aby tě sebrali o kilometr dál.",
+  uvod:"Za čárou to nekončí. Bavorská strana je plná patrol a táborů pro ty, co přešli špatně. Potřebuješ někoho, kdo tam počká a schová tě. Jinak přejdeš dráty, aby tě sebrali o kilometr dál.",
   lPool:[
-   {kdo:"prostrednik",jm:"prostředník",rod:"m",typ:"papir",pitch:"Prostředník od pošty dostane psaní přes čáru — má cesty, po kterých chodí dopisy od války. Napíšeš kdy a kde, zalepíš, on pošle dál; doručeno prý do týdne, jistě jak úmrtní oznámení.",re:"Předals obálku bez adresy.",ot:"„Psal jste někomu na druhou stranu?“",otO:"„Posílal jste v poslední době nějaké psaní?“",ch:"„Ten dopis máme.“"},
-   {kdo:"pisar",jm:"písař od převaděčů",rod:"m",typ:"papir",pitch:"Písař od převaděčů vyřizuje vzkazy ústně. Sedává v pátek u nádraží, vyslechne, kývne — a do notesu si vede, komu co slíbil; pořádek prý musí být i v tomhle řemesle.",re:"Zapsal si tě do notesu a schoval ho.",ot:"„Vzkazoval jste něco přes převaděče?“",otO:"„Čekal jste v pátek večer u nádraží?“",ch:"„Byl jste v jeho seznamu.“"}],
+   {kdo:"prostrednik",jm:"prostředník",rod:"m",typ:"papir",pitch:"Prostředník od pošty dostane psaní přes čáru: má cesty, po kterých chodí dopisy od války. Napíšeš kdy a kde, zalepíš, on pošle dál; doručeno prý do týdne, jistě jak úmrtní oznámení.",re:"Předals obálku bez adresy.",ot:"„Psal jste někomu na druhou stranu?“",otO:"„Posílal jste v poslední době nějaké psaní?“",ch:"„Ten dopis máme.“"},
+   {kdo:"pisar",jm:"písař od převaděčů",rod:"m",typ:"papir",pitch:"Písař od převaděčů vyřizuje vzkazy ústně. Sedává v pátek u nádraží, vyslechne, kývne. A do notesu si vede, komu co slíbil; pořádek prý musí být i v tomhle řemesle.",re:"Zapsal si tě do notesu a schoval ho.",ot:"„Vzkazoval jste něco přes převaděče?“",otO:"„Čekal jste v pátek večer u nádraží?“",ch:"„Byl jste v jeho seznamu.“"}],
   pPool:[
    {kdo:null,jm:"naslepo",rod:"m",typ:"cisty",pitch:"Anebo naslepo: přejdeš, zalezeš do lesa a ráno půjdeš po zvuku zvonů k první vsi. Postaráš se o sebe sám, jako celou dobu tady.",re:"Spolehneš se na náhodu.",ot:"„Máte na druhé straně spojku?“",ch:""},
    {kdo:null,jm:"staré heslo",rod:"z",typ:"cisty",pitch:"Anebo heslo od sedlářovic Franty, než zmizel za čáru: kdo řekne „od Nepomuka“, tomu se má pomoct. Jestli tam Franta ještě bydlí, ví jen Bůh.",re:"Zopakuješ si tu větu pro strýce.",ot:"„Domlouval jste se s někým za hranicí?“",ch:""}]},
@@ -256,7 +266,7 @@ const NEED=[
 const JMENA={}; NEED.forEach(n=>[...n.lPool,...n.pPool].forEach(s=>{if(s.kdo)JMENA[s.kdo]={jm:s.jm,rod:s.rod};}));
 function vyber(a){ return a[Math.floor(Math.random()*a.length)]; }
 function zamichej(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-const PRAH_SPIS=3, VER_ZTRATA=26;
+const PRAH_SPIS=4, VER_ZTRATA=26;
 
 let S, cas=null, anim=false, hintTxt={l:"",p:""};
 const $=id=>document.getElementById(id);
@@ -394,7 +404,7 @@ function spustVyslech(){
   S.karty=[...mich(karty.filter(q=>!q.konkretni)), ...mich(karty.filter(q=>q.konkretni))];
   S.razitkaTyden=0; S.spisPred=S.spis; S.i=0; S.faze="vyslech-intro"; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`sobota, výslech ${S.t}. týdne`; merky();
-  textCross("Sebrali tě v sobotu ráno. Vyšetřovatel má před sebou spis — a ty nevíš, co v něm je.",true);
+  textCross("Sebrali tě v sobotu ráno. Vyšetřovatel má před sebou spis. A ty nevíš, co v něm je.",true);
   volbyRe("Posadit se");
 }
 function merky(){ $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")"; $("spisFill").style.transform="scaleX("+Math.min(100,S.spis/PRAH_SPIS*100)/100+")";
@@ -407,7 +417,9 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=f
     else vysl=S.dokazano[kl]?"„No proto. Aspoň už nezapíráte, co víme oba.“":"Držíš se své verze slovo od slova. „...dobře.“";
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[q.need+q.str]=strana;
-    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;vysl=q.ch+" Ani se nezlobil. Jen si to zapsal.";} else vysl="Ticho. Pak: „Dobře.“ Píše dál."; }
+    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;
+      if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání — lež ho nesmaže
+      vysl=q.ch+" Ani se nezlobil. Jen si to zapsal.";} else vysl="Ticho. Pak: „Dobře.“ Píše dál."; }
   else { S.reklJsem[q.need+q.str]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal — na falešné přiznání věci, co se nestala, nemají důkaz
@@ -419,7 +431,8 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=f
   if(stamp){ razitko(); S.razitkaTyden=(S.razitkaTyden||0)+1;
     $("nalada").textContent = S.vera>40?"Zvedl oči od papírů. Něco si připsal.":"Dívá se ti přímo do očí. Ví, že lžeš.";
     $("hra").classList.remove("zasah"); void $("hra").offsetWidth; $("hra").classList.add("zasah");
-    $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls"); }
+    $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls");
+    if(q.usv&&q.pouzito&&!q.reask){ $("spisFill").classList.remove("puls"); void $("spisFill").offsetWidth; $("spisFill").classList.add("puls"); } }
   pripis(vysl,true); volbyRe(S.i>=S.karty.length-1?"Konec výslechu":"Další otázka"); S.faze="vyslech-re";
 }
 function vyslechDal(){ if(S.vera<=0) return finale("zatcen","vera"); if(S.spis>=PRAH_SPIS) return finale("zatcen","spis");
@@ -432,7 +445,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
   else{ const c=[];
     if(raz>0) c.push(raz===1?"Jednou tě chytil při lži":"Chytil tě "+raz+"x při lži");
     if(spisNew>0) c.push((raz>0?"a ":"")+(spisNew===1?"jednu věc máš teď zapsanou ve spisu":spisNew+" věci máš teď zapsané ve spisu"));
-    t=c.join(" ")+".\n\n"+(S.vera<=40?"Věří ti čím dál míň — další týden bude horší.":"Ustál jsi to. Ale ví o tobě víc než ráno.");
+    t=c.join(" ")+".\n\n"+(S.vera<=40?"Věří ti čím dál míň. Další týden bude horší.":"Ustál jsi to. Ale ví o tobě víc než ráno.");
   }
   textCross(t,true); volbyRe(S.t===1?"Zbývá poslední týden":"Neděle v noci");
 }
@@ -441,26 +454,26 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
 /* ---------- PŘECHOD (finiš) — swipe = ← skrýt se / risknout →. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
 const KRIT=[
  {need:"propustka", scena:"závora", img:"checkpoint.png",
-  zach:{need:"peníze", ok:"Kužel baterky se zastavil na tobě. „Stůj!“ Jdeš pomalu blíž — a do dlaně mu vtiskneš, co máš. Dlouhé ticho. Pak mávl rukou do tmy: jdi.", fail:"Nabídl jsi mu, co ti zbylo. Nestačilo to."},
-  inf:{text:"Závora a osvětlená budka. Máš razítkovanou propustku — stráž tě mávnutím pustí, sotva ji ukážeš. Obcházet ji teď potmě by byla hloupost.", l:"Ukázat propustku", p:"Obejít potmě", spravna:"l"},
-  bl:{text:"Závora a budka, ve které se svítí. Nemáš papír — musíš okolo. Příkop podél silnice tě vede rovnou pod osvětlené okno budky. Přes pole je to holá pláň, zato dál od světla.", l:"Příkopem", p:"Přes pole", spravna:"p"}},
+  zach:{need:"peníze", ok:"Kužel baterky se zastavil na tobě. „Stůj!“ Jdeš pomalu blíž a do dlaně mu vtiskneš, co máš. Dlouhé ticho. Pak mávl rukou do tmy: jdi.", fail:"Nabídl jsi mu, co ti zbylo. Nestačilo to."},
+  inf:{text:"Závora a osvětlená budka. Máš razítkovanou propustku: stráž tě mávnutím pustí, sotva ji ukážeš. Obcházet ji teď potmě by byla hloupost.", l:"Ukázat propustku", p:"Obejít potmě", spravna:"l"},
+  bl:{text:"Závora a budka, ve které se svítí. Nemáš papír, musíš okolo. Příkop podél silnice tě vede rovnou pod osvětlené okno budky. Přes pole je to holá pláň, zato dál od světla.", l:"Příkopem", p:"Přes pole", spravna:"p"}},
  {need:"úkryt", scena:"poslední noc", img:"kostel.png",
-  zach:{need:"proviant", ok:"Venku hlasy — někdo obchází stavení. Zalezeš hlouběji a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den — ale nebylo co jíst. Vylezl jsi moc brzy."},
-  inf:{text:"Máš domluvený nocleh — zadní vrátka nechána odemčená. Uvnitř přečkáš v teple do hluboké noci. Vyjít teď, za šera, by tě vydalo prvnímu, kdo půjde kolem.", l:"Dovnitř, počkat na noc", p:"Jít radši hned", spravna:"l"},
-  bl:{text:"Studená kůlna za městem. Nevíš, jestli sem někdo nechodí. Zůstat do noci je risk — ale vyrazit teď, za bílého dne, by tě na pláni viděl každý.", l:"Zůstat v kůlně", p:"Jít hned", spravna:"l"}},
+  zach:{need:"proviant", ok:"Venku hlasy: někdo obchází stavení. Zalezeš hlouběji a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den, ale nebylo co jíst. Vylezl jsi moc brzy."},
+  inf:{text:"Máš domluvený nocleh: zadní vrátka nechána odemčená. Uvnitř přečkáš v teple do hluboké noci. Vyjít teď, za šera, by tě vydalo prvnímu, kdo půjde kolem.", l:"Dovnitř, počkat na noc", p:"Jít radši hned", spravna:"l"},
+  bl:{text:"Studená kůlna za městem. Nevíš, jestli sem někdo nechodí. Zůstat do noci je risk. Ale vyrazit teď, za bílého dne, by tě na pláni viděl každý.", l:"Zůstat v kůlně", p:"Jít hned", spravna:"l"}},
  {need:"mapa", scena:"hlídka", img:"mapa.png",
-  zach:{need:"kleště", ok:"Dráty přímo před tebou — a hlídka se vrací dřív, než měla. Štípačky. Dva rychlé střihy, ostny povolí, protáhneš se dírou a tma tě spolkne.", fail:"Kleště sklouzly a drát zazvonil o sloupek. To stačilo."},
-  inf:{text:"Z mapy to víš přesně: hlídka projde po cestě ve dvě a pak je hodina klid. Věžní hodiny právě dozněly. Čas máš — ale ne nadlouho.", l:"Počkat, až přejdou", p:"Jít teď, v tom klidu", spravna:"p"},
-  bl:{text:"Ve tmě před tebou se něco pohnulo — a po chvíli zas, o kus blíž. Hlídka, nebo jen vítr v drátech? Tvá mapa je roky stará a o dnešních hlídkách neví nic.", l:"Zalehnout a čekat", p:"Proklouznout hned", spravna:"l"},
+  zach:{need:"kleště", ok:"Dráty přímo před tebou. A hlídka se vrací dřív, než měla. Štípačky. Dva rychlé střihy, ostny povolí, protáhneš se dírou a tma tě spolkne.", fail:"Kleště sklouzly a drát zazvonil o sloupek. To stačilo."},
+  inf:{text:"Z mapy to víš přesně: hlídka projde po cestě ve dvě a pak je hodina klid. Věžní hodiny právě dozněly. Čas máš, ale ne nadlouho.", l:"Počkat, až přejdou", p:"Jít teď, v tom klidu", spravna:"p"},
+  bl:{text:"Ve tmě před tebou se něco pohnulo. A po chvíli zas, o kus blíž. Hlídka, nebo jen vítr v drátech? Tvá mapa je roky stará a o dnešních hlídkách neví nic.", l:"Zalehnout a čekat", p:"Proklouznout hned", spravna:"l"},
   amb:{text:"U cesty, přesně tam, kudy jsi měl přejít, se rýsují dvě postavy s baterkami. Věděli to. Čekají na tebe.", l:"Zpátky a jinudy", p:"Risknout to tady", spravna:"l"}},
  {need:"doklady", scena:"poslední silnice", img:"pas.png",
-  zach:{need:"boty", ok:"„Stůj!“ Běžíš. Přes příkop, přes pole, srdce až v krku — podrážky drží. Křik za tebou slábne, pak nic. Jen tvůj dech.", fail:"Rozběhl ses. Po sto metrech povolila podrážka. Doběhli tě v poli."},
-  inf:{text:"U poslední silnice před pásmem svítí voják baterkou po příkopech. Máš doklady — když tě zastaví, ukážeš je a nejspíš projdeš. Rozběhnout se by bylo přiznání.", l:"Jít klidně dál", p:"Otočit se a běžet", spravna:"l"},
-  bl:{text:"Voják s baterkou u silnice, kužel právě klouže sem. Nemáš čím se prokázat — jestli tě zastaví, je konec. Rozběhnout se přes silnici teď, dokud svítí blízko, nebo počkat, až šlehne jinam?", l:"Počkat na tmu", p:"Rychle přejít teď", spravna:"l"}},
+  zach:{need:"boty", ok:"„Stůj!“ Běžíš. Přes příkop, přes pole, srdce až v krku. Podrážky drží. Křik za tebou slábne, pak nic. Jen tvůj dech.", fail:"Rozběhl ses. Po sto metrech povolila podrážka. Doběhli tě v poli."},
+  inf:{text:"U poslední silnice před pásmem svítí voják baterkou po příkopech. Máš doklady: když tě zastaví, ukážeš je a nejspíš projdeš. Rozběhnout se by bylo přiznání.", l:"Jít klidně dál", p:"Otočit se a běžet", spravna:"l"},
+  bl:{text:"Voják s baterkou u silnice, kužel právě klouže sem. Nemáš čím se prokázat. Jestli tě zastaví, je konec. Rozběhnout se přes silnici teď, dokud svítí blízko, nebo počkat, až šlehne jinam?", l:"Počkat na tmu", p:"Rychle přejít teď", spravna:"l"}},
  {need:"spojka", scena:"druhá strana", img:"nocni_ulice.png",
-  zach:{need:"peníze", ok:"Chlap v montérkách si tě dlouho měří — a pak beze slova natáhne dlaň. Dáš mu, co zbylo. Kývne směrem k seníku.", fail:"Ukázal jsi prázdné dlaně. Otočil se a šel k telefonu."},
-  inf:{text:"Jsi za drátem. Podle domluvy tě u kříže na kraji lesa čeká člověk, co tě schová. Jdeš k němu — opatrně, ať je to opravdu on.", l:"Ke kříži, tiše", p:"Schovat se a čekat", spravna:"l"},
-  bl:{text:"Jsi za drátem, ve tmě, v cizí zemi — a nikdo o tobě neví. Ve vesnici nalevo blikají světla a lidi tady znají hlídku jménem. Les napravo mlčí a je prázdný.", l:"Do vesnice, hledat pomoc", p:"Do lesa, dál od lidí", spravna:"p"}},
+  zach:{need:"peníze", ok:"Chlap v montérkách si tě dlouho měří. Pak beze slova natáhne dlaň. Dáš mu, co zbylo. Kývne směrem k seníku.", fail:"Ukázal jsi prázdné dlaně. Otočil se a šel k telefonu."},
+  inf:{text:"Jsi za drátem. Podle domluvy tě u kříže na kraji lesa čeká člověk, co tě schová. Jdeš k němu opatrně, ať je to opravdu on.", l:"Ke kříži, tiše", p:"Schovat se a čekat", spravna:"l"},
+  bl:{text:"Jsi za drátem, ve tmě, v cizí zemi. A nikdo o tobě neví. Ve vesnici nalevo blikají světla a lidi tady znají hlídku jménem. Les napravo mlčí a je prázdný.", l:"Do vesnice, hledat pomoc", p:"Do lesa, dál od lidí", spravna:"p"}},
 ];
 function spustPrechod(){
   S.prechodKarty = KRIT.map(b=>{
@@ -472,7 +485,7 @@ function spustPrechod(){
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
   obraz("nocni_ulice.png"); $("mery").style.display="none"; $("scena").textContent="neděle v noci";
-  textCross("Je po půlnoci. Vzal jsi, cos sehnal, a vyrazil k hranici. Teď záleží jen na tom, jak dobře jsi to připravil — a co o tobě vědí.",true);
+  textCross("Je po půlnoci. Vzal jsi, cos sehnal, a vyrazil k hranici. Teď záleží jen na tom, jak dobře jsi to připravil. A co o tobě vědí.",true);
   volbyRe("Vyrazit");
 }
 function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.add("noc","prechod");
@@ -488,13 +501,13 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
-  const fl=["Ticho. Prošel jsi.","Dech zadržený — a je to za tebou.","Nikdo. Jdeš dál.","Srdce až v krku, ale kolem klid."][S.i%4];
+  const fl=["Ticho. Prošel jsi.","Dech zadržený. A je to za tebou.","Nikdo. Jdeš dál.","Srdce až v krku, ale kolem klid."][S.i%4];
   pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš) — pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
   if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena});
-    textCross("Ruka po tobě sáhla — vytrhl ses. Běžíš tmou, větve tě šlehají do tváře, přeskočíš strouhu a padneš do brázdy. Kroky. Světlo přejede kolem. Ticho.\n\nByl jsi rychlejší. Jenže teď vědí, že v pásmu někdo je — a v dálce štěká pes.",true);
+    textCross("Ruka po tobě sáhla. Vytrhl ses. Běžíš tmou, větve tě šlehají do tváře, přeskočíš strouhu a padneš do brázdy. Kroky. Světlo přejede kolem. Ticho.\n\nByl jsi rychlejší. Jenže teď vědí, že v pásmu někdo je. A v dálce štěká pes.",true);
     volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; return; }
   // druhá záchrana: výbava — ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
   const z=b.zach;
@@ -524,12 +537,12 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   let ja, nadpis, dodatek;
   if(druh==="prechod"){ nadpis="na druhé straně";
     ja="Přešel jsi. Za starým brodem ti bavorský pohraničník beze slova podal cigaretu.";
-    dodatek=udal?"Prošels — ale ty, cos je zatáhl, teď sedí místo tebe.":"Nikdo tě neudal. Prošels čistě.";
+    dodatek=udal?"Prošels. Ale ty, cos je zatáhl, teď sedí místo tebe.":"Nikdo tě neudal. Prošels čistě.";
   } else if(druh==="draty"){ nadpis="chycen u drátů";
-    ja="Došel jsi až k samotným drátům — a tam tě to dostihlo. § 95/2, tři roky, z toho v Jáchymově.";
-    dodatek=S.zrada?S.zrada:S.pomaly?"Zaváhal jsi u drátů o vteřinu dýl, než noc dovolila. Kužel se zastavil na tobě.":S.prozrazenaTrasa?"Věděli, kudy půjdeš. Řekls jim to sám u výslechu.":"Výslech jsi ustál — a pak tě u drátů zradilo to, na čem jsi ušetřil.";
+    ja="Došel jsi až k samotným drátům. A tam tě to dostihlo. § 95/2, tři roky, z toho v Jáchymově.";
+    dodatek=S.zrada?S.zrada:S.pomaly?"Zaváhal jsi u drátů o vteřinu dýl, než noc dovolila. Kužel se zastavil na tobě.":S.prozrazenaTrasa?"Věděli, kudy půjdeš. Řekls jim to sám u výslechu.":"Výslech jsi ustál. A pak tě u drátů zradilo to, na čem jsi ušetřil.";
   } else { nadpis="usvědčen";
-    ja=(proc==="spis")?"Přiznals dost, aby to složili dohromady. § 95/2 — čtyři roky, Jáchymov.":"Zapíral jsi, co měli. Nezlomili tě, ale nepustili. § 95/2 — dva roky, Pankrác.";
+    ja=(proc==="spis")?"Přiznals dost, aby to složili dohromady. § 95/2: čtyři roky, Jáchymov.":"Zapíral jsi, co měli. Nezlomili tě, ale nepustili. § 95/2: dva roky, Pankrác.";
     dodatek=udal?"Někdo z nich promluvil. Nikdy nezjistíš kdo jistě.":"Nikdo tě neudal. Jen se ptali dost dlouho.";
   }
   const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?("vypovídal"+a+", propuštěn"+a):S.zataženi[k]?("vyslýchán"+a):"nic";
@@ -632,11 +645,11 @@ const IMG="tools/tisk/", DNY=["Monday","Tuesday","Wednesday","Thursday","Friday"
 
 const INTRO=[
  {img:"nocni_ulice.png", scena:"spring 1952, a town near the western border",
-  text:"You are twenty, and your call-up papers have come. In a few weeks you report to the Auxiliary Technical Battalions — the “black barons”, uranium at Jáchymov, years in the mines with no trial and no end date. You know men who came back from there with empty eyes. And you know some who never came back at all."},
+  text:"Je ti dvacet a přišel ti rozkaz. Za pár týdnů nástup k Pomocným technickým praporům: černí baroni, uran v Jáchymově, roky v dolech bez soudu a bez data konce. Znáš lidi, co se odtamtud vrátili s prázdnýma očima. A znáš i ty, co se nevrátili vůbec."},
  {img:"dvere.png", scena:"what you decided",
-  text:"You will not wait for them to come and collect you. Fifty kilometres west lies the border, and beyond it a world where State Security cannot reach. You have decided to cross it.\n\nBut you cannot do it alone — the journey needs things that are not easily come by. And in this town, Security has ears in every other household. One word to the wrong person, and you are finished before you take a single step."},
+  text:"Nebudeš čekat, až si tě přijdou vyzvednout. Padesát kilometrů na západ je hranice a za ní svět, kam Státní bezpečnost nedosáhne. Rozhodl ses ji přejít.\n\nJenže sám to nedáš. Na cestu potřebuješ věci, které se neshánějí jen tak. A v tomhle městě má bezpečnost uši v každé druhé domácnosti. Jeden špatně oslovený člověk, a jsi hotový dřív, než se hneš z místa."},
  {img:"checkpoint.png", scena:"your task",
-  text:"You have two weeks. On weekdays you quietly gather what the escape requires — money, wire cutters, a map of the patrols, a hideout, papers, a contact on the other side. Every piece leaves a trace: a paper with your name on it, a witness, or someone who now knows your plan.\n\nAnd every Saturday, the StB pulls you in for questioning. What you can deny depends on how quietly you gathered — the fewer the traces, the less they hold on you. Survive both interrogations with a clean sheet, and on Sunday night you cross.\n\nSwipe the card left or right."},
+  text:"Máš dva týdny. Ve všední dny potají sháníš, co k útěku potřebuješ: peníze, kleště na dráty, mapu hlídek, úkryt, doklady, spojku na druhé straně. Každý kus po tobě nechá stopu: papír s tvým jménem, svědka, nebo někoho, kdo teď ví o tvém plánu.\n\nA každou sobotu si tě StB vezme na výslech. Co u nich vydržíš zapřít, závisí na tom, jak nenápadně jsi sháněl: čím míň stop, tím míň na tebe mají. Přežij oba výslechy s čistým štítem, a v neděli v noci přejdeš.\n\nTáhni kartu doleva, nebo doprava."},
 ];
 
 // usv = úsvědčující akt (přiznání staví jejich případ)
@@ -644,89 +657,89 @@ const NEED=[
  {t:1,need:"peníze",usv:false,img:"vlak.png",scena:"the station",
   uvod:"In the drawer under your linen lie two hundred and thirty crowns, and you keep counting: the guide, the ticket, a hundred for the right palm. It comes out short no matter how you stack it. Without money you are not going anywhere.",
   lPool:[
-   {kdo:"zdena",jm:"aunt Zdena",rod:"z",typ:"svedek",talk:.4,pitch:"Aunt Zdena squeezed your hand after Mass — come to her anytime, family is family. She keeps her pension in an old chicory tin, and every morning she sits with the other grannies on the bench by the church, going over the whole town.",re:"She pressed a roll of banknotes into your palm.",ot:"“Did your aunt Zdena lend you money?”",otO:"“Doing well for yourself lately, we hear. Did someone lend you money?”",ch:"“Your aunt confirmed it.”"},
+   {kdo:"zdena",jm:"aunt Zdena",rod:"z",typ:"svedek",talk:.4,pitch:"Teta Zdena ti po mši stiskla ruku, ať se kdykoli ozveš: rodina je rodina. Důchod si skládá do plechovky od cikorky a každé ráno s babkami na lavičce u kostela proberou celé město.",re:"She pressed a roll of banknotes into your palm.",ot:"“Did your aunt Zdena lend you money?”",otO:"“Doing well for yourself lately, we hear. Did someone lend you money?”",ch:"“Your aunt confirmed it.”"},
    {kdo:"vavra",jm:"uncle Vávra",rod:"m",typ:"svedek",talk:.5,pitch:"Uncle Vávra always has a few hundred set aside. Every evening he sits in the Linden Tavern over his third beer, playing cards and chatting with anyone who sits down; half the pub calls him uncle.",re:"He counted out the notes under the table.",ot:"“Did you take money from Vávra?”",otO:"“Did you play cards at the Linden last week?”",ch:"“Vávra talked about you.”"}],
   pPool:[
-   {kdo:"vekslak",jm:"the dealer",rod:"m",typ:"cisty",pitch:"Or the dealer at the station — he loiters by the newsstand, collar up, buys and sells without a word or a name. Nobody knows where he lives, and nobody cares.",re:"He counted it and vanished into the crowd.",ot:"“Did you sell something to the dealer at the station?”",ch:""},
-   {kdo:null,jm:"grandpa’s watch",rod:"m",typ:"cisty",pitch:"Or grandpa’s gold watch — ten years in the drawer, wrapped in a handkerchief. In the district town, where nobody knows you, a goldsmith would pay something for it.",re:"You hid the money deep in your boots.",ot:"“Did you sell anything of value?”",ch:""}]},
+   {kdo:"vekslak",jm:"the dealer",rod:"m",typ:"cisty",pitch:"Anebo překupník z nádraží. Postává u stánku s límcem nahoru, koupí i prodá beze slova a bez jména. Nikdo neví, kde bydlí, a nikoho to nezajímá.",re:"He counted it and vanished into the crowd.",ot:"“Did you sell something to the dealer at the station?”",ch:""},
+   {kdo:null,jm:"grandpa’s watch",rod:"m",typ:"cisty",pitch:"Anebo dědovy zlaté hodinky. Deset let leží v šupleti v kapesníku. V okresním městě, kde tě neznají, by za ně u zlatníka něco dali.",re:"You hid the money deep in your boots.",ot:"“Did you sell anything of value?”",ch:""}]},
 
  {t:1,need:"kleště",usv:true,img:"dvere.png",scena:"the workshop",
-  uvod:"The shop floor has been buzzing all morning about who got picked up where. You pretend to listen to the drill and think of one thing — cutters for barbed wire. There is a whole shelf of them in the storeroom; you will not buy those in a shop.",
+  uvod:"Na dílně se od rána drbe, koho zase kde sebrali. Děláš, že posloucháš vrtačku, a myslíš na jediné: štípačky na ostnatý drát. Ve skladu jich leží celá police; v krámě takové nekoupíš.",
   lPool:[
-   {kdo:"dolezal",jm:"foreman Doležal",rod:"m",typ:"papir",pitch:"At the break, foreman Doležal ambles across the yard, keys on his belt, toothpick in his teeth. Nothing moves in that storeroom without him. You would only have to ask — he would grumble, slide the issue ledger across, lick his pencil, sign here, and go about his business.",re:"He locked up without a word.",ot:"“Were you in the storeroom with foreman Doležal?”",otO:"“Did you stay at the factory after your shift?”",ch:"“Here is your name in the ledger.”"},
-   {kdo:"kriz",jm:"locksmith Kříž",rod:"m",typ:"papir",pitch:"Locksmith Kříž on the square would have them too. A tidy old spider — every job gets its slip, filed into his book each evening; but his work is good, and half the town trusts him with their keys.",re:"He wrapped them in oiled paper.",ot:"“Did you order something from locksmith Kříž?”",otO:"“Have you ordered any work done lately? At the locksmith, say.”",ch:"“We have the slip from his book.”"}],
+   {kdo:"dolezal",jm:"foreman Doležal",rod:"m",typ:"papir",pitch:"O pauze se dvorem loudá mistr Doležal, klíče u pasu, párátko v zubech. Co se ve skladu šustne, jde přes něj. Stačilo by říct: zabručel by, přisunul knihu výdejů, naslinil tužku, tady podpis, a šel si po svých.",re:"He locked up without a word.",ot:"“Were you in the storeroom with foreman Doležal?”",otO:"“Did you stay at the factory after your shift?”",ch:"“Here is your name in the ledger.”"},
+   {kdo:"kriz",jm:"locksmith Kříž",rod:"m",typ:"papir",pitch:"Locksmith Kříž on the square would have them too. A tidy old spider: every job gets its slip, filed into his book each evening; but his work is good, and half the town trusts him with their keys.",re:"He wrapped them in oiled paper.",ot:"“Did you order something from locksmith Kříž?”",otO:"“Have you ordered any work done lately? At the locksmith, say.”",ch:"“We have the slip from his book.”"}],
   pPool:[
-   {kdo:"pepik",jm:"Pepík from the shop floor",rod:"m",typ:"svedek",talk:.52,pitch:"Or Pepík from the next bench. His cigarette trembles in his fingers — since they took his brother, he flinches at every slammed door. He whispered he would carry them out in a rag between the sandwiches. Then he kept his eyes down all day.",re:"He handed them over in a rag, hands shaking.",ot:"“Did you take tools from Pepík?”",otO:"“Were you in the workshop after hours?”",ch:"“Pepík saw you.”"},
-   {kdo:"tonik",jm:"Toník the apprentice",rod:"m",typ:"svedek",talk:.56,pitch:"Or Toník the apprentice — he would smuggle them out under his coat with shining eyes, an adventure straight out of his pulp westerns. Clever hands, a good heart, a tongue faster than his head.",re:"He slipped them under your coat and winked.",ot:"“Did the apprentice give you tools?”",otO:"“Do any of the apprentices come to see you?”",ch:"“The boy bragged about it.”"}]},
+   {kdo:"pepik",jm:"Pepík from the shop floor",rod:"m",typ:"svedek",talk:.52,pitch:"Anebo Pepík od ponku. Cigareta se mu chvěje v prstech. Co mu zavřeli bratra, trhne sebou při každém bouchnutí dveří. Pošeptal ti, že by je vynesl v hadru mezi svačinami. Pak celý den klopil oči.",re:"He handed them over in a rag, hands shaking.",ot:"“Did you take tools from Pepík?”",otO:"“Were you in the workshop after hours?”",ch:"“Pepík saw you.”"},
+   {kdo:"tonik",jm:"Toník the apprentice",rod:"m",typ:"svedek",talk:.56,pitch:"Anebo učeň Toník. Vynesl by je pod kabátem s rozzářenýma očima, konečně dobrodružství jak z rodokapsů. Šikovné ruce, dobré srdce, jazyk rychlejší než rozum.",re:"He slipped them under your coat and winked.",ot:"“Did the apprentice give you tools?”",otO:"“Do any of the apprentices come to see you?”",ch:"“The boy bragged about it.”"}]},
 
  {t:1,need:"mapa",usv:true,img:"mapa.png",scena:"almost at the wire",
-  uvod:"In the evening, over a blank map, you piece together what you know: the strip is ploughed and floodlit, the patrols run on a schedule — and you do not know it. One wrong path and it is over. This cannot be guessed. This you have to know.",
+  uvod:"Večer nad slepou mapou skládáš, co víš: pásmo je zorané a nasvícené, hlídky chodí na čas. A ten čas neznáš. Jedna špatná pěšina a je po všem. Tohle se nedá uhodnout, tohle musíš vědět.",
   lPool:[
-   {kdo:"rudolf",jm:"Rudolf the driver",rod:"m",typ:"svedek",talk:.6,pitch:"Rudolf drives the lumber run up to the barrier and greets the border guards by name — he knows when they change shifts and where they stop to smoke. He would sketch it for you, times and all; you would only have to say which way and which night you are going.",re:"He nodded and asked only about the night.",ot:"“Did you ask Rudolf about the patrols?”",otO:"“Do you know the drivers from the haulage yard?”",ch:"“Rudolf gave a statement.”"},
-   {kdo:"benes",jm:"gamekeeper Beneš",rod:"m",typ:"svedek",talk:.5,pitch:"Gamekeeper Beneš walks the woods along the strip every day and knows every deer stand. He would show you the right path — but he wants to know which night; the forest, he says, is one thing on a Friday and another on a Sunday.",re:"He drew it in the dirt with a stick.",ot:"“Did you talk to the gamekeeper about the strip?”",otO:"“Do you go walking in the woods outside town?”",ch:"“The gamekeeper reported you.”"}],
+   {kdo:"rudolf",jm:"Rudolf the driver",rod:"m",typ:"svedek",talk:.6,pitch:"Rudolf jezdí se svozem k závoře a s pohraničníky se zdraví jménem: ví, kdy střídají a kde si zapalují. Nakreslil by ti to i s časy; stačí prý říct, kudy a kterou noc půjdeš.",re:"He nodded and asked only about the night.",ot:"“Did you ask Rudolf about the patrols?”",otO:"“Do you know the drivers from the haulage yard?”",ch:"“Rudolf gave a statement.”"},
+   {kdo:"benes",jm:"gamekeeper Beneš",rod:"m",typ:"svedek",talk:.5,pitch:"Hajný Beneš prochází les u pásma den co den a zná každý posed. Ukázal by ti tu pravou pěšinu. Chce ale vědět, na kterou noc; les je prý jiný v pátek a jiný v neděli.",re:"He drew it in the dirt with a stick.",ot:"“Did you talk to the gamekeeper about the strip?”",otO:"“Do you go walking in the woods outside town?”",ch:"“The gamekeeper reported you.”"}],
   pPool:[
    {kdo:"cetnik",jm:"the old gendarme",rod:"m",typ:"cisty",pitch:"Or the old gendarme in the cottage above town. He walked the strip back under the Republic; he does not talk to people, but for you he would sketch from memory the paths, the ditch, the old ford.",re:"He drew two lines on a newspaper.",ot:"“Did you speak with the old gendarme about the strip?”",ch:""},
    {kdo:null,jm:"scout it yourself",rod:"m",typ:"cisty",pitch:"Or you take your father’s field glasses and spend Sunday watching from the hill: where the farmers walk, where the wire can be seen from. What you see is what you get.",re:"You memorise two paths and a ditch.",ot:"“Did you go watching the border?”",ch:""}]},
 
  {t:1,need:"proviant",usv:false,img:"chleb.png",scena:"the shop",
-  uvod:"Two days through fields and ditches to the woods by the border — not one door you would dare to knock on. Bread, bacon, something for the thirst; at home in the pantry stand three jars of lard and a bag of groats.",
+  uvod:"K lesu u hranice dva dny poli a strouhami, žádné dveře, na které by ses odvážil zaklepat. Chleba, špek, něco proti žízni; doma ve špíži stojí tři sklenice sádla a pytlík krup.",
   lPool:[
-   {kdo:"betka",jm:"grocer Bětka",rod:"z",typ:"svedek",talk:.45,pitch:"Grocer Bětka weighs, clips ration coupons and keeps up a conversation with the whole queue — she knows whose mother-in-law is ailing. She would load you up all at once and throw something in on top, like when you were a boy sent for yeast.",re:"She added a piece of bacon.",ot:"“Did you stock up at the grocer’s?”",otO:"“Have you been buying more than usual?”",ch:"“The grocer remembers you.”"},
+   {kdo:"betka",jm:"grocer Bětka",rod:"z",typ:"svedek",talk:.45,pitch:"Hokyně Bětka váží, stříhá lístky a vede řeč s celou frontou: ví, komu stůně tchyně. Naložila by ti všechno naráz a přihodila něco navrch, jako když jsi chodil pro kvasnice.",re:"She added a piece of bacon.",ot:"“Did you stock up at the grocer’s?”",otO:"“Have you been buying more than usual?”",ch:"“The grocer remembers you.”"},
    {kdo:"chalupa",jm:"innkeeper Chalupa",rod:"m",typ:"svedek",talk:.5,pitch:"Innkeeper Chalupa can wrap a parcel in newspaper so it looks like laundry. All day behind the tap he listens to half the town and pours for the other half; whatever you put on the counter is gone beneath it before you finish your beer.",re:"He wrapped it in newspaper.",ot:"“Did you buy food from the innkeeper?”",otO:"“Do you go to the tavern in the evenings?”",ch:"“The innkeeper described you.”"}],
   pPool:[
-   {kdo:null,jm:"from the pantry",rod:"m",typ:"cisty",pitch:"Or you carry from the pantry bit by bit — a jar today, half a loaf tomorrow, into a sack behind the attic beam. Mother, so far, counts only the Sundays, not the slices.",re:"You packed what the house could spare.",ot:"“Were you preparing food for a journey?”",ch:""},
-   {kdo:null,jm:"dried from the garden",rod:"m",typ:"cisty",pitch:"Or you dry what the garden gave: apples on the windowsill, hard cheese, last week’s bread. It will chew like wood, but it is yours — from the soil to the crust.",re:"You sewed it into a linen bag.",ot:"“Were you preparing provisions?”",ch:""}]},
+   {kdo:null,jm:"from the pantry",rod:"m",typ:"cisty",pitch:"Anebo poneseš ze špíže po troškách: dnes sklenici, zítra půl bochníku, do pytlíku za trámem. Matka zatím počítá jen neděle, ne krajíce.",re:"You packed what the house could spare.",ot:"“Were you preparing food for a journey?”",ch:""},
+   {kdo:null,jm:"dried from the garden",rod:"m",typ:"cisty",pitch:"Anebo nasušíš, co dala zahrada: jablka za oknem, tvrdý sýr, starší chleba. Bude to jak dřevo, ale je to tvoje, od hlíny po kůrku.",re:"You sewed it into a linen bag.",ot:"“Were you preparing provisions?”",ch:""}]},
 
  {t:1,need:"boty",usv:false,img:"kufr.png",scena:"the cobbler’s",
-  uvod:"In the evening you turn your boots over in your hands: the sole hangs on three tacks, the seams are going. Ahead of you, soaked fields and a whole night of walking in the dark. They have carried you far — but maybe not this far.",
+  uvod:"Večer obracíš v rukou svoje boty: podrážka na třech flocích, švy pouštějí. A před tebou rozmoklá pole a celá noc chůze potmě. Došly ledacos. Tohle by mohly nedojít.",
   lPool:[
-   {kdo:"svec",jm:"cobbler Vaněk",rod:"m",typ:"svedek",talk:.5,pitch:"Cobbler Vaněk turns the boots against the light, rubs the sole with his thumb and asks what kind of journey they must survive — he stitches one way for a dance, another for the mountains. What leaves his bench lasts for years.",re:"He hammered on new soles.",ot:"“Did you have your boots repaired at the cobbler’s?”",otO:"“Have you had anything repaired lately?”",ch:"“The cobbler described you.”"},
-   {kdo:"pokorny",jm:"saddler Pokorný",rod:"m",typ:"svedek",talk:.48,pitch:"Saddler Pokorný would sew you high boots like a huntsman’s. He takes the measure of your instep with a string and asks questions while he does — the craft, he says, is half the work; the other half is knowing the man who will walk in them.",re:"He measured your instep with a string.",ot:"“Did you order boots from the saddler?”",otO:"“Have you been to the saddler recently?”",ch:"“The saddler remembered you.”"}],
+   {kdo:"svec",jm:"cobbler Vaněk",rod:"m",typ:"svedek",talk:.5,pitch:"Švec Vaněk obrací boty proti světlu, mne podrážku palcem a vyptává se, na jakou cestu to má vydržet: jinak šije na tancovačku, jinak na hory. Co projde jeho verpánkem, vydrží roky.",re:"He hammered on new soles.",ot:"“Did you have your boots repaired at the cobbler’s?”",otO:"“Have you had anything repaired lately?”",ch:"“The cobbler described you.”"},
+   {kdo:"pokorny",jm:"saddler Pokorný",rod:"m",typ:"svedek",talk:.48,pitch:"Sedlář Pokorný by ušil vysoké boty jako pro myslivce. Bere provázkem míru na nárt a u toho se vyptává: řemeslo je prý půlka práce, druhá půlka znát člověka, co v nich půjde.",re:"He measured your instep with a string.",ot:"“Did you order boots from the saddler?”",otO:"“Have you been to the saddler recently?”",ch:"“The saddler remembered you.”"}],
   pPool:[
-   {kdo:null,jm:"your own, worn out",rod:"m",typ:"cisty",pitch:"Or you keep your own as they are. They leak in the wet, but you know them — where they pinch and what they will take. You grease them with lard and stuff them with newspaper.",re:"You take what is at home.",ot:"“Were you preparing equipment for a journey?”",ch:""},
-   {kdo:null,jm:"father’s old boots",rod:"m",typ:"cisty",pitch:"Or your father’s old boots from the attic — heavy, a size too big, but honest pre-war leather. You stuff the toes with rags and hope your feet learn them in time.",re:"You stuffed them with rags.",ot:"“Were you looking for footwear?”",ch:""}]},
+   {kdo:null,jm:"your own, worn out",rod:"m",typ:"cisty",pitch:"Anebo necháš svoje, jak jsou. V mokru pouštějí, ale znáš je: víš, kde tlačí a co vydrží. Namažeš je sádlem a vycpeš novinami.",re:"You take what is at home.",ot:"“Were you preparing equipment for a journey?”",ch:""},
+   {kdo:null,jm:"father’s old boots",rod:"m",typ:"cisty",pitch:"Anebo otcovy holínky z půdy: těžké, o číslo větší, ale kůže poctivá, předválečná. Vycpeš špičky hadrem a doufáš, že si nohy zvyknou.",re:"You stuffed them with rags.",ot:"“Were you looking for footwear?”",ch:""}]},
 
  {t:2,need:"úkryt",usv:true,img:"kostel.png",scena:"the parsonage",
-  uvod:"The last night will be the longest: wait it out close to the wire, hold for your hour, and do not freeze. You cannot just stand around in the strip — you need a hole where no living soul will see you till morning.",
+  uvod:"Poslední noc bude nejdelší: přečkat ji blízko drátů, počkat si na svou hodinu a nezmrznout. V pásmu se nedá postávat. Potřebuješ díru, kde tě do rána neuvidí živá duše.",
   lPool:[
    {kdo:"farar",jm:"Father Toman",rod:"m",typ:"svedek",talk:.42,pitch:"Father Toman fell silent for a long moment in the confessional, then said only: I will leave the back gate unlocked, and I will go to sleep. The parsonage is the last house before the fields, and from the sacristy window you can see the wire.",re:"He said he would leave it open.",ot:"“Did you arrange to spend a night at the priest’s?”",otO:"“Do you attend Mass regularly?”",ch:"“The priest put it in the record.”"},
-   {kdo:"slavik",jm:"signalman Slavík",rod:"m",typ:"svedek",talk:.5,pitch:"Signalman Slavík has a hut by the tracks, almost inside the strip — a stove, a bench, a paraffin lamp. He would lend the key and leave you be; he works nights and walks his switches with a lantern before dawn.",re:"He handed you the key to the hut.",ot:"“Did you stay overnight at the signalman’s?”",otO:"“Do you know any of the railwaymen?”",ch:"“The signalman named you.”"}],
+   {kdo:"slavik",jm:"signalman Slavík",rod:"m",typ:"svedek",talk:.5,pitch:"Výhybkář Slavík má u trati boudu skoro v pásmu: kamna, lavice, petrolejka. Klíč by půjčil a nechal tě být; sám slouží noční a nad ránem obchází výhybky s lucernou.",re:"He handed you the key to the hut.",ot:"“Did you stay overnight at the signalman’s?”",otO:"“Do you know any of the railwaymen?”",ch:"“The signalman named you.”"}],
   pPool:[
-   {kdo:null,jm:"the empty shed",rod:"m",typ:"cisty",pitch:"Or the empty shed past the edge of town — cold, full of holes, nobody has set foot in it for years. You climb the fence by the elder bush; as boys you played gendarmes and robbers there.",re:"You crawl in alone at midnight.",ot:"“Did you mean to sleep in the shed outside town?”",ch:""},
+   {kdo:null,jm:"the empty shed",rod:"m",typ:"cisty",pitch:"Anebo prázdná kůlna za městem: studená, děravá, roky do ní nikdo nevkročil. Plot se přelézá u bezinky; jako kluci jste si tam hráli na četníky.",re:"You crawl in alone at midnight.",ot:"“Did you mean to sleep in the shed outside town?”",ch:""},
    {kdo:null,jm:"the old brickworks",rod:"z",typ:"cisty",pitch:"Or the old brickworks by the river. There is a niche in the kiln big enough for a man and his bundle; the draught whistles through every crack, but no living soul goes there.",re:"You crawl into the kiln niche.",ot:"“Were you seen near the old brickworks?”",ch:""}]},
 
  {t:2,need:"doklady",usv:true,img:"pas.png",scena:"the back room",
-  uvod:"In the morning a policeman stopped you on the bridge and held out his hand without a word. He returned your ID and moved on — but your name is on a call-up order. You will need something to show. Or be nobody at all.",
+  uvod:"Ráno tě na mostě zastavil esenbák a beze slova natáhl ruku. Občanku vrátil a šel dál. Jenže tvoje jméno stojí na povolávacím rozkaze. Budeš se muset něčím prokázat. Nebo nikým nebýt.",
   lPool:[
-   {kdo:"falso",jm:"the forger",rod:"m",typ:"papir",pitch:"Above the barbershop sits a man who makes papers in other names. He works under a lamp with a fine brush and a loupe, his stamps beyond telling from real — and he talks so little you do not even know his name.",re:"He handed it over without looking up.",ot:"“Do you have forged papers on you?”",otO:"“Have you been to the house above the barbershop?”",ch:"“We found this on you.”"},
+   {kdo:"falso",jm:"the forger",rod:"m",typ:"papir",pitch:"Nad holičstvím sedí člověk, co dělá legitimace na cizí jméno. Pracuje u lampy se štětečkem a lupou, razítko k nerozeznání. A mluví tak málo, že ani nevíš, jak se jmenuje.",re:"He handed it over without looking up.",ot:"“Do you have forged papers on you?”",otO:"“Have you been to the house above the barbershop?”",ch:"“We found this on you.”"},
    {kdo:"roubal",jm:"photographer Roubal",rod:"m",typ:"papir",pitch:"Photographer Roubal sits you under the lamp, clicks, and within a week delivers papers, stamp and all. The studio smells of developer, and the negatives go into the drawer with all the others.",re:"He locked the photo in a drawer.",ot:"“Did Roubal photograph you for new papers?”",otO:"“Have you had your photograph taken recently?”",ch:"“Your negative is at Roubal’s.”"}],
   pPool:[
-   {kdo:null,jm:"go without",rod:"m",typ:"cisty",pitch:"Or you go with no papers at all. Be nobody, carry nothing — just the dark, the fields, and a name you never say out loud.",re:"You trust the dark.",ot:"“Did you obtain new papers?”",ch:""},
-   {kdo:null,jm:"your real ID",rod:"z",typ:"cisty",pitch:"Or you keep your own old ID — real, with your name and your army photo. You have carried it since you were eighteen; it knows your pocket better than you do.",re:"You tuck it into the lining.",ot:"“Do you have any papers on you?”",ch:""}]},
+   {kdo:null,jm:"go without",rod:"m",typ:"cisty",pitch:"Anebo půjdeš beze všech papírů. Nikým nebýt, nic u sebe nemít: jen tma, pole a jméno, které nahlas nevyslovíš.",re:"You trust the dark.",ot:"“Did you obtain new papers?”",ch:""},
+   {kdo:null,jm:"your real ID",rod:"z",typ:"cisty",pitch:"Anebo si necháš svou starou legitimaci: pravou, se jménem a fotkou z vojny. Nosíš ji od osmnácti; zná tvou kapsu líp než ty.",re:"You tuck it into the lining.",ot:"“Do you have any papers on you?”",ch:""}]},
 
  {t:2,need:"propustka",usv:true,img:"checkpoint.png",scena:"the district office",
-  uvod:"The road to the border: a barrier, a guardhouse, a soldier with a rifle. The only permitted way into the strip — without a permit you turn back at the barrier. You stand by the milestone and watch who gets through. All of them with paper.",
+  uvod:"Silnice k hranici: závora, budka, voják s puškou. Jediná povolená cesta do pásma. Bez propustky se od závory chodí zpátky. Stojíš u patníku a díváš se, koho pouštějí. Každého s papírem.",
   lPool:[
-   {kdo:"urednik",jm:"the clerk",rod:"m",typ:"papir",pitch:"The clerk at the district office issues permits through window three. He takes the application and whatever is tucked inside it, presses the stamp, files the form into the drawer and calls the next in line — one motion, practised for twenty years.",re:"He pressed the stamp and held out his palm.",ot:"“Did you apply for a permit into the strip?”",otO:"“Were you at the district office last week?”",ch:"“Your application is on file.”"},
-   {kdo:"hajkova",jm:"typist Hájková",rod:"z",typ:"papir",pitch:"Typist Hájková stays at the office after hours. She types up the permit, stamp and all, files the carbons the way the office likes it — and what people leave on her counter feeds two children.",re:"She passed it across the counter, eyes down.",ot:"“Did typist Hájková arrange a permit for you?”",otO:"“Did you arrange anything at the office after hours?”",ch:"“The carbon copy is in the file.”"}],
+   {kdo:"urednik",jm:"the clerk",rod:"m",typ:"papir",pitch:"Úředník na okrese vydává propustky přes přepážku tři. Vezme žádost i to, co je vložené navíc, otiskne razítko, žádost založí do šuplíku a volá dalšího: jedním pohybem, naučeným za dvacet let.",re:"He pressed the stamp and held out his palm.",ot:"“Did you apply for a permit into the strip?”",otO:"“Were you at the district office last week?”",ch:"“Your application is on file.”"},
+   {kdo:"hajkova",jm:"typist Hájková",rod:"z",typ:"papir",pitch:"Písařka Hájková zůstává na úřadě po hodinách. Vyťuká propustku i s razítkem, průpisy založí do složek, jak je zvykem. A z toho, co jí lidé nechají, živí dvě děti.",re:"She passed it across the counter, eyes down.",ot:"“Did typist Hájková arrange a permit for you?”",otO:"“Did you arrange anything at the office after hours?”",ch:"“The carbon copy is in the file.”"}],
   pPool:[
-   {kdo:null,jm:"go around by night",rod:"m",typ:"cisty",pitch:"Or you skip the barrier — at night, through the fields, off every road. Along the railway ditch and in a wide arc around the guardhouse, where nobody goes who does not have to.",re:"You plan your detour.",ot:"“Did you arrange entry into the border strip?”",ch:""},
-   {kdo:null,jm:"slip through with the herd",rod:"m",typ:"cisty",pitch:"Or at dawn with the herdsman driving the cattle to the meadows by the line. There are always a few of them — one more man beside the cows, in overalls, switch in hand.",re:"You walk beside the cattle like a farmhand.",ot:"“Were you near the border with the cattle?”",ch:""}]},
+   {kdo:null,jm:"go around by night",rod:"m",typ:"cisty",pitch:"Anebo se závoře vyhneš: v noci, polem, mimo cesty. Příkopem podél trati a obloukem kolem budky, kudy nechodí nikdo, kdo nemusí.",re:"You plan your detour.",ot:"“Did you arrange entry into the border strip?”",ch:""},
+   {kdo:null,jm:"slip through with the herd",rod:"m",typ:"cisty",pitch:"Anebo za rozbřesku s pasákem, co žene stádo na luka u čáry. Chodí jich tam víc: jeden navíc vedle krav, v montérkách, s prutem.",re:"You walk beside the cattle like a farmhand.",ot:"“Were you near the border with the cattle?”",ch:""}]},
 
  {t:2,need:"svoz",usv:true,img:"auto.png",scena:"the road",
-  uvod:"It is a full day’s walk to the woods by the border, on roads where a man can be seen a kilometre off. A day on your feet, in plain sight, with a bundle — and by evening you must be in place, not half-dead in a ditch.",
+  uvod:"K lesu u hranice je den chůze po silnicích, kde je člověk vidět na kilometr. Den na nohou, na očích, s rancem. A večer musíš být na místě, ne polomrtvý v příkopu.",
   lPool:[
-   {kdo:"rudolf",jm:"Rudolf the driver",rod:"m",typ:"svedek",talk:.6,pitch:"Rudolf would take you under the tarp in his van — he hauls wood from that forest and everyone knows him, the patrols included. Just say which evening and where exactly; he says he can tell when someone is holding back.",re:"“You’ll ride in the back, under the tarp.”",ot:"“Did someone drive you toward the border?”",otO:"“Did anyone give you a lift last week?”",ch:"“Rudolf drove you.”"},
-   {kdo:"masa",jm:"trucker Máša",rod:"m",typ:"svedek",talk:.52,pitch:"Trucker Máša runs to the sawmill twice a week and would take you in among the crates — a big-hearted bear of a man. Over a beer he tells who he met and where; he does love to tell a story, you have to give him that.",re:"He jerked a thumb at the truck bed.",ot:"“Did a truck give you a lift toward the border?”",otO:"“Have you been out by the sawmill lately?”",ch:"“The driver remembered you.”"}],
+   {kdo:"rudolf",jm:"Rudolf the driver",rod:"m",typ:"svedek",talk:.6,pitch:"Rudolf by tě vzal dodávkou pod plachtu. K lesu jezdí pro dřevo a zná ho každý, i hlídky. Stačí říct, který večer a kam přesně; pozná prý, když někdo mlží.",re:"“You’ll ride in the back, under the tarp.”",ot:"“Did someone drive you toward the border?”",otO:"“Did anyone give you a lift last week?”",ch:"“Rudolf drove you.”"},
+   {kdo:"masa",jm:"trucker Máša",rod:"m",typ:"svedek",talk:.52,pitch:"Řidič Máša jezdí k pile dvakrát týdně a vzal by tě mezi bedny: chlap od plic, srdce na dlani. U piva pak vypráví, koho kde potkal; vyprávět umí, to se mu musí nechat.",re:"He jerked a thumb at the truck bed.",ot:"“Did a truck give you a lift toward the border?”",otO:"“Have you been out by the sawmill lately?”",ch:"“The driver remembered you.”"}],
   pPool:[
-   {kdo:null,jm:"on foot, alone",rod:"m",typ:"cisty",pitch:"Or on foot, before first light, alone. To the mill, along the brook, between the field banks — by dusk you can be within sight of the woods, if your legs hold.",re:"You set out before dawn.",ot:"“How did you mean to reach the woods?”",ch:""},
+   {kdo:null,jm:"on foot, alone",rod:"m",typ:"cisty",pitch:"Anebo pěšky, před rozedněním, sám. K mlýnu, podél potoka, mezi mezemi. Do setmění můžeš být na dohled lesa, když nohy vydrží.",re:"You set out before dawn.",ot:"“How did you mean to reach the woods?”",ch:""},
    {kdo:null,jm:"by bike, the long way",rod:"m",typ:"cisty",pitch:"Or by bike through Doubravka, where nothing passes but a tractor. You leave the bike in a thicket by the last farmhouse and go on on foot.",re:"You mount up in the dark and pedal.",ot:"“Did you ride out somewhere by bike?”",ch:""}]},
 
  {t:2,need:"spojka",usv:true,img:"dopis.png",scena:"the post office",
-  uvod:"It does not end at the line — the Bavarian side is thick with patrols and camps for those who crossed wrong. You need someone to wait for you there and hide you. Otherwise you cross the wire only to be picked up a kilometre later.",
+  uvod:"Za čárou to nekončí. Bavorská strana je plná patrol a táborů pro ty, co přešli špatně. Potřebuješ někoho, kdo tam počká a schová tě. Jinak přejdeš dráty, aby tě sebrali o kilometr dál.",
   lPool:[
-   {kdo:"prostrednik",jm:"the go-between",rod:"m",typ:"papir",pitch:"The go-between at the post office can get a letter across the line — he has routes the mail has travelled since the war. You write when and where, seal it, he sends it on; delivered within the week, they say, sure as a death notice.",re:"You handed over an envelope with no address.",ot:"“Did you write to someone on the other side?”",otO:"“Have you posted any letters recently?”",ch:"“We have the letter.”"},
-   {kdo:"pisar",jm:"the smugglers’ clerk",rod:"m",typ:"papir",pitch:"The smugglers’ clerk passes messages by word of mouth. He sits by the station on Fridays, hears you out, nods — and keeps a notebook of what he promised to whom; order, he says, matters even in this trade.",re:"He wrote you into his notebook and put it away.",ot:"“Did you send word through the smugglers?”",otO:"“Were you waiting by the station on Friday evening?”",ch:"“You were in his list.”"}],
+   {kdo:"prostrednik",jm:"the go-between",rod:"m",typ:"papir",pitch:"Prostředník od pošty dostane psaní přes čáru: má cesty, po kterých chodí dopisy od války. Napíšeš kdy a kde, zalepíš, on pošle dál; doručeno prý do týdne, jistě jak úmrtní oznámení.",re:"You handed over an envelope with no address.",ot:"“Did you write to someone on the other side?”",otO:"“Have you posted any letters recently?”",ch:"“We have the letter.”"},
+   {kdo:"pisar",jm:"the smugglers’ clerk",rod:"m",typ:"papir",pitch:"Písař od převaděčů vyřizuje vzkazy ústně. Sedává v pátek u nádraží, vyslechne, kývne. A do notesu si vede, komu co slíbil; pořádek prý musí být i v tomhle řemesle.",re:"He wrote you into his notebook and put it away.",ot:"“Did you send word through the smugglers?”",otO:"“Were you waiting by the station on Friday evening?”",ch:"“You were in his list.”"}],
   pPool:[
    {kdo:null,jm:"go in blind",rod:"m",typ:"cisty",pitch:"Or you go in blind: cross, burrow into the woods, and in the morning follow the church bells to the first village. You will fend for yourself, like you have all along.",re:"You trust to luck.",ot:"“Do you have a contact on the other side?”",ch:""},
    {kdo:null,jm:"the old password",rod:"z",typ:"cisty",pitch:"Or the old password from Franta, the saddler’s boy, from before he vanished across the line: whoever comes and says “from Nepomuk” is to be helped. Whether Franta still lives there, God only knows.",re:"You rehearse the phrase one more time.",ot:"“Did you arrange anything with someone across the border?”",ch:""}]},
@@ -734,7 +747,7 @@ const NEED=[
 const JMENA={}; NEED.forEach(n=>[...n.lPool,...n.pPool].forEach(s=>{if(s.kdo)JMENA[s.kdo]={jm:s.jm,rod:s.rod};}));
 function vyber(a){ return a[Math.floor(Math.random()*a.length)]; }
 function zamichej(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-const PRAH_SPIS=3, VER_ZTRATA=26;
+const PRAH_SPIS=4, VER_ZTRATA=26;
 
 let S, cas=null, anim=false, hintTxt={l:"",p:""};
 const $=id=>document.getElementById(id);
@@ -872,7 +885,7 @@ function spustVyslech(){
   S.karty=[...mich(karty.filter(q=>!q.konkretni)), ...mich(karty.filter(q=>q.konkretni))];
   S.razitkaTyden=0; S.spisPred=S.spis; S.i=0; S.faze="vyslech-intro"; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`Saturday, interrogation, week ${S.t}`; merky();
-  textCross("They picked you up on Saturday morning. The interrogator has a file in front of him — and you do not know what is in it.",true);
+  textCross("Sebrali tě v sobotu ráno. Vyšetřovatel má před sebou spis. A ty nevíš, co v něm je.",true);
   volbyRe("Sit down");
 }
 function merky(){ $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")"; $("spisFill").style.transform="scaleX("+Math.min(100,S.spis/PRAH_SPIS*100)/100+")";
@@ -885,7 +898,9 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=f
     else vysl=S.dokazano[kl]?"“There we are. At least you have stopped denying what we both know.”":"You hold to your version word for word. “...very well.”";
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[q.need+q.str]=strana;
-    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;vysl=q.ch+" He was not even angry. He just wrote it down.";} else vysl="Silence. Then: “Fine.” He keeps writing."; }
+    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;
+      if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání — lež ho nesmaže
+      vysl=q.ch+" He was not even angry. He just wrote it down.";} else vysl="Silence. Then: “Fine.” He keeps writing."; }
   else { S.reklJsem[q.need+q.str]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal — na falešné přiznání věci, co se nestala, nemají důkaz
@@ -897,7 +912,8 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=f
   if(stamp){ razitko(); S.razitkaTyden=(S.razitkaTyden||0)+1;
     $("nalada").textContent = S.vera>40?"He looked up from the papers. Made a note.":"He looks you straight in the eye. He knows you are lying.";
     $("hra").classList.remove("zasah"); void $("hra").offsetWidth; $("hra").classList.add("zasah");
-    $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls"); }
+    $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls");
+    if(q.usv&&q.pouzito&&!q.reask){ $("spisFill").classList.remove("puls"); void $("spisFill").offsetWidth; $("spisFill").classList.add("puls"); } }
   pripis(vysl,true); volbyRe(S.i>=S.karty.length-1?"End of interrogation":"Next question"); S.faze="vyslech-re";
 }
 function vyslechDal(){ if(S.vera<=0) return finale("zatcen","vera"); if(S.spis>=PRAH_SPIS) return finale("zatcen","spis");
@@ -910,7 +926,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
   else{ const c=[];
     if(raz>0) c.push(raz===1?"He caught you lying once":"He caught you lying "+raz+"x");
     if(spisNew>0) c.push((raz>0?"and ":"")+(spisNew===1?"one thing is now written into your file":spisNew+" things are now written into your file"));
-    t=c.join(" ")+".\n\n"+(S.vera<=40?"They believe you less and less — next week will be worse.":"You held up. But they know more about you than they did this morning.");
+    t=c.join(" ")+".\n\n"+(S.vera<=40?"Věří ti čím dál míň. Další týden bude horší.":"You held up. But they know more about you than they did this morning.");
   }
   textCross(t,true); volbyRe(S.t===1?"One week left":"Sunday night");
 }
@@ -919,26 +935,26 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
 /* ---------- PŘECHOD (finiš) — swipe = ← skrýt se / risknout →. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
 const KRIT=[
  {need:"propustka", scena:"the barrier", img:"checkpoint.png",
-  zach:{need:"peníze", ok:"The torch beam stops on you. “Halt!” You walk toward him slowly — and press what you have into his palm. A long silence. Then he waves you into the dark: go.", fail:"You offered him what you had left. It was not enough."},
-  inf:{text:"A barrier and a lit guardhouse. You have a stamped permit — the guard will wave you through the moment you show it. Sneaking around it in the dark would be foolish.", l:"Show the permit", p:"Slip around in the dark", spravna:"l"},
-  bl:{text:"A barrier, and a guardhouse with the light on. You have no paper — you must go around. The ditch along the road leads right under the lit window. The field is open ground, but far from the light.", l:"Through the ditch", p:"Across the field", spravna:"p"}},
+  zach:{need:"peníze", ok:"Kužel baterky se zastavil na tobě. „Stůj!“ Jdeš pomalu blíž a do dlaně mu vtiskneš, co máš. Dlouhé ticho. Pak mávl rukou do tmy: jdi.", fail:"You offered him what you had left. It was not enough."},
+  inf:{text:"Závora a osvětlená budka. Máš razítkovanou propustku: stráž tě mávnutím pustí, sotva ji ukážeš. Obcházet ji teď potmě by byla hloupost.", l:"Show the permit", p:"Slip around in the dark", spravna:"l"},
+  bl:{text:"Závora a budka, ve které se svítí. Nemáš papír, musíš okolo. Příkop podél silnice tě vede rovnou pod osvětlené okno budky. Přes pole je to holá pláň, zato dál od světla.", l:"Through the ditch", p:"Across the field", spravna:"p"}},
  {need:"úkryt", scena:"the last night", img:"kostel.png",
-  zach:{need:"proviant", ok:"Voices outside — someone is walking around the building. You burrow deeper and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day — but there was nothing left to eat. You came out too early."},
-  inf:{text:"Your shelter is arranged — the back gate left unlocked. Inside, you can wait in the warm until deep night. Stepping out now, at dusk, would hand you to the first passer-by.", l:"Inside, wait for night", p:"Better go now", spravna:"l"},
-  bl:{text:"A cold shed outside town. You do not know if anyone comes here. Staying till nightfall is a risk — but leaving now, in broad daylight, you would be seen by everyone on the plain.", l:"Stay in the shed", p:"Go now", spravna:"l"}},
+  zach:{need:"proviant", ok:"Venku hlasy: někdo obchází stavení. Zalezeš hlouběji a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den, ale nebylo co jíst. Vylezl jsi moc brzy."},
+  inf:{text:"Máš domluvený nocleh: zadní vrátka nechána odemčená. Uvnitř přečkáš v teple do hluboké noci. Vyjít teď, za šera, by tě vydalo prvnímu, kdo půjde kolem.", l:"Inside, wait for night", p:"Better go now", spravna:"l"},
+  bl:{text:"Studená kůlna za městem. Nevíš, jestli sem někdo nechodí. Zůstat do noci je risk. Ale vyrazit teď, za bílého dne, by tě na pláni viděl každý.", l:"Stay in the shed", p:"Go now", spravna:"l"}},
  {need:"mapa", scena:"the patrol", img:"mapa.png",
-  zach:{need:"kleště", ok:"The wire right in front of you — and the patrol coming back early. The cutters. Two quick snips, the barbs give way, you squeeze through the gap and the dark swallows you.", fail:"The cutters slipped and the wire rang against the post. That was enough."},
-  inf:{text:"You know it from the map, exactly: the patrol passes on the path at two, then an hour of quiet. The tower clock has just died away. You have time — but not much.", l:"Wait till they pass", p:"Go now, in the lull", spravna:"p"},
-  bl:{text:"Something moved in the dark ahead — and again, a little closer. A patrol, or just wind in the wire? Your map is years old and knows nothing of today’s patrols.", l:"Drop and wait", p:"Slip through now", spravna:"l"},
+  zach:{need:"kleště", ok:"Dráty přímo před tebou. A hlídka se vrací dřív, než měla. Štípačky. Dva rychlé střihy, ostny povolí, protáhneš se dírou a tma tě spolkne.", fail:"The cutters slipped and the wire rang against the post. That was enough."},
+  inf:{text:"Z mapy to víš přesně: hlídka projde po cestě ve dvě a pak je hodina klid. Věžní hodiny právě dozněly. Čas máš, ale ne nadlouho.", l:"Wait till they pass", p:"Go now, in the lull", spravna:"p"},
+  bl:{text:"Ve tmě před tebou se něco pohnulo. A po chvíli zas, o kus blíž. Hlídka, nebo jen vítr v drátech? Tvá mapa je roky stará a o dnešních hlídkách neví nic.", l:"Drop and wait", p:"Slip through now", spravna:"l"},
   amb:{text:"By the path, exactly where you meant to cross, two figures with torches take shape. They knew. They are waiting for you.", l:"Back, another way", p:"Risk it here", spravna:"l"}},
  {need:"doklady", scena:"the last road", img:"pas.png",
-  zach:{need:"boty", ok:"“Halt!” You run. Over the ditch, across the field, heart in your throat — the soles hold. The shouting fades behind you, then nothing. Only your breath.", fail:"You ran. A hundred metres on, the sole came off. They ran you down in the field."},
-  inf:{text:"On the last road before the strip, a soldier sweeps the ditches with his torch. You have papers — if he stops you, you show them and most likely walk on. Running would be a confession.", l:"Walk on calmly", p:"Turn and run", spravna:"l"},
-  bl:{text:"A soldier with a torch by the road, the beam sliding your way. You have nothing to show — if he stops you, it is over. Dash across now, while the light is near, or wait for it to swing away?", l:"Wait for dark", p:"Dash across now", spravna:"l"}},
+  zach:{need:"boty", ok:"„Stůj!“ Běžíš. Přes příkop, přes pole, srdce až v krku. Podrážky drží. Křik za tebou slábne, pak nic. Jen tvůj dech.", fail:"You ran. A hundred metres on, the sole came off. They ran you down in the field."},
+  inf:{text:"U poslední silnice před pásmem svítí voják baterkou po příkopech. Máš doklady: když tě zastaví, ukážeš je a nejspíš projdeš. Rozběhnout se by bylo přiznání.", l:"Walk on calmly", p:"Turn and run", spravna:"l"},
+  bl:{text:"Voják s baterkou u silnice, kužel právě klouže sem. Nemáš čím se prokázat. Jestli tě zastaví, je konec. Rozběhnout se přes silnici teď, dokud svítí blízko, nebo počkat, až šlehne jinam?", l:"Wait for dark", p:"Dash across now", spravna:"l"}},
  {need:"spojka", scena:"the other side", img:"nocni_ulice.png",
-  zach:{need:"peníze", ok:"A man in overalls looks you over for a long time — then wordlessly holds out his palm. You give him what is left. He nods toward the hayloft.", fail:"You showed him empty hands. He turned and went to the telephone."},
-  inf:{text:"You are past the wire. As agreed, a man waits by the cross at the forest’s edge to hide you. You go to him — carefully, making sure it is really him.", l:"To the cross, quietly", p:"Hide and wait", spravna:"l"},
-  bl:{text:"You are past the wire, in the dark, in a foreign country — and nobody knows you exist. Village lights blink to the left, and the people there know the patrol by name. The forest to the right is silent and empty.", l:"To the village, find help", p:"Into the forest, away from people", spravna:"p"}},
+  zach:{need:"peníze", ok:"Chlap v montérkách si tě dlouho měří. Pak beze slova natáhne dlaň. Dáš mu, co zbylo. Kývne směrem k seníku.", fail:"You showed him empty hands. He turned and went to the telephone."},
+  inf:{text:"Jsi za drátem. Podle domluvy tě u kříže na kraji lesa čeká člověk, co tě schová. Jdeš k němu opatrně, ať je to opravdu on.", l:"To the cross, quietly", p:"Hide and wait", spravna:"l"},
+  bl:{text:"Jsi za drátem, ve tmě, v cizí zemi. A nikdo o tobě neví. Ve vesnici nalevo blikají světla a lidi tady znají hlídku jménem. Les napravo mlčí a je prázdný.", l:"To the village, find help", p:"Into the forest, away from people", spravna:"p"}},
 ];
 function spustPrechod(){
   S.prechodKarty = KRIT.map(b=>{
@@ -950,7 +966,7 @@ function spustPrechod(){
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
   obraz("nocni_ulice.png"); $("mery").style.display="none"; $("scena").textContent="Sunday at night";
-  textCross("It is past midnight. You took what you had gathered and set out for the border. Now it all comes down to how well you prepared — and what they know about you.",true);
+  textCross("Je po půlnoci. Vzal jsi, cos sehnal, a vyrazil k hranici. Teď záleží jen na tom, jak dobře jsi to připravil. A co o tobě vědí.",true);
   volbyRe("Set out");
 }
 function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.add("noc","prechod");
@@ -966,13 +982,13 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
-  const fl=["Silence. You are through.","Breath held — and it is behind you.","Nobody. You move on.","Heart in your throat, but all quiet."][S.i%4];
+  const fl=["Silence. You are through.","Dech zadržený. A je to za tebou.","Nobody. You move on.","Heart in your throat, but all quiet."][S.i%4];
   pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš) — pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
   if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena});
-    textCross("A hand grabbed at you — you tore free. You run through the dark, branches whipping your face, leap the ditch and drop into a furrow. Footsteps. A light sweeps past. Silence.\n\nYou were faster. But now they know someone is in the strip — and somewhere far off, a dog starts barking.",true);
+    textCross("Ruka po tobě sáhla. Vytrhl ses. Běžíš tmou, větve tě šlehají do tváře, přeskočíš strouhu a padneš do brázdy. Kroky. Světlo přejede kolem. Ticho.\n\nByl jsi rychlejší. Jenže teď vědí, že v pásmu někdo je. A v dálce štěká pes.",true);
     volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; return; }
   // druhá záchrana: výbava — ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
   const z=b.zach;
@@ -1002,12 +1018,12 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   let ja, nadpis, dodatek;
   if(druh==="prechod"){ nadpis="on the other side";
     ja="You crossed. Past the old ford, a Bavarian border guard handed you a cigarette without a word.";
-    dodatek=udal?"You made it — but the ones you dragged in are sitting there now, in your place.":"Nobody informed on you. You came through clean.";
+    dodatek=udal?"Prošels. Ale ty, cos je zatáhl, teď sedí místo tebe.":"Nobody informed on you. You came through clean.";
   } else if(druh==="draty"){ nadpis="caught at the wire";
-    ja="You made it all the way to the wire — and there it caught up with you. §95/2: three years, part of them in Jáchymov.";
-    dodatek=S.zrada?S.zrada:S.pomaly?"You hesitated at the wire a second longer than the night allowed. The beam stopped on you.":S.prozrazenaTrasa?"They knew which way you would go. You told them yourself, at the interrogation.":"You survived the interrogations — and then, at the wire, you were betrayed by everything you skimped on.";
+    ja="Došel jsi až k samotným drátům. A tam tě to dostihlo. § 95/2, tři roky, z toho v Jáchymově.";
+    dodatek=S.zrada?S.zrada:S.pomaly?"You hesitated at the wire a second longer than the night allowed. The beam stopped on you.":S.prozrazenaTrasa?"They knew which way you would go. You told them yourself, at the interrogation.":"Výslech jsi ustál. A pak tě u drátů zradilo to, na čem jsi ušetřil.";
   } else { nadpis="convicted";
-    ja=(proc==="spis")?"You admitted enough for them to piece it together. §95/2 — four years, Jáchymov.":"You denied what they could prove. They did not break you — they did not let you go either. §95/2 — two years, Pankrác prison.";
+    ja=(proc==="spis")?"Přiznals dost, aby to složili dohromady. § 95/2: čtyři roky, Jáchymov.":"Zapíral jsi, co měli. Nezlomili tě, ale nepustili. § 95/2: dva roky, Pankrác.";
     dodatek=udal?"One of them talked. You will never know who for certain.":"Nobody informed on you. They just kept asking long enough.";
   }
   const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?"testified, released":S.zataženi[k]?"interrogated":"nothing";
@@ -1110,13 +1126,13 @@ nova();
   var j; try{ j=localStorage.getItem("pasmo-jazyk"); }catch(e){}
   if(j!=="cs"&&j!=="en"){ var nl=(navigator.language||"").toLowerCase(); j=(nl.indexOf("cs")===0||nl.indexOf("sk")===0)?"cs":"en"; }
   var T=j==="en"
-    ?{titul:"Pásmo — The Border Zone",vera:"credibility",spis:"what they have on you",razitko:"Caught",prepnout:"ČESKY"}
-    :{titul:"Pásmo — týden a výslech",vera:"věrohodnost",spis:"co na tebe mají",razitko:"Usvědčen",prepnout:"ENGLISH"};
+    ?{titul:"Pásmo: The Border Zone",vera:"credibility",spis:"what they have on you",razitko:"Caught",prepnout:"ČESKY"}
+    :{titul:"Pásmo: týden a výslech",vera:"věrohodnost",spis:"co na tebe mají",razitko:"Usvědčen",prepnout:"ENGLISH"};
   document.title=T.titul; document.documentElement.lang=j;
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291803";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607292107";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
