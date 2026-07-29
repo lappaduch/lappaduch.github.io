@@ -1,4 +1,4 @@
-<!-- pasmo build 202607292111 -->
+<!-- pasmo build 202607292122 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -45,7 +45,7 @@
   #obraz::after{ content:""; position:absolute; inset:0; box-shadow:inset 0 -46px 40px -20px #d6cdbb; }
   body.noc #obraz::after{ box-shadow:inset 0 -46px 40px -20px #0d0b08; }
   #telo{ flex:1 1 auto; padding:16px 20px 12px; display:flex; flex-direction:column; overflow-y:auto; }
-  /* vlastní scrollbar — tenká inkoustová linka místo systémového */
+  /* vlastní scrollbar: tenká inkoustová linka místo systémového */
   body{ scrollbar-width:thin; scrollbar-color:#a89e8a transparent }
   body.noc{ scrollbar-color:#4a4136 transparent }
   #telo::-webkit-scrollbar{ width:6px }
@@ -56,7 +56,7 @@
   #scena{ font:11px var(--stroj); letter-spacing:.12em; text-transform:uppercase; color:#5a5140; margin-bottom:8px }
   body.noc #scena{ color:var(--zvyr) }
 
-  /* hlavička spisu — jen přes den; kalendář škrtá odbyté dny přetiskem „x" jako na stroji */
+  /* hlavička spisu: jen přes den; kalendář škrtá odbyté dny přetiskem „x" jako na stroji */
   #hlava{ display:none; font-family:var(--stroj); color:#3c352a; border-bottom:3px double #6b6153;
     padding-bottom:7px; margin-bottom:9px }
   #hlavaRadek{ display:flex; justify-content:space-between; align-items:baseline }
@@ -97,7 +97,7 @@
     padding:5px 15px; font:bold 23px var(--stroj); letter-spacing:.12em; text-transform:uppercase; background:rgba(192,57,43,.08); transition:opacity .08s, transform .12s }
   #razitko.vid{ opacity:.92; transform:translate(-50%,-50%) rotate(-11deg) scale(1) }
 
-  /* zásah při razítku — plný záblesk (jako blesk fotoaparátu) + otřes stolu, žádný glow */
+  /* zásah při razítku: plný záblesk (jako blesk fotoaparátu) + otřes stolu, žádný glow */
   #hra::after{ content:""; position:absolute; inset:0; background:#8a2b1e; opacity:0; pointer-events:none; z-index:8 }
   @keyframes zablesk{ 0%{ opacity:.4 } 100%{ opacity:0 } }
   #hra.zasah::after{ animation:zablesk .5s ease-out }
@@ -117,9 +117,9 @@
   /* dozvuk rozhodnutí se připisuje pod text téže karty (kurzívou jako dřív) */
   .pripis{ margin-top:12px; font-style:italic; color:#4f4636; animation:pripisNaskok .25s ease-out }
   body.noc .pripis{ color:#cdbf9f }
-  .pripis.rovny{ font-style:normal; color:inherit }   /* pokračování vyprávění (intro) — ne dozvuk */
+  .pripis.rovny{ font-style:normal; color:inherit }   /* pokračování vyprávění (intro): ne dozvuk */
   @keyframes pripisNaskok{ from{ opacity:0 } to{ opacity:1 } }
-  /* přetisk „xx" přes dnešek — jen při živém škrtnutí, ne při překreslení */
+  /* přetisk „xx" přes dnešek: jen při živém škrtnutí, ne při překreslení */
   .den.cerstvy::after{ animation:pretisk .25s ease-out }
   @keyframes pretisk{ from{ transform:rotate(-5deg) scaleX(0) } to{ transform:rotate(-5deg) scaleX(1) } }
 
@@ -291,14 +291,14 @@ function toast(t){ let d=document.createElement("div"); d.textContent=t;
 
 function nova(){
   S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,spaleno:{},zrada:null,utekl:false};
-  // vylosuj obsazení pro tenhle běh — každou potřebu nabízí jiný člověk z poolu
+  // vylosuj obsazení pro tenhle běh: každou potřebu nabízí jiný člověk z poolu
   S.needy = NEED.map(n=>({ t:n.t, need:n.need, usv:n.usv, img:n.img, scena:n.scena, uvod:n.uvod, l:vyber(n.lPool), p:vyber(n.pPool) }));
   S.needy.forEach(n=>[n.l,n.p].forEach(s=>{ if(s.kdo && s.typ==="svedek" && !(s.kdo in S.talked)) S.talked[s.kdo]=Math.random()<(s.talk??.5); }));
   LOG_BEH++; zaloguj({ev:"start", cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
   document.body.className="";
   render();
 }
-// náhodu nese obsazení (pooly) i pořadí dní — úvody karet jsou proto psané bez odkazu na konkrétní den
+// náhodu nese obsazení (pooly) i pořadí dní: úvody karet jsou proto psané bez odkazu na konkrétní den
 function spustTyden(){ S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik"); render(); }
 
 function obraz(src,plynule){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); const o=$("obraz"), cil=`url('${u}')`;
@@ -314,7 +314,7 @@ function hlava(){ $("tydenSlovo").textContent=TYDNY[S.t-1]; $("cislo").textConte
   $("hlava").style.display="block"; }
 function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{e.className=re?"re":"";e.innerHTML=t;$("telo").scrollTop=0;e.style.opacity=1;},150); }
 
-/* psací stroj — otázky a reakce u výslechu se vypisují znak po znaku; tap nebo tah dopíše hned */
+/* psací stroj: otázky a reakce u výslechu se vypisují znak po znaku; tap nebo tah dopíše hned */
 const MENE_POHYBU = typeof matchMedia!=="undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 let psani=null;
 function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(fn){fn();}}; }
@@ -367,7 +367,7 @@ function prepVyber(strana){ const k=S.prep[S.i], s=(strana==="l"?k.l:k.p);
   S.mam[k.need]=strana;
   S.stopy.push({need:k.need,kdo:s.kdo,typ:s.typ,usv:k.usv,ot:s.ot,ch:s.ch,strana,t:S.t});
   zaloguj({ev:"prep", tyden:S.t, potreba:k.need, volba:s.jm, kdo:s.kdo, typ:s.typ, usv:k.usv, solid:strana==="l"});
-  pripis(s.re); skrtniDnes();   // jen neutrální reakce — jestli po tobě zůstala stopa, zjistíš až u výslechu
+  pripis(s.re); skrtniDnes();   // jen neutrální reakce: jestli po tobě zůstala stopa, zjistíš až u výslechu
   volbyRe(S.i>=S.prep.length-1?"Přijde sobota":"Další den");
   S.faze="prep-re";
 }
@@ -378,7 +378,7 @@ function zdrojKlic(key){ const str=key.slice(-1),need=key.slice(0,-1); const k=S
 function spustVyslech(){
   const karty=[], blafy=[];
   // Eskalace: StB všechno ví, ale nesmí to ukázat. Konkrétní otázku (jmenuje člověka i věc) položí
-  // jen tam, kde má důkaz — papír v evidenci, svědka, co promluvil. Jinak sonduje obecně (otO):
+  // jen tam, kde má důkaz: papír v evidenci, svědka, co promluvil. Jinak sonduje obecně (otO):
   // ptá se vedle toho, co tuší, a konkrétnost otázky je tím pádem sama o sobě informace.
   S.prep.forEach(k=>{ const zv=S.mam[k.need];
     [["l",k.l],["p",k.p]].forEach(([str,src])=>{ const pouzito=(zv===str);
@@ -390,16 +390,16 @@ function spustVyslech(){
       } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk → adjacent sonda, nikdy blind shot
         blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:k.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:k.need,str,konkretni:false});
       } }); });
-  // pár blafů, ne odškrtávání — správně zapřený blaf projde
+  // pár blafů, ne odškrtávání: správně zapřený blaf projde
   for(let i=blafy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[blafy[i],blafy[j]]=[blafy[j],blafy[i]];}
   karty.push(...blafy.slice(0, S.t===1?1:2));
   if(S.t===2){ const kl=Object.keys(S.reklJsem);
     for(let i=kl.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[kl[i],kl[j]]=[kl[j],kl[i]];}
     kl.slice(0,5).forEach(key=>{ const z=zdrojKlic(key); if(!z)return;
-      // reask = tatáž otázka znovu, doslova jak padla poprvé — „minule jste to říkal jinak" musí srovnávat srovnatelné
+      // reask = tatáž otázka znovu, doslova jak padla poprvé: „minule jste to říkal jinak" musí srovnávat srovnatelné
       const drive=(S.otazky||{})[key];
       karty.push({ot:(drive?drive.ot:z.src.ot),kdo:z.src.kdo,usv:z.usv,majiDukaz:false,ch:z.src.ch,pouzito:false,need:z.need,str:z.str,reask:true,predchozi:S.reklJsem[key],konkretni:drive?drive.k:true}); }); }
-  // sezení houstne: obecné sondy napřed, konkrétní otázky (kde něco mají) potom — uvnitř skupin náhodně
+  // sezení houstne: obecné sondy napřed, konkrétní otázky (kde něco mají) potom: uvnitř skupin náhodně
   const mich=a=>{ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
   S.karty=[...mich(karty.filter(q=>!q.konkretni)), ...mich(karty.filter(q=>q.konkretni))];
   S.razitkaTyden=0; S.spisPred=S.spis; S.i=0; S.faze="vyslech-intro"; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
@@ -411,18 +411,18 @@ function merky(){ $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+
   $("nalada").textContent = S.vera>66?"Nedívá se na tebe.":S.vera>33?"Píše rychleji.":"Přestal psát a dívá se na tebe."; }
 function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=false;
   if(!q.reask) S.otazky[q.need+q.str]={ot:q.ot,k:!!q.konkretni};   // zapamatuj formulaci pro případný reask
-  if(q.reask){ const kl=q.need+q.str, ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat — v protokolu je pravda
+  if(q.reask){ const kl=q.need+q.str, ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
       vysl=S.dokazano[kl]?"„Tohle máme v protokolu. Dokázané. A Vy to přede mnou dál zapíráte.“":"„Minule jste to říkal jinak.“ Listoval zpátky a četl si to dvakrát.";}
     else vysl=S.dokazano[kl]?"„No proto. Aspoň už nezapíráte, co víme oba.“":"Držíš se své verze slovo od slova. „...dobře.“";
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[q.need+q.str]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;
-      if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání — lež ho nesmaže
+      if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
       vysl=q.ch+" Ani se nezlobil. Jen si to zapsal.";} else vysl="Ticho. Pak: „Dobře.“ Píše dál."; }
   else { S.reklJsem[q.need+q.str]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
-    // spis staví jen to, cos REÁLNĚ udělal — na falešné přiznání věci, co se nestala, nemají důkaz
+    // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
     if(q.usv&&q.pouzito){S.spis++;vysl="Psací stroj klapl. Zapsáno. Tenhle list si podtrhl.";} else vysl="Psací stroj klapl. Zapsáno."; }
   zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[q.need+q.str],
@@ -451,7 +451,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
 }
 function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spustPrechod(); }
 
-/* ---------- PŘECHOD (finiš) — swipe = ← skrýt se / risknout →. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
+/* ---------- PŘECHOD (finiš): swipe = ← skrýt se / risknout →. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
 const KRIT=[
  {need:"propustka", scena:"závora", img:"checkpoint.png",
   zach:{need:"peníze", ok:"Kužel baterky se zastavil na tobě. „Stůj!“ Jdeš pomalu blíž a do dlaně mu vtiskneš, co máš. Dlouhé ticho. Pak mávl rukou do tmy: jdi.", fail:"Nabídl jsi mu, co ti zbylo. Nestačilo to."},
@@ -496,20 +496,20 @@ function spustCasPrechod(){ stopCas(); document.body.classList.add("tik"); let w
     if(w<=0){ stopCas(); S.pomaly=true; return pruser(S.prechodKarty[S.i]); } },100); }
 function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   // špatná volba = průšvih; správná má zbytkové riziko (žádný přechod není jistý). Solidní výbava napoví jasně,
-  // slabá jen mlhavě — ale správná strana jde vždy vyčíst z textu, nehádá se naslepo.
-  // po prvním útěku je vyhlášen poplach — hlídky zhoustnou a každý další krok je o dost riskantnější
+  // slabá jen mlhavě: ale správná strana jde vždy vyčíst z textu, nehádá se naslepo.
+  // po prvním útěku je vyhlášen poplach: hlídky zhoustnou a každý další krok je o dost riskantnější
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
   const fl=["Ticho. Prošel jsi.","Dech zadržený. A je to za tebou.","Nikdo. Jdeš dál.","Srdce až v krku, ale kolem klid."][S.i%4];
   pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
-// průšvih na beatu: první je zdarma (vytrhneš se a utečeš) — pak už tě zachraňuje jen věc z přípravy,
+// průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
   if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena});
     textCross("Ruka po tobě sáhla. Vytrhl ses. Běžíš tmou, větve tě šlehají do tváře, přeskočíš strouhu a padneš do brázdy. Kroky. Světlo přejede kolem. Ticho.\n\nByl jsi rychlejší. Jenže teď vědí, že v pásmu někdo je. A v dálce štěká pes.",true);
     volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; return; }
-  // druhá záchrana: výbava — ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
+  // druhá záchrana: výbava: ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
   const z=b.zach;
   if(!z || S.zachranaByla) return finale("draty",b);
   S.zachranaByla=true;
@@ -607,7 +607,7 @@ document.addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")act("l"); else i
   else if(e.key==="l"||e.key==="L")kopirujLog();
   else if(e.key==="k"||e.key==="K"){ LOG=[]; try{localStorage.removeItem("pasmo-log");}catch(e){} toast("log smazán"); } });
 
-/* tažení — dotyk jde přes touch events (spolehlivý preventDefault, prohlížeč gesto nesebere), myš přes pointer events */
+/* tažení: dotyk jde přes touch events (spolehlivý preventDefault, prohlížeč gesto nesebere), myš přes pointer events */
 let drag=null;
 const jev=$("jeviste");
 function tahniKartu(dx){ const k=$("karta");
@@ -617,7 +617,7 @@ function vratKartu(){ const k=$("karta");
   k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
 function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else { if(Math.abs(dx)<8) dopisHned(); vratKartu(); } }
 
-/* dotyk — jeviště má touch-action:none, gesto je celé naše: vodorovně karta, svisle ruční scroll textu */
+/* dotyk: jeviště má touch-action:none, gesto je celé naše: vodorovně karta, svisle ruční scroll textu */
 jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
   const t=e.touches[0], telo=$("telo");
   drag={x0:t.clientX,y0:t.clientY,dx:0,rezim:null,scroll0:telo.scrollTop,
@@ -772,14 +772,14 @@ function toast(t){ let d=document.createElement("div"); d.textContent=t;
 
 function nova(){
   S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,spaleno:{},zrada:null,utekl:false};
-  // vylosuj obsazení pro tenhle běh — každou potřebu nabízí jiný člověk z poolu
+  // vylosuj obsazení pro tenhle běh: každou potřebu nabízí jiný člověk z poolu
   S.needy = NEED.map(n=>({ t:n.t, need:n.need, usv:n.usv, img:n.img, scena:n.scena, uvod:n.uvod, l:vyber(n.lPool), p:vyber(n.pPool) }));
   S.needy.forEach(n=>[n.l,n.p].forEach(s=>{ if(s.kdo && s.typ==="svedek" && !(s.kdo in S.talked)) S.talked[s.kdo]=Math.random()<(s.talk??.5); }));
   LOG_BEH++; zaloguj({ev:"start", cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
   document.body.className="";
   render();
 }
-// náhodu nese obsazení (pooly) i pořadí dní — úvody karet jsou proto psané bez odkazu na konkrétní den
+// náhodu nese obsazení (pooly) i pořadí dní: úvody karet jsou proto psané bez odkazu na konkrétní den
 function spustTyden(){ S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik"); render(); }
 
 function obraz(src,plynule){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); const o=$("obraz"), cil=`url('${u}')`;
@@ -795,7 +795,7 @@ function hlava(){ $("tydenSlovo").textContent=TYDNY[S.t-1]; $("cislo").textConte
   $("hlava").style.display="block"; }
 function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{e.className=re?"re":"";e.innerHTML=t;$("telo").scrollTop=0;e.style.opacity=1;},150); }
 
-/* psací stroj — otázky a reakce u výslechu se vypisují znak po znaku; tap nebo tah dopíše hned */
+/* psací stroj: otázky a reakce u výslechu se vypisují znak po znaku; tap nebo tah dopíše hned */
 const MENE_POHYBU = typeof matchMedia!=="undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 let psani=null;
 function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(fn){fn();}}; }
@@ -848,7 +848,7 @@ function prepVyber(strana){ const k=S.prep[S.i], s=(strana==="l"?k.l:k.p);
   S.mam[k.need]=strana;
   S.stopy.push({need:k.need,kdo:s.kdo,typ:s.typ,usv:k.usv,ot:s.ot,ch:s.ch,strana,t:S.t});
   zaloguj({ev:"prep", tyden:S.t, potreba:k.need, volba:s.jm, kdo:s.kdo, typ:s.typ, usv:k.usv, solid:strana==="l"});
-  pripis(s.re); skrtniDnes();   // jen neutrální reakce — jestli po tobě zůstala stopa, zjistíš až u výslechu
+  pripis(s.re); skrtniDnes();   // jen neutrální reakce: jestli po tobě zůstala stopa, zjistíš až u výslechu
   volbyRe(S.i>=S.prep.length-1?"Saturday comes":"Next day");
   S.faze="prep-re";
 }
@@ -859,7 +859,7 @@ function zdrojKlic(key){ const str=key.slice(-1),need=key.slice(0,-1); const k=S
 function spustVyslech(){
   const karty=[], blafy=[];
   // Eskalace: StB všechno ví, ale nesmí to ukázat. Konkrétní otázku (jmenuje člověka i věc) položí
-  // jen tam, kde má důkaz — papír v evidenci, svědka, co promluvil. Jinak sonduje obecně (otO):
+  // jen tam, kde má důkaz: papír v evidenci, svědka, co promluvil. Jinak sonduje obecně (otO):
   // ptá se vedle toho, co tuší, a konkrétnost otázky je tím pádem sama o sobě informace.
   S.prep.forEach(k=>{ const zv=S.mam[k.need];
     [["l",k.l],["p",k.p]].forEach(([str,src])=>{ const pouzito=(zv===str);
@@ -871,16 +871,16 @@ function spustVyslech(){
       } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk → adjacent sonda, nikdy blind shot
         blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:k.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:k.need,str,konkretni:false});
       } }); });
-  // pár blafů, ne odškrtávání — správně zapřený blaf projde
+  // pár blafů, ne odškrtávání: správně zapřený blaf projde
   for(let i=blafy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[blafy[i],blafy[j]]=[blafy[j],blafy[i]];}
   karty.push(...blafy.slice(0, S.t===1?1:2));
   if(S.t===2){ const kl=Object.keys(S.reklJsem);
     for(let i=kl.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[kl[i],kl[j]]=[kl[j],kl[i]];}
     kl.slice(0,5).forEach(key=>{ const z=zdrojKlic(key); if(!z)return;
-      // reask = tatáž otázka znovu, doslova jak padla poprvé — „minule jste to říkal jinak" musí srovnávat srovnatelné
+      // reask = tatáž otázka znovu, doslova jak padla poprvé: „minule jste to říkal jinak" musí srovnávat srovnatelné
       const drive=(S.otazky||{})[key];
       karty.push({ot:(drive?drive.ot:z.src.ot),kdo:z.src.kdo,usv:z.usv,majiDukaz:false,ch:z.src.ch,pouzito:false,need:z.need,str:z.str,reask:true,predchozi:S.reklJsem[key],konkretni:drive?drive.k:true}); }); }
-  // sezení houstne: obecné sondy napřed, konkrétní otázky (kde něco mají) potom — uvnitř skupin náhodně
+  // sezení houstne: obecné sondy napřed, konkrétní otázky (kde něco mají) potom: uvnitř skupin náhodně
   const mich=a=>{ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
   S.karty=[...mich(karty.filter(q=>!q.konkretni)), ...mich(karty.filter(q=>q.konkretni))];
   S.razitkaTyden=0; S.spisPred=S.spis; S.i=0; S.faze="vyslech-intro"; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
@@ -892,18 +892,18 @@ function merky(){ $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+
   $("nalada").textContent = S.vera>66?"He isn’t looking at you.":S.vera>33?"He is writing faster.":"He has stopped writing and is looking at you."; }
 function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=false;
   if(!q.reask) S.otazky[q.need+q.str]={ot:q.ot,k:!!q.konkretni};   // zapamatuj formulaci pro případný reask
-  if(q.reask){ const kl=q.need+q.str, ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat — v protokolu je pravda
+  if(q.reask){ const kl=q.need+q.str, ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
       vysl=S.dokazano[kl]?"“We have this in the record. Proven. And you sit here denying it still.”":"“Last time you said it differently.” He leafed back and read it twice.";}
     else vysl=S.dokazano[kl]?"“There we are. At least you have stopped denying what we both know.”":"You hold to your version word for word. “...very well.”";
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[q.need+q.str]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;
-      if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání — lež ho nesmaže
+      if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
       vysl=q.ch+" He was not even angry. He just wrote it down.";} else vysl="Silence. Then: “Fine.” He keeps writing."; }
   else { S.reklJsem[q.need+q.str]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
-    // spis staví jen to, cos REÁLNĚ udělal — na falešné přiznání věci, co se nestala, nemají důkaz
+    // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
     if(q.usv&&q.pouzito){S.spis++;vysl="The typewriter clacks. On the record. That page he underlined.";} else vysl="The typewriter clacks. On the record."; }
   zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[q.need+q.str],
@@ -932,7 +932,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
 }
 function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spustPrechod(); }
 
-/* ---------- PŘECHOD (finiš) — swipe = ← skrýt se / risknout →. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
+/* ---------- PŘECHOD (finiš): swipe = ← skrýt se / risknout →. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
 const KRIT=[
  {need:"propustka", scena:"the barrier", img:"checkpoint.png",
   zach:{need:"peníze", ok:"The torch beam stops on you. “Halt!” You walk toward him slowly and press what you have into his palm. A long silence. Then he waves you into the dark: go.", fail:"You offered him what you had left. It was not enough."},
@@ -977,20 +977,20 @@ function spustCasPrechod(){ stopCas(); document.body.classList.add("tik"); let w
     if(w<=0){ stopCas(); S.pomaly=true; return pruser(S.prechodKarty[S.i]); } },100); }
 function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   // špatná volba = průšvih; správná má zbytkové riziko (žádný přechod není jistý). Solidní výbava napoví jasně,
-  // slabá jen mlhavě — ale správná strana jde vždy vyčíst z textu, nehádá se naslepo.
-  // po prvním útěku je vyhlášen poplach — hlídky zhoustnou a každý další krok je o dost riskantnější
+  // slabá jen mlhavě: ale správná strana jde vždy vyčíst z textu, nehádá se naslepo.
+  // po prvním útěku je vyhlášen poplach: hlídky zhoustnou a každý další krok je o dost riskantnější
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
   const fl=["Silence. You are through.","Breath held. And it is behind you.","Nobody. You move on.","Heart in your throat, but all quiet."][S.i%4];
   pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
-// průšvih na beatu: první je zdarma (vytrhneš se a utečeš) — pak už tě zachraňuje jen věc z přípravy,
+// průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
   if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena});
     textCross("A hand grabbed at you. You tore free. You run through the dark, branches whipping your face, leap the ditch and drop into a furrow. Footsteps. A light sweeps past. Silence.\n\nYou were faster. But now they know someone is in the strip. And somewhere far off, a dog starts barking.",true);
     volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; return; }
-  // druhá záchrana: výbava — ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
+  // druhá záchrana: výbava: ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
   const z=b.zach;
   if(!z || S.zachranaByla) return finale("draty",b);
   S.zachranaByla=true;
@@ -1088,7 +1088,7 @@ document.addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")act("l"); else i
   else if(e.key==="l"||e.key==="L")kopirujLog();
   else if(e.key==="k"||e.key==="K"){ LOG=[]; try{localStorage.removeItem("pasmo-log");}catch(e){} toast("log cleared"); } });
 
-/* tažení — dotyk jde přes touch events (spolehlivý preventDefault, prohlížeč gesto nesebere), myš přes pointer events */
+/* tažení: dotyk jde přes touch events (spolehlivý preventDefault, prohlížeč gesto nesebere), myš přes pointer events */
 let drag=null;
 const jev=$("jeviste");
 function tahniKartu(dx){ const k=$("karta");
@@ -1098,7 +1098,7 @@ function vratKartu(){ const k=$("karta");
   k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
 function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else { if(Math.abs(dx)<8) dopisHned(); vratKartu(); } }
 
-/* dotyk — jeviště má touch-action:none, gesto je celé naše: vodorovně karta, svisle ruční scroll textu */
+/* dotyk: jeviště má touch-action:none, gesto je celé naše: vodorovně karta, svisle ruční scroll textu */
 jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
   const t=e.touches[0], telo=$("telo");
   drag={x0:t.clientX,y0:t.clientY,dx:0,rezim:null,scroll0:telo.scrollTop,
@@ -1132,7 +1132,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607292111";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607292122";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
