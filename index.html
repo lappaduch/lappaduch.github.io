@@ -1,4 +1,4 @@
-<!-- pasmo build 202607292110 -->
+<!-- pasmo build 202607292111 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -1023,7 +1023,7 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
     ja="You made it all the way to the wire. And there it caught up with you. §95/2: three years, part of them in Jáchymov.";
     dodatek=S.zrada?S.zrada:S.pomaly?"You hesitated at the wire a second longer than the night allowed. The beam stopped on you.":S.prozrazenaTrasa?"They knew which way you would go. You told them yourself, at the interrogation.":"You survived the interrogations. And then, at the wire, you were betrayed by everything you skimped on.";
   } else { nadpis="convicted";
-    ja=(proc==="spis")?"You admitted enough for them to piece it together. §95/2: four years, Jáchymov.":"You denied what they could prove. They did not break you — they did not let you go either. §95/2 — two years, Pankrác prison.";
+    ja=(proc==="spis")?"You admitted enough for them to piece it together. §95/2: four years, Jáchymov.":"You denied what they could prove. They did not break you. They did not let you go either. §95/2: two years, Pankrác prison.";
     dodatek=udal?"One of them talked. You will never know who for certain.":"Nobody informed on you. They just kept asking long enough.";
   }
   const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?"testified, released":S.zataženi[k]?"interrogated":"nothing";
@@ -1132,7 +1132,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607292110";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607292111";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
