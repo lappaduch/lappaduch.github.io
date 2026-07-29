@@ -31,7 +31,7 @@
   #nalada{ margin-top:6px; font-style:italic; font-size:12px; color:#d8cdb4 }
 
   /* scéna = tažitelná karta */
-  #jeviste{ flex:1 1 auto; position:relative; overflow:hidden; touch-action:pan-y;
+  #jeviste{ flex:1 1 auto; position:relative; overflow:hidden; touch-action:none;
     user-select:none; -webkit-user-select:none; -webkit-touch-callout:none }
   #karta{ position:absolute; inset:0; display:flex; flex-direction:column; background:#16120d; will-change:transform; }
   body.noc #karta{ background:#0d0b08 }
@@ -493,17 +493,13 @@ function vratKartu(){ const k=$("karta");
   k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
 function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else vratKartu(); }
 
-/* dotyk */
+/* dotyk — jeviště má touch-action:none, gesto je celé naše; karta jede 1:1 s prstem */
 jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
-  const t=e.touches[0]; drag={x0:t.clientX,y0:t.clientY,vod:null,dx:0}; },{passive:true});
-jev.addEventListener("touchmove",e=>{ if(!drag||anim) return; const t=e.touches[0];
-  const dx=t.clientX-drag.x0, dy=t.clientY-drag.y0;
-  if(drag.vod===null){ if(Math.abs(dx)+Math.abs(dy)<3) return;
-    drag.vod=Math.abs(dx)>=Math.abs(dy)*0.8;                 // rozhodni hned na prvním pohybu, mírně nadržuj kartě
-    if(!drag.vod){ drag=null; return; } }                    // svislý úmysl → nech textu scroll
-  e.preventDefault(); drag.dx=dx; tahniKartu(dx); },{passive:false});
-jev.addEventListener("touchend",()=>{ if(!drag) return; const {dx,vod}=drag; drag=null; if(vod) pustKartu(dx); },{passive:true});
-jev.addEventListener("touchcancel",()=>{ if(drag&&drag.vod) vratKartu(); drag=null; });
+  const t=e.touches[0]; drag={x0:t.clientX,dx:0}; },{passive:true});
+jev.addEventListener("touchmove",e=>{ if(!drag||anim) return; e.preventDefault();
+  const t=e.touches[0]; drag.dx=t.clientX-drag.x0; tahniKartu(drag.dx); },{passive:false});
+jev.addEventListener("touchend",()=>{ if(!drag) return; const dx=drag.dx; drag=null; pustKartu(dx); },{passive:true});
+jev.addEventListener("touchcancel",()=>{ if(drag) vratKartu(); drag=null; });
 
 /* myš (desktop) */
 jev.addEventListener("pointerdown",e=>{ if(e.pointerType!=="mouse"||anim) return;
@@ -907,17 +903,13 @@ function vratKartu(){ const k=$("karta");
   k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
 function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else vratKartu(); }
 
-/* dotyk */
+/* dotyk — jeviště má touch-action:none, gesto je celé naše; karta jede 1:1 s prstem */
 jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
-  const t=e.touches[0]; drag={x0:t.clientX,y0:t.clientY,vod:null,dx:0}; },{passive:true});
-jev.addEventListener("touchmove",e=>{ if(!drag||anim) return; const t=e.touches[0];
-  const dx=t.clientX-drag.x0, dy=t.clientY-drag.y0;
-  if(drag.vod===null){ if(Math.abs(dx)+Math.abs(dy)<3) return;
-    drag.vod=Math.abs(dx)>=Math.abs(dy)*0.8;                 // rozhodni hned na prvním pohybu, mírně nadržuj kartě
-    if(!drag.vod){ drag=null; return; } }                    // svislý úmysl → nech textu scroll
-  e.preventDefault(); drag.dx=dx; tahniKartu(dx); },{passive:false});
-jev.addEventListener("touchend",()=>{ if(!drag) return; const {dx,vod}=drag; drag=null; if(vod) pustKartu(dx); },{passive:true});
-jev.addEventListener("touchcancel",()=>{ if(drag&&drag.vod) vratKartu(); drag=null; });
+  const t=e.touches[0]; drag={x0:t.clientX,dx:0}; },{passive:true});
+jev.addEventListener("touchmove",e=>{ if(!drag||anim) return; e.preventDefault();
+  const t=e.touches[0]; drag.dx=t.clientX-drag.x0; tahniKartu(drag.dx); },{passive:false});
+jev.addEventListener("touchend",()=>{ if(!drag) return; const dx=drag.dx; drag=null; pustKartu(dx); },{passive:true});
+jev.addEventListener("touchcancel",()=>{ if(drag) vratKartu(); drag=null; });
 
 /* myš (desktop) */
 jev.addEventListener("pointerdown",e=>{ if(e.pointerType!=="mouse"||anim) return;
