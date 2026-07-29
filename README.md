@@ -483,25 +483,34 @@ document.addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")act("l"); else i
   else if(e.key==="l"||e.key==="L")kopirujLog();
   else if(e.key==="k"||e.key==="K"){ LOG=[]; try{localStorage.removeItem("pasmo-log");}catch(e){} toast("log smazán"); } });
 
-/* tažení prstem/myší — vodorovný tah patří hře, svislý nechává scrollovat text */
+/* tažení — dotyk jde přes touch events (spolehlivý preventDefault, prohlížeč gesto nesebere), myš přes pointer events */
 let drag=null;
 const jev=$("jeviste");
-function down(x,y){ if(anim) return; drag={x0:x,y0:y,vod:null}; }
-function move(x,y){ if(!drag||anim) return; const dx=x-drag.x0, dy=y-drag.y0;
-  if(drag.vod===null){ if(Math.abs(dx)<8&&Math.abs(dy)<8) return;
-    drag.vod=Math.abs(dx)>Math.abs(dy);
-    if(!drag.vod){ drag=null; hint(null); return; } }        // svislý úmysl → pusť to scrollu
-  const k=$("karta");
+function tahniKartu(dx){ const k=$("karta");
   k.style.transition="none"; k.style.transform=`translateX(${dx}px) rotate(${dx*0.04}deg)`; k.style.opacity=String(Math.max(.4,1-Math.abs(dx)/380));
   hint(Math.abs(dx)<25?null:(dx<0?"l":"p")); }
-function up(x){ if(!drag||anim){drag=null;return;} const dx=x-drag.x0, vod=drag.vod; drag=null; const k=$("karta");
-  if(vod&&Math.abs(dx)>80){ act(dx<0?"l":"p"); }
-  else { k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); } }
-jev.addEventListener("pointerdown",e=>{ jev.setPointerCapture?.(e.pointerId); down(e.clientX,e.clientY); });
-jev.addEventListener("pointermove",e=>move(e.clientX,e.clientY));
-jev.addEventListener("pointerup",e=>up(e.clientX));
-jev.addEventListener("pointercancel",()=>{drag=null;});
-jev.addEventListener("touchmove",e=>{ if(drag&&drag.vod) e.preventDefault(); },{passive:false});   // vodorovný tah: zablokuj nativní scroll/refresh
+function vratKartu(){ const k=$("karta");
+  k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
+function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else vratKartu(); }
+
+/* dotyk */
+jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
+  const t=e.touches[0]; drag={x0:t.clientX,y0:t.clientY,vod:null,dx:0}; },{passive:true});
+jev.addEventListener("touchmove",e=>{ if(!drag||anim) return; const t=e.touches[0];
+  const dx=t.clientX-drag.x0, dy=t.clientY-drag.y0;
+  if(drag.vod===null){ if(Math.abs(dx)+Math.abs(dy)<3) return;
+    drag.vod=Math.abs(dx)>=Math.abs(dy)*0.8;                 // rozhodni hned na prvním pohybu, mírně nadržuj kartě
+    if(!drag.vod){ drag=null; return; } }                    // svislý úmysl → nech textu scroll
+  e.preventDefault(); drag.dx=dx; tahniKartu(dx); },{passive:false});
+jev.addEventListener("touchend",()=>{ if(!drag) return; const {dx,vod}=drag; drag=null; if(vod) pustKartu(dx); },{passive:true});
+jev.addEventListener("touchcancel",()=>{ if(drag&&drag.vod) vratKartu(); drag=null; });
+
+/* myš (desktop) */
+jev.addEventListener("pointerdown",e=>{ if(e.pointerType!=="mouse"||anim) return;
+  jev.setPointerCapture?.(e.pointerId); drag={x0:e.clientX,y0:e.clientY,vod:true,dx:0}; });
+jev.addEventListener("pointermove",e=>{ if(e.pointerType!=="mouse"||!drag||anim) return; drag.dx=e.clientX-drag.x0; tahniKartu(drag.dx); });
+jev.addEventListener("pointerup",e=>{ if(e.pointerType!=="mouse"||!drag) return; const dx=drag.dx; drag=null; pustKartu(dx); });
+jev.addEventListener("pointercancel",()=>{ if(drag&&drag.vod) vratKartu(); drag=null; });
 
 nova();
 </script>
@@ -888,25 +897,34 @@ document.addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")act("l"); else i
   else if(e.key==="l"||e.key==="L")kopirujLog();
   else if(e.key==="k"||e.key==="K"){ LOG=[]; try{localStorage.removeItem("pasmo-log");}catch(e){} toast("log cleared"); } });
 
-/* tažení prstem/myší — vodorovný tah patří hře, svislý nechává scrollovat text */
+/* tažení — dotyk jde přes touch events (spolehlivý preventDefault, prohlížeč gesto nesebere), myš přes pointer events */
 let drag=null;
 const jev=$("jeviste");
-function down(x,y){ if(anim) return; drag={x0:x,y0:y,vod:null}; }
-function move(x,y){ if(!drag||anim) return; const dx=x-drag.x0, dy=y-drag.y0;
-  if(drag.vod===null){ if(Math.abs(dx)<8&&Math.abs(dy)<8) return;
-    drag.vod=Math.abs(dx)>Math.abs(dy);
-    if(!drag.vod){ drag=null; hint(null); return; } }        // svislý úmysl → pusť to scrollu
-  const k=$("karta");
+function tahniKartu(dx){ const k=$("karta");
   k.style.transition="none"; k.style.transform=`translateX(${dx}px) rotate(${dx*0.04}deg)`; k.style.opacity=String(Math.max(.4,1-Math.abs(dx)/380));
   hint(Math.abs(dx)<25?null:(dx<0?"l":"p")); }
-function up(x){ if(!drag||anim){drag=null;return;} const dx=x-drag.x0, vod=drag.vod; drag=null; const k=$("karta");
-  if(vod&&Math.abs(dx)>80){ act(dx<0?"l":"p"); }
-  else { k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); } }
-jev.addEventListener("pointerdown",e=>{ jev.setPointerCapture?.(e.pointerId); down(e.clientX,e.clientY); });
-jev.addEventListener("pointermove",e=>move(e.clientX,e.clientY));
-jev.addEventListener("pointerup",e=>up(e.clientX));
-jev.addEventListener("pointercancel",()=>{drag=null;});
-jev.addEventListener("touchmove",e=>{ if(drag&&drag.vod) e.preventDefault(); },{passive:false});   // vodorovný tah: zablokuj nativní scroll/refresh
+function vratKartu(){ const k=$("karta");
+  k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
+function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else vratKartu(); }
+
+/* dotyk */
+jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
+  const t=e.touches[0]; drag={x0:t.clientX,y0:t.clientY,vod:null,dx:0}; },{passive:true});
+jev.addEventListener("touchmove",e=>{ if(!drag||anim) return; const t=e.touches[0];
+  const dx=t.clientX-drag.x0, dy=t.clientY-drag.y0;
+  if(drag.vod===null){ if(Math.abs(dx)+Math.abs(dy)<3) return;
+    drag.vod=Math.abs(dx)>=Math.abs(dy)*0.8;                 // rozhodni hned na prvním pohybu, mírně nadržuj kartě
+    if(!drag.vod){ drag=null; return; } }                    // svislý úmysl → nech textu scroll
+  e.preventDefault(); drag.dx=dx; tahniKartu(dx); },{passive:false});
+jev.addEventListener("touchend",()=>{ if(!drag) return; const {dx,vod}=drag; drag=null; if(vod) pustKartu(dx); },{passive:true});
+jev.addEventListener("touchcancel",()=>{ if(drag&&drag.vod) vratKartu(); drag=null; });
+
+/* myš (desktop) */
+jev.addEventListener("pointerdown",e=>{ if(e.pointerType!=="mouse"||anim) return;
+  jev.setPointerCapture?.(e.pointerId); drag={x0:e.clientX,y0:e.clientY,vod:true,dx:0}; });
+jev.addEventListener("pointermove",e=>{ if(e.pointerType!=="mouse"||!drag||anim) return; drag.dx=e.clientX-drag.x0; tahniKartu(drag.dx); });
+jev.addEventListener("pointerup",e=>{ if(e.pointerType!=="mouse"||!drag) return; const dx=drag.dx; drag=null; pustKartu(dx); });
+jev.addEventListener("pointercancel",()=>{ if(drag&&drag.vod) vratKartu(); drag=null; });
 
 nova();
 </script>
