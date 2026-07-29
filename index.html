@@ -1,4 +1,4 @@
-<!-- pasmo build 202607291635 -->
+<!-- pasmo build 202607291720 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -26,8 +26,11 @@
     background:linear-gradient(180deg, rgba(8,6,4,.85), rgba(8,6,4,0)); display:none; }
   body.noc #mery{ display:block }
   .mer{ display:flex; align-items:center; gap:8px; font:10px var(--stroj); letter-spacing:.1em; text-transform:uppercase; color:var(--slabe); margin-top:4px }
-  .mer .box{ flex:1; height:5px; background:#241d15; overflow:hidden }
-  .mer .fill{ height:100%; width:100%; transform-origin:left; transform:scaleX(0); transition:transform .3s ease }
+  /* kolonky formuláře: tištěná linka se zarážkami, výplň = inkoust */
+  .mer .box{ flex:1; position:relative; height:8px; border-bottom:1px solid #6b6153 }
+  .mer .box::before,.mer .box::after{ content:""; position:absolute; bottom:0; width:1px; height:6px; background:#6b6153 }
+  .mer .box::before{ left:0 } .mer .box::after{ right:0 }
+  .mer .fill{ position:absolute; left:0; bottom:1px; height:3px; width:100%; transform-origin:left; transform:scaleX(0); transition:transform .3s ease }
   #verFill{ background:var(--slabe) }
   #spisFill{ background:#a8352a }
   #nalada{ margin-top:6px; font-style:italic; font-size:12px; color:#d8cdb4 }
@@ -45,6 +48,17 @@
   #text br{ content:""; display:block; margin-top:.5em }
   #scena{ font:11px var(--stroj); letter-spacing:.12em; text-transform:uppercase; color:#5a5140; margin-bottom:8px }
   body.noc #scena{ color:var(--zvyr) }
+
+  /* hlavička spisu — jen přes den; kalendář škrtá odbyté dny přetiskem „x" jako na stroji */
+  #hlava{ display:none; font-family:var(--stroj); color:#3c352a; border-bottom:3px double #6b6153;
+    padding-bottom:7px; margin-bottom:9px }
+  #hlavaRadek{ display:flex; justify-content:space-between; align-items:baseline }
+  #tydenSlovo{ font-size:12.5px; font-weight:bold; letter-spacing:.14em }
+  #cislo{ font-size:10px; color:#8a8070; letter-spacing:.08em }
+  #kalendar{ font-size:11.5px; letter-spacing:.06em; margin-top:5px }
+  #kalendar .den{ position:relative; display:inline-block; margin-right:11px }
+  #kalendar .den.skrt::after{ content:"xx"; position:absolute; left:1px; top:1px; color:#4f4636 }
+  #kalendar .den.dnes{ text-decoration:underline; text-underline-offset:2px }
   #text{ font-size:16.5px; line-height:1.45; transition:opacity .2s; white-space:pre-line }
   #text.re{ font-style:italic; color:#4f4636 }
   body.noc #text.re{ color:#cdbf9f }
@@ -59,9 +73,13 @@
 
   /* ovládání dole */
   #ovladani{ flex:0 0 auto; padding:8px 14px calc(14px + env(safe-area-inset-bottom)); }
-  #odpocetBox{ display:none; height:4px; background:#241d15; margin-bottom:10px; overflow:hidden }
+  /* časovač u výslechu = hořící cigareta (papírový váleček, na konci oharek); venku u přechodu jen červená linka */
+  #odpocetBox{ display:none; position:relative; height:6px; margin-bottom:10px }
   body.noc.tik #odpocetBox{ display:block }
-  #odpocet{ height:100%; width:100%; transform-origin:left; background:#a8352a }
+  #odpocet{ position:absolute; left:0; top:1px; height:4px; width:100%; transform-origin:left; background:#d9d2c2; border-radius:2px }
+  #oharek{ position:absolute; top:1px; width:5px; height:4px; border-radius:2px; background:#c25a28 }
+  body.prechod #odpocet{ background:#a8352a; border-radius:0 }
+  body.prechod #oharek{ display:none }
   #napoveda{ text-align:center; font:11.5px var(--stroj); color:var(--slabe); margin-top:6px; letter-spacing:.02em; opacity:.9; min-height:2.6em }
 
   #razitko{ position:absolute; top:34%; left:50%; transform:translate(-50%,-50%) rotate(-11deg) scale(1.6);
@@ -78,9 +96,11 @@
   @keyframes verpuls{ 0%,100%{ filter:none } 45%{ filter:brightness(1.9) saturate(1.3) } }
   #verFill.puls{ animation:verpuls .5s ease 2 }
 
-  #rozsudek .sl{ display:flex; justify-content:space-between; gap:12px; font-size:14px; padding:5px 0; border-bottom:1px solid var(--ram) }
+  #rozsudek .sl{ display:flex; justify-content:space-between; gap:12px; font:13px var(--stroj); padding:5px 0; border-bottom:1px dotted #4a4136 }
   #rozsudek .os2{ color:var(--slabe); font-style:italic; text-align:right }
   #rozsudek .ja{ font-size:16.5px; color:var(--papir); margin:2px 0 10px }
+  #stampKonec{ display:inline-block; margin:2px 0 10px; padding:3px 12px; border:3px solid #c0392b; border-radius:3px;
+    color:#c0392b; font:bold 19px var(--stroj); letter-spacing:.14em; text-transform:uppercase; transform:rotate(-6deg) }
   #jazyk{ position:absolute; top:calc(10px + env(safe-area-inset-top, 0px)); right:12px; z-index:7; font:10.5px "Courier New",monospace; letter-spacing:.08em;
     color:#b7ad97; background:rgba(20,16,10,.6); border:1px solid #2b241c; border-radius:2px; padding:3px 9px; cursor:pointer; user-select:none }
   #jazyk:hover{ color:#e7dfce; border-color:#b7ad97 }
@@ -100,11 +120,17 @@
     <div id="razitko">Usvědčen</div>
     <div id="karta">
       <div id="obraz"></div>
-      <div id="telo"><div id="scena"></div><div id="text"></div></div>
+      <div id="telo">
+        <div id="hlava">
+          <div id="hlavaRadek"><span id="tydenSlovo"></span><span id="cislo"></span></div>
+          <div id="kalendar"></div>
+        </div>
+        <div id="scena"></div><div id="text"></div>
+      </div>
     </div>
   </div>
   <div id="ovladani">
-    <div id="odpocetBox"><div id="odpocet"></div></div>
+    <div id="odpocetBox"><div id="odpocet"></div><div id="oharek"></div></div>
     <div id="napoveda"></div>
   </div>
 </div>
@@ -252,7 +278,14 @@ function nova(){
 // náhodu nese obsazení (pooly) i pořadí dní — úvody karet jsou proto psané bez odkazu na konkrétní den
 function spustTyden(){ S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik"); render(); }
 
-function obraz(src){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); $("obraz").style.backgroundImage=`url('${u}')`; }
+function obraz(src){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); $("obraz").style.backgroundImage=`url('${u}')`;
+  $("hlava").style.display="none"; }   // hlavičku spisu si zpátky rozsvítí jen denní karta (hlava())
+
+// hlavička spisu: týden slovem + kalendář, odbyté dny škrtnuté, dnešek podtržený
+const KAL=["PO","ÚT","ST","ČT","PÁ"], TYDNY=["TÝDEN PRVNÍ","TÝDEN DRUHÝ"];
+function hlava(){ $("tydenSlovo").textContent=TYDNY[S.t-1]; $("cislo").textContent="č. j. PS-117/52";
+  $("kalendar").innerHTML=KAL.map((d,i)=>`<span class="den${i<S.i?" skrt":i===S.i?" dnes":""}">${d}</span>`).join("");
+  $("hlava").style.display="block"; }
 function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{e.className=re?"re":"";e.innerHTML=t;e.style.opacity=1;},150); }
 function volbyRe(txt){ hintTxt={l:txt,p:txt}; $("napoveda").textContent=txt+" - táhni kterýmkoli směrem"; }
 function volbyDve(hint){ $("napoveda").textContent=hint; }
@@ -269,7 +302,7 @@ function renderIntro(){ const k=INTRO[S.introI]; document.body.classList.remove(
   $("napoveda").textContent="táhni do stran, jde to i šipkami";
 }
 function renderPrep(){ const k=S.prep[S.i];
-  obraz(k.img); $("scena").textContent=`týden ${S.t}, ${DNY[S.i]}, ${k.scena}`;
+  obraz(k.img); hlava(); $("scena").textContent=`${DNY[S.i]}, ${k.scena}`;
   textCross(k.uvod+"\n\n"+k.l.pitch+"\n\n"+k.p.pitch,false);
   hintTxt={l:"Poprosíš: "+velke(k.l.jm),p:"Poprosíš: "+velke(k.p.jm)};
   volbyDve("táhni doleva, nebo doprava");
@@ -428,8 +461,8 @@ function pruser(b){
 function prechodDal(){ S.i++; if(S.i<S.prechodKarty.length){S.faze="prechod"; return render();} return finale("prechod",null); }
 
 /* časovač */
-function spustCas(){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)";
-  cas=setInterval(()=>{ w-=1.5; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")";
+function spustCas(){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)"; $("oharek").style.left="calc(100% - 5px)";
+  cas=setInterval(()=>{ w-=1.5; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")"; $("oharek").style.left="calc("+Math.max(0,w)+"% - 5px)";
     if(w<=0){ stopCas(); if(!S.vahal){ S.vahal=true; S.vahaniPocet++;
       if(S.vahaniPocet>2){ S.vera-=6; merky(); }   // první dvě zaváhání projdou (nervy), pak to čte jako vytáčku
       $("nalada").textContent="„Váháte.“"; } } },100); }
@@ -454,8 +487,9 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   }
   const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?("vypovídal"+a+", propuštěn"+a):S.zataženi[k]?("vyslýchán"+a):"nic";
     return `<div class="sl"><span>${velke(o.jm)}</span><span class="os2">${os2}</span></div>`; }).join("");
+  const stamp=druh==="prechod"?"PŘEŠEL":druh==="draty"?"ZADRŽEN":"ODSOUZEN";
   $("scena").textContent=nadpis; $("text").className="";
-  $("text").innerHTML=`<div id="rozsudek"><div class="ja">Ty - ${ja}</div>${radky}</div>`
+  $("text").innerHTML=`<div id="rozsudek"><div id="stampKonec">${stamp}</div><div class="ja">Ty - ${ja}</div>${radky}</div>`
     +`<div style="margin-top:12px;font-style:italic;color:#b7ad97;font-size:14px">${dodatek}</div>`;
   volbyRe("Znovu");
   if(LOG_JE) $("napoveda").innerHTML='<b>Znovu</b>: táhni kterýmkoli směrem. <b>L</b> = zkopírovat záznam pro autora';
@@ -668,7 +702,14 @@ function nova(){
 // náhodu nese obsazení (pooly) i pořadí dní — úvody karet jsou proto psané bez odkazu na konkrétní den
 function spustTyden(){ S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik"); render(); }
 
-function obraz(src){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); $("obraz").style.backgroundImage=`url('${u}')`; }
+function obraz(src){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); $("obraz").style.backgroundImage=`url('${u}')`;
+  $("hlava").style.display="none"; }   // hlavičku spisu si zpátky rozsvítí jen denní karta (hlava())
+
+// hlavička spisu: týden slovem + kalendář, odbyté dny škrtnuté, dnešek podtržený
+const KAL=["MO","TU","WE","TH","FR"], TYDNY=["WEEK ONE","WEEK TWO"];
+function hlava(){ $("tydenSlovo").textContent=TYDNY[S.t-1]; $("cislo").textContent="ref. no. PS-117/52";
+  $("kalendar").innerHTML=KAL.map((d,i)=>`<span class="den${i<S.i?" skrt":i===S.i?" dnes":""}">${d}</span>`).join("");
+  $("hlava").style.display="block"; }
 function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{e.className=re?"re":"";e.innerHTML=t;e.style.opacity=1;},150); }
 function volbyRe(txt){ hintTxt={l:txt,p:txt}; $("napoveda").textContent=txt+" - swipe either way"; }
 function volbyDve(hint){ $("napoveda").textContent=hint; }
@@ -685,7 +726,7 @@ function renderIntro(){ const k=INTRO[S.introI]; document.body.classList.remove(
   $("napoveda").textContent="swipe either way, arrow keys work too";
 }
 function renderPrep(){ const k=S.prep[S.i];
-  obraz(k.img); $("scena").textContent=`week ${S.t}, ${DNY[S.i]}, ${k.scena}`;
+  obraz(k.img); hlava(); $("scena").textContent=`${DNY[S.i]}, ${k.scena}`;
   textCross(k.uvod+"\n\n"+k.l.pitch+"\n\n"+k.p.pitch,false);
   hintTxt={l:"You’ll ask: "+velke(k.l.jm),p:"You’ll ask: "+velke(k.p.jm)};
   volbyDve("swipe left or right");
@@ -844,8 +885,8 @@ function pruser(b){
 function prechodDal(){ S.i++; if(S.i<S.prechodKarty.length){S.faze="prechod"; return render();} return finale("prechod",null); }
 
 /* časovač */
-function spustCas(){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)";
-  cas=setInterval(()=>{ w-=1.5; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")";
+function spustCas(){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)"; $("oharek").style.left="calc(100% - 5px)";
+  cas=setInterval(()=>{ w-=1.5; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")"; $("oharek").style.left="calc("+Math.max(0,w)+"% - 5px)";
     if(w<=0){ stopCas(); if(!S.vahal){ S.vahal=true; S.vahaniPocet++;
       if(S.vahaniPocet>2){ S.vera-=6; merky(); }   // první dvě zaváhání projdou (nervy), pak to čte jako vytáčku
       $("nalada").textContent="“You’re hesitating.”"; } } },100); }
@@ -870,8 +911,9 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   }
   const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?"testified, released":S.zataženi[k]?"interrogated":"nothing";
     return `<div class="sl"><span>${velke(o.jm)}</span><span class="os2">${os2}</span></div>`; }).join("");
+  const stamp=druh==="prechod"?"CROSSED":druh==="draty"?"DETAINED":"CONVICTED";
   $("scena").textContent=nadpis; $("text").className="";
-  $("text").innerHTML=`<div id="rozsudek"><div class="ja">You - ${ja}</div>${radky}</div>`
+  $("text").innerHTML=`<div id="rozsudek"><div id="stampKonec">${stamp}</div><div class="ja">You - ${ja}</div>${radky}</div>`
     +`<div style="margin-top:12px;font-style:italic;color:#b7ad97;font-size:14px">${dodatek}</div>`;
   volbyRe("Again");
   if(LOG_JE) $("napoveda").innerHTML='<b>Again</b>: swipe either way. <b>L</b> = copy the play log for the author';
@@ -953,7 +995,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291635";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291720";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
