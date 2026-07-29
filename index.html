@@ -1,4 +1,4 @@
-<!-- pasmo build 202607292124 -->
+<!-- pasmo build 202607292125 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -384,10 +384,10 @@ function spustVyslech(){
     [["l",k.l],["p",k.p]].forEach(([str,src])=>{ const pouzito=(zv===str);
       const maLead=(src.typ==="papir"||src.typ==="svedek");    // stopa = papír nebo člověk-svědek
       if(pouzito){
-        if(!maLead) return;                                     // uklidil jsi to čistě → nemají se čeho chytit, neptají se
+        if(!maLead) return;                                     // uklidil jsi to čistě, nemají se čeho chytit, neptají se
         const majiDukaz=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo]));
         karty.push({ot:(majiDukaz?src.ot:(src.otO||src.ot)),kdo:src.kdo,usv:k.usv,majiDukaz,ch:src.ch,pouzito:true,need:k.need,str,konkretni:majiDukaz});
-      } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk → adjacent sonda, nikdy blind shot
+      } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk = adjacent sonda, nikdy blind shot
         blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:k.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:k.need,str,konkretni:false});
       } }); });
   // pár blafů, ne odškrtávání: správně zapřený blaf projde
@@ -451,7 +451,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
 }
 function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spustPrechod(); }
 
-/* ---------- PŘECHOD (finiš): swipe = ← skrýt se / risknout →. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
+/* ---------- PŘECHOD (finiš): swipe vlevo skrýt se, vpravo risknout. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
 const KRIT=[
  {need:"propustka", scena:"závora", img:"checkpoint.png",
   zach:{need:"peníze", ok:"Kužel baterky se zastavil na tobě. „Stůj!“ Jdeš pomalu blíž a do dlaně mu vtiskneš, co máš. Dlouhé ticho. Pak mávl rukou do tmy: jdi.", fail:"Nabídl jsi mu, co ti zbylo. Nestačilo to."},
@@ -865,10 +865,10 @@ function spustVyslech(){
     [["l",k.l],["p",k.p]].forEach(([str,src])=>{ const pouzito=(zv===str);
       const maLead=(src.typ==="papir"||src.typ==="svedek");    // stopa = papír nebo člověk-svědek
       if(pouzito){
-        if(!maLead) return;                                     // uklidil jsi to čistě → nemají se čeho chytit, neptají se
+        if(!maLead) return;                                     // uklidil jsi to čistě, nemají se čeho chytit, neptají se
         const majiDukaz=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo]));
         karty.push({ot:(majiDukaz?src.ot:(src.otO||src.ot)),kdo:src.kdo,usv:k.usv,majiDukaz,ch:src.ch,pouzito:true,need:k.need,str,konkretni:majiDukaz});
-      } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk → adjacent sonda, nikdy blind shot
+      } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk = adjacent sonda, nikdy blind shot
         blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:k.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:k.need,str,konkretni:false});
       } }); });
   // pár blafů, ne odškrtávání: správně zapřený blaf projde
@@ -932,7 +932,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
 }
 function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spustPrechod(); }
 
-/* ---------- PŘECHOD (finiš): swipe = ← skrýt se / risknout →. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
+/* ---------- PŘECHOD (finiš): swipe vlevo skrýt se, vpravo risknout. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
 const KRIT=[
  {need:"propustka", scena:"the barrier", img:"checkpoint.png",
   zach:{need:"peníze", ok:"The torch beam stops on you. “Halt!” You walk toward him slowly and press what you have into his palm. A long silence. Then he waves you into the dark: go.", fail:"You offered him what you had left. It was not enough."},
@@ -1132,7 +1132,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607292124";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607292125";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
