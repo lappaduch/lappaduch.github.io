@@ -1,4 +1,4 @@
-<!-- pasmo build 202607291738 -->
+<!-- pasmo build 202607291745 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -41,7 +41,7 @@
   /* den = stránka papíru (barva sedí na papír tiskových obrázků), noc = tmavá místnost */
   #karta{ position:absolute; inset:0; display:flex; flex-direction:column; background:#d6cdbb; color:#241c12; will-change:transform; }
   body.noc #karta{ background:#0d0b08; color:var(--papir) }
-  #obraz{ flex:0 0 auto; width:100%; aspect-ratio:3/2; background-size:cover; background-position:center; position:relative }
+  #obraz{ flex:0 0 auto; width:100%; aspect-ratio:3/2; background-size:cover; background-position:center; position:relative; transition:opacity .22s }
   #obraz::after{ content:""; position:absolute; inset:0; box-shadow:inset 0 -46px 40px -20px #d6cdbb; }
   body.noc #obraz::after{ box-shadow:inset 0 -46px 40px -20px #0d0b08; }
   #telo{ flex:1 1 auto; padding:16px 20px 12px; display:flex; flex-direction:column; overflow-y:auto; }
@@ -107,6 +107,7 @@
   /* dozvuk rozhodnutí se připisuje pod text téže karty (kurzívou jako dřív) */
   .pripis{ margin-top:12px; font-style:italic; color:#4f4636; animation:pripisNaskok .25s ease-out }
   body.noc .pripis{ color:#cdbf9f }
+  .pripis.rovny{ font-style:normal; color:inherit }   /* pokračování vyprávění (intro) — ne dozvuk */
   @keyframes pripisNaskok{ from{ opacity:0 } to{ opacity:1 } }
   /* přetisk „xx" přes dnešek — jen při živém škrtnutí, ne při překreslení */
   .den.cerstvy::after{ animation:pretisk .3s ease-out }
@@ -290,7 +291,10 @@ function nova(){
 // náhodu nese obsazení (pooly) i pořadí dní — úvody karet jsou proto psané bez odkazu na konkrétní den
 function spustTyden(){ S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik"); render(); }
 
-function obraz(src){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); $("obraz").style.backgroundImage=`url('${u}')`;
+function obraz(src,plynule){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); const o=$("obraz"), cil=`url('${u}')`;
+  if(plynule && document.createElement && o.style.backgroundImage && o.style.backgroundImage!==cil){
+    o.style.opacity=0; setTimeout(()=>{ o.style.backgroundImage=cil; o.style.opacity=1; },160);   // měkké prohození při odhalování na téže kartě
+  } else o.style.backgroundImage=cil;
   $("hlava").style.display="none"; }   // hlavičku spisu si zpátky rozsvítí jen denní karta (hlava())
 
 // hlavička spisu: týden slovem + kalendář, odbyté dny škrtnuté, dnešek podtržený
@@ -311,9 +315,9 @@ function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(
 function dopisHned(){ if(!psani)return; clearInterval(psani.tik); psani.el.textContent=psani.t; const d=psani.done; psani=null; if(d)d(); }
 
 /* dozvuk na téže kartě: připíše se pod text a sroluje do záběru (u výslechu psaný strojem) */
-function pripis(t,typuj){ const e=$("text");
+function pripis(t,typuj,rovny){ const e=$("text");
   if(!document.createElement){ e.innerHTML+="\n\n"+t; return; }   // headless šim (test/persony.js)
-  const d=document.createElement("div"); d.className="pripis"; e.appendChild(d);
+  const d=document.createElement("div"); d.className="pripis"+(rovny?" rovny":""); e.appendChild(d);
   const dolu=()=>{ const telo=$("telo"); telo.scrollTo?telo.scrollTo({top:telo.scrollHeight,behavior:"smooth"}):telo.scrollTop=telo.scrollHeight; };
   if(typuj){ pis(d,t).pak(dolu); } else d.textContent=t;
   (typeof requestAnimationFrame!=="undefined"?requestAnimationFrame:f=>f())(dolu); }
@@ -542,8 +546,8 @@ function swipe(side, fn){ if(anim) return; anim=true; const k=$("karta");
 /* volba, po které karta zůstává: nakloní se na zvolenou stranu, dozvuk se připíše, karta dosedne zpět.
    Když rozuzlení přepíše celou obrazovku (konec hry), dokončí se odhoz jako u běžného swipu. */
 function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(null);
-  k.style.transition="transform .13s ease-out";
-  k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`;
+  k.style.transition="transform .13s ease-out, opacity .13s";
+  k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`; k.style.opacity="1";
   setTimeout(()=>{ fn();
     if(S.faze==="konec"){
       k.style.transition="transform .2s ease, opacity .2s"; k.style.transform=`translateX(${side==="l"?-135:135}%)`; k.style.opacity="0";
@@ -563,8 +567,13 @@ function act(side){
   if(S.faze==="prep") return potvrd(side, ()=>prepVyber(side));
   if(S.faze==="vyslech") return potvrd(side, ()=>vyslechVyber(side));
   if(S.faze==="prechod") return potvrd(side, ()=>prechodVyber(side));
+  // intro = jedna obrazovka: každý tah připíše další odstavec, teprve poslední odhodí kartu do hry
+  if(S.faze==="intro"){
+    if(S.introI<INTRO.length-1) return potvrd(side, ()=>{ S.introI++; const k=INTRO[S.introI];
+      obraz(k.img,true); $("scena").textContent=k.scena; pripis(k.text,false,true); });
+    return swipe(side, spustTyden);
+  }
   // fáze, kde swipe posouvá na další kartu:
-  if(S.faze==="intro") return swipe(side, ()=>{ S.introI++; if(S.introI<INTRO.length) render(); else spustTyden(); });
   if(S.faze==="prep-re") return swipe(side, prepDal);
   if(S.faze==="vyslech-intro") return swipe(side, ()=>{ if(!S.karty.length) return vyslechSouhrn(); S.faze="vyslech"; render(); });
   if(S.faze==="vyslech-re") return swipe(side, vyslechDal);
@@ -752,7 +761,10 @@ function nova(){
 // náhodu nese obsazení (pooly) i pořadí dní — úvody karet jsou proto psané bez odkazu na konkrétní den
 function spustTyden(){ S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik"); render(); }
 
-function obraz(src){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); $("obraz").style.backgroundImage=`url('${u}')`;
+function obraz(src,plynule){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); const o=$("obraz"), cil=`url('${u}')`;
+  if(plynule && document.createElement && o.style.backgroundImage && o.style.backgroundImage!==cil){
+    o.style.opacity=0; setTimeout(()=>{ o.style.backgroundImage=cil; o.style.opacity=1; },160);   // měkké prohození při odhalování na téže kartě
+  } else o.style.backgroundImage=cil;
   $("hlava").style.display="none"; }   // hlavičku spisu si zpátky rozsvítí jen denní karta (hlava())
 
 // hlavička spisu: týden slovem + kalendář, odbyté dny škrtnuté, dnešek podtržený
@@ -773,9 +785,9 @@ function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(
 function dopisHned(){ if(!psani)return; clearInterval(psani.tik); psani.el.textContent=psani.t; const d=psani.done; psani=null; if(d)d(); }
 
 /* dozvuk na téže kartě: připíše se pod text a sroluje do záběru (u výslechu psaný strojem) */
-function pripis(t,typuj){ const e=$("text");
+function pripis(t,typuj,rovny){ const e=$("text");
   if(!document.createElement){ e.innerHTML+="\n\n"+t; return; }   // headless šim (test/persony.js)
-  const d=document.createElement("div"); d.className="pripis"; e.appendChild(d);
+  const d=document.createElement("div"); d.className="pripis"+(rovny?" rovny":""); e.appendChild(d);
   const dolu=()=>{ const telo=$("telo"); telo.scrollTo?telo.scrollTo({top:telo.scrollHeight,behavior:"smooth"}):telo.scrollTop=telo.scrollHeight; };
   if(typuj){ pis(d,t).pak(dolu); } else d.textContent=t;
   (typeof requestAnimationFrame!=="undefined"?requestAnimationFrame:f=>f())(dolu); }
@@ -1004,8 +1016,8 @@ function swipe(side, fn){ if(anim) return; anim=true; const k=$("karta");
 /* volba, po které karta zůstává: nakloní se na zvolenou stranu, dozvuk se připíše, karta dosedne zpět.
    Když rozuzlení přepíše celou obrazovku (konec hry), dokončí se odhoz jako u běžného swipu. */
 function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(null);
-  k.style.transition="transform .13s ease-out";
-  k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`;
+  k.style.transition="transform .13s ease-out, opacity .13s";
+  k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`; k.style.opacity="1";
   setTimeout(()=>{ fn();
     if(S.faze==="konec"){
       k.style.transition="transform .2s ease, opacity .2s"; k.style.transform=`translateX(${side==="l"?-135:135}%)`; k.style.opacity="0";
@@ -1025,8 +1037,13 @@ function act(side){
   if(S.faze==="prep") return potvrd(side, ()=>prepVyber(side));
   if(S.faze==="vyslech") return potvrd(side, ()=>vyslechVyber(side));
   if(S.faze==="prechod") return potvrd(side, ()=>prechodVyber(side));
+  // intro = jedna obrazovka: každý tah připíše další odstavec, teprve poslední odhodí kartu do hry
+  if(S.faze==="intro"){
+    if(S.introI<INTRO.length-1) return potvrd(side, ()=>{ S.introI++; const k=INTRO[S.introI];
+      obraz(k.img,true); $("scena").textContent=k.scena; pripis(k.text,false,true); });
+    return swipe(side, spustTyden);
+  }
   // fáze, kde swipe posouvá na další kartu:
-  if(S.faze==="intro") return swipe(side, ()=>{ S.introI++; if(S.introI<INTRO.length) render(); else spustTyden(); });
   if(S.faze==="prep-re") return swipe(side, prepDal);
   if(S.faze==="vyslech-intro") return swipe(side, ()=>{ if(!S.karty.length) return vyslechSouhrn(); S.faze="vyslech"; render(); });
   if(S.faze==="vyslech-re") return swipe(side, vyslechDal);
@@ -1083,7 +1100,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291738";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607291745";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
