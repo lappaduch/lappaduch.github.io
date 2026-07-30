@@ -1,4 +1,4 @@
-<!-- pasmo build 202607292125-swipefix1 -->
+<!-- pasmo build 202607292125 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -44,10 +44,7 @@
   #obraz{ flex:0 0 auto; width:100%; aspect-ratio:3/2; background-size:cover; background-position:center; position:relative; transition:opacity .22s }
   #obraz::after{ content:""; position:absolute; inset:0; box-shadow:inset 0 -46px 40px -20px #d6cdbb; }
   body.noc #obraz::after{ box-shadow:inset 0 -46px 40px -20px #0d0b08; }
-  /* touch-action:none musí být i tady: #telo je vlastní scroll kontejner, a na jeho panning se
-     touch-action:none z předka (#jeviste) nevztahuje. Bez toho si Chrome vezme gesto pro scroll,
-     touchmove přijde jako non-cancelable (preventDefault se ignoruje) a přiletí pointercancel. */
-  #telo{ flex:1 1 auto; padding:16px 20px 12px; display:flex; flex-direction:column; overflow-y:auto; touch-action:none; }
+  #telo{ flex:1 1 auto; padding:16px 20px 12px; display:flex; flex-direction:column; overflow-y:auto; }
   /* vlastní scrollbar: tenká inkoustová linka místo systémového */
   body{ scrollbar-width:thin; scrollbar-color:#a89e8a transparent }
   body.noc{ scrollbar-color:#4a4136 transparent }
@@ -564,19 +561,15 @@ function swipe(side, fn){ if(anim) return; anim=true; const k=$("karta");
   k.style.transition="transform .26s ease, opacity .26s ease";
   k.style.transform=`translateX(${side==="l"?-135:135}%) rotate(${side==="l"?-12:12}deg)`; k.style.opacity="0";
   hint(null);
-  // finally: kdyby fn() spadlo, anim musí spadnout zpátky na false, jinak je ovládání zamčené až do reloadu
-  setTimeout(()=>{ try{ fn(); } finally {
-    k.style.transition="none"; k.style.transform="translateX(14%)"; k.style.opacity="0"; void k.offsetWidth;
-    k.style.transition="transform .22s ease, opacity .22s ease"; k.style.transform="translateX(0)"; k.style.opacity="1"; anim=false; } },260);
+  setTimeout(()=>{ fn(); k.style.transition="none"; k.style.transform="translateX(14%)"; k.style.opacity="0"; void k.offsetWidth;
+    k.style.transition="transform .22s ease, opacity .22s ease"; k.style.transform="translateX(0)"; k.style.opacity="1"; anim=false; },260);
 }
 /* volba, po které karta zůstává: nakloní se na zvolenou stranu, dozvuk se připíše, karta dosedne zpět.
    Když rozuzlení přepíše celou obrazovku (konec hry), dokončí se odhoz jako u běžného swipu. */
 function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(null);
   k.style.transition="transform .13s ease-out, opacity .13s";
   k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`; k.style.opacity="1";
-  setTimeout(()=>{
-    try{ fn(); }
-    catch(err){ anim=false; k.style.transition="transform .18s ease"; k.style.transform="translateX(0)"; k.style.opacity="1"; throw err; }
+  setTimeout(()=>{ fn();
     if(S.faze==="konec"){
       k.style.transition="transform .2s ease, opacity .2s"; k.style.transform=`translateX(${side==="l"?-135:135}%)`; k.style.opacity="0";
       setTimeout(()=>{ k.style.transition="none"; k.style.transform="translateX(14%)"; void k.offsetWidth;
@@ -622,20 +615,14 @@ function tahniKartu(dx){ const k=$("karta");
   hint(Math.abs(dx)<25?null:(dx<0?"l":"p")); }
 function vratKartu(){ const k=$("karta");
   k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
-/* act() tah nemusí převzít (běží animace, nebo fáze na swipe nereaguje): pak kartu složíme zpátky sami,
-   aby nikdy nezůstala viset mimo střed. Převzetí poznáme podle toho, že swipe()/potvrd() zapnou anim. */
-function pustKartu(dx){ if(Math.abs(dx)>70){ act(dx<0?"l":"p"); if(!anim) vratKartu(); }
-  else { if(Math.abs(dx)<8) dopisHned(); vratKartu(); } }
+function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else { if(Math.abs(dx)<8) dopisHned(); vratKartu(); } }
 
 /* dotyk: jeviště má touch-action:none, gesto je celé naše: vodorovně karta, svisle ruční scroll textu */
-jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){
-    if(drag&&drag.rezim==="karta"&&!anim) vratKartu();   // druhý prst uprostřed tahu: kartu složit, ne ji nechat zaseknutou
-    drag=null;return;}
+jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
   const t=e.touches[0], telo=$("telo");
   drag={x0:t.clientX,y0:t.clientY,dx:0,rezim:null,scroll0:telo.scrollTop,
         maScroll:telo.scrollHeight-telo.clientHeight>4}; },{passive:true});
-jev.addEventListener("touchmove",e=>{ if(!drag||anim) return;
-  if(e.cancelable) e.preventDefault();   // s touch-action:none je event non-cancelable a preventDefault by jen plnil konzoli warningem
+jev.addEventListener("touchmove",e=>{ if(!drag||anim) return; e.preventDefault();
   const t=e.touches[0]; const dx=t.clientX-drag.x0, dy=t.clientY-drag.y0;
   if(drag.rezim===null){ if(Math.abs(dx)+Math.abs(dy)<4) return;
     drag.rezim=(drag.maScroll&&Math.abs(dy)>Math.abs(dx))?"scroll":"karta"; }
@@ -649,10 +636,7 @@ jev.addEventListener("pointerdown",e=>{ if(e.pointerType!=="mouse"||anim) return
   jev.setPointerCapture?.(e.pointerId); drag={x0:e.clientX,y0:e.clientY,vod:true,dx:0}; });
 jev.addEventListener("pointermove",e=>{ if(e.pointerType!=="mouse"||!drag||anim) return; drag.dx=e.clientX-drag.x0; tahniKartu(drag.dx); });
 jev.addEventListener("pointerup",e=>{ if(e.pointerType!=="mouse"||!drag) return; const dx=drag.dx; drag=null; pustKartu(dx); });
-/* jen myš: dotykový pointercancel (Chrome ho pošle, jak si sáhne na gesto) nesmí sebrat tah touch větvi,
-   jinak karta zůstane zaseknutá mimo střed a touchend už ji nesloží zpátky */
-jev.addEventListener("pointercancel",e=>{ if(e.pointerType!=="mouse") return;
-  if(drag&&drag.vod) vratKartu(); drag=null; });
+jev.addEventListener("pointercancel",()=>{ if(drag&&drag.vod) vratKartu(); drag=null; });
 
 nova();
 </script>
@@ -1058,19 +1042,15 @@ function swipe(side, fn){ if(anim) return; anim=true; const k=$("karta");
   k.style.transition="transform .26s ease, opacity .26s ease";
   k.style.transform=`translateX(${side==="l"?-135:135}%) rotate(${side==="l"?-12:12}deg)`; k.style.opacity="0";
   hint(null);
-  // finally: kdyby fn() spadlo, anim musí spadnout zpátky na false, jinak je ovládání zamčené až do reloadu
-  setTimeout(()=>{ try{ fn(); } finally {
-    k.style.transition="none"; k.style.transform="translateX(14%)"; k.style.opacity="0"; void k.offsetWidth;
-    k.style.transition="transform .22s ease, opacity .22s ease"; k.style.transform="translateX(0)"; k.style.opacity="1"; anim=false; } },260);
+  setTimeout(()=>{ fn(); k.style.transition="none"; k.style.transform="translateX(14%)"; k.style.opacity="0"; void k.offsetWidth;
+    k.style.transition="transform .22s ease, opacity .22s ease"; k.style.transform="translateX(0)"; k.style.opacity="1"; anim=false; },260);
 }
 /* volba, po které karta zůstává: nakloní se na zvolenou stranu, dozvuk se připíše, karta dosedne zpět.
    Když rozuzlení přepíše celou obrazovku (konec hry), dokončí se odhoz jako u běžného swipu. */
 function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(null);
   k.style.transition="transform .13s ease-out, opacity .13s";
   k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`; k.style.opacity="1";
-  setTimeout(()=>{
-    try{ fn(); }
-    catch(err){ anim=false; k.style.transition="transform .18s ease"; k.style.transform="translateX(0)"; k.style.opacity="1"; throw err; }
+  setTimeout(()=>{ fn();
     if(S.faze==="konec"){
       k.style.transition="transform .2s ease, opacity .2s"; k.style.transform=`translateX(${side==="l"?-135:135}%)`; k.style.opacity="0";
       setTimeout(()=>{ k.style.transition="none"; k.style.transform="translateX(14%)"; void k.offsetWidth;
@@ -1116,20 +1096,14 @@ function tahniKartu(dx){ const k=$("karta");
   hint(Math.abs(dx)<25?null:(dx<0?"l":"p")); }
 function vratKartu(){ const k=$("karta");
   k.style.transition="transform .18s ease, opacity .18s"; k.style.transform="translateX(0)"; k.style.opacity="1"; hint(null); }
-/* act() tah nemusí převzít (běží animace, nebo fáze na swipe nereaguje): pak kartu složíme zpátky sami,
-   aby nikdy nezůstala viset mimo střed. Převzetí poznáme podle toho, že swipe()/potvrd() zapnou anim. */
-function pustKartu(dx){ if(Math.abs(dx)>70){ act(dx<0?"l":"p"); if(!anim) vratKartu(); }
-  else { if(Math.abs(dx)<8) dopisHned(); vratKartu(); } }
+function pustKartu(dx){ if(Math.abs(dx)>70) act(dx<0?"l":"p"); else { if(Math.abs(dx)<8) dopisHned(); vratKartu(); } }
 
 /* dotyk: jeviště má touch-action:none, gesto je celé naše: vodorovně karta, svisle ruční scroll textu */
-jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){
-    if(drag&&drag.rezim==="karta"&&!anim) vratKartu();   // druhý prst uprostřed tahu: kartu složit, ne ji nechat zaseknutou
-    drag=null;return;}
+jev.addEventListener("touchstart",e=>{ if(anim||e.touches.length>1){drag=null;return;}
   const t=e.touches[0], telo=$("telo");
   drag={x0:t.clientX,y0:t.clientY,dx:0,rezim:null,scroll0:telo.scrollTop,
         maScroll:telo.scrollHeight-telo.clientHeight>4}; },{passive:true});
-jev.addEventListener("touchmove",e=>{ if(!drag||anim) return;
-  if(e.cancelable) e.preventDefault();   // s touch-action:none je event non-cancelable a preventDefault by jen plnil konzoli warningem
+jev.addEventListener("touchmove",e=>{ if(!drag||anim) return; e.preventDefault();
   const t=e.touches[0]; const dx=t.clientX-drag.x0, dy=t.clientY-drag.y0;
   if(drag.rezim===null){ if(Math.abs(dx)+Math.abs(dy)<4) return;
     drag.rezim=(drag.maScroll&&Math.abs(dy)>Math.abs(dx))?"scroll":"karta"; }
@@ -1143,10 +1117,7 @@ jev.addEventListener("pointerdown",e=>{ if(e.pointerType!=="mouse"||anim) return
   jev.setPointerCapture?.(e.pointerId); drag={x0:e.clientX,y0:e.clientY,vod:true,dx:0}; });
 jev.addEventListener("pointermove",e=>{ if(e.pointerType!=="mouse"||!drag||anim) return; drag.dx=e.clientX-drag.x0; tahniKartu(drag.dx); });
 jev.addEventListener("pointerup",e=>{ if(e.pointerType!=="mouse"||!drag) return; const dx=drag.dx; drag=null; pustKartu(dx); });
-/* jen myš: dotykový pointercancel (Chrome ho pošle, jak si sáhne na gesto) nesmí sebrat tah touch větvi,
-   jinak karta zůstane zaseknutá mimo střed a touchend už ji nesloží zpátky */
-jev.addEventListener("pointercancel",e=>{ if(e.pointerType!=="mouse") return;
-  if(drag&&drag.vod) vratKartu(); drag=null; });
+jev.addEventListener("pointercancel",()=>{ if(drag&&drag.vod) vratKartu(); drag=null; });
 
 nova();
 </script>
@@ -1161,7 +1132,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607292125-swipefix1";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607292125";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
