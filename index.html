@@ -1,4 +1,4 @@
-<!-- pasmo build 202607300600 -->
+<!-- pasmo build 202607300609 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -32,7 +32,15 @@
   .mer .box::before{ left:0 } .mer .box::after{ right:0 }
   .mer .fill{ position:absolute; left:0; bottom:1px; height:3px; width:100%; transform-origin:left; transform:scaleX(0); transition:transform .3s ease }
   #verFill{ background:var(--slabe) }
-  #spisFill{ background:#a8352a }
+  #veraSlovo{ flex:0 0 auto; font-style:italic; text-transform:none; letter-spacing:0; color:#c9bfa8; font-size:10.5px }
+  /* spis není spojitá veličina, je to hromádka listů: každý usvědčující kus je jeden list */
+  #spisListy{ flex:1; display:flex; gap:5px; align-items:flex-end }
+  #spisListy .list{ flex:0 0 15px; height:11px; border:1px solid #6b6153; position:relative; transition:background .25s }
+  #spisListy .list.psany{ background:#a8352a; border-color:#a8352a }
+  #spisListy .list.psany::after{ content:""; position:absolute; left:2px; right:2px; top:3px; height:1px;
+    background:rgba(255,255,255,.45); box-shadow:0 3px 0 rgba(255,255,255,.45) }
+  #spisListy .list.cerstvy{ animation:listNaskok .45s ease-out }
+  @keyframes listNaskok{ 0%{ transform:translateY(-7px) rotate(-8deg); opacity:0 } 100%{ transform:none; opacity:1 } }
   #nalada{ margin-top:6px; font-style:italic; font-size:12px; color:#d8cdb4 }
 
   /* scéna = tažitelná karta */
@@ -144,8 +152,8 @@
   <div id="jazyk"></div>
   <div id="zvuk"></div>
   <div id="mery">
-    <div class="mer"><span id="lblVera">věrohodnost</span> <span class="box"><span class="fill" id="verFill"></span></span></div>
-    <div class="mer"><span id="lblSpis">co na tebe mají</span> <span class="box"><span class="fill" id="spisFill"></span></span></div>
+    <div class="mer"><span id="lblVera">věří vám</span> <span class="box"><span class="fill" id="verFill"></span></span> <span id="veraSlovo"></span></div>
+    <div class="mer"><span id="lblSpis">ve spisu</span> <span id="spisListy"></span></div>
     <div id="nalada"></div>
   </div>
   <div id="jeviste">
@@ -393,7 +401,7 @@ const NEED=[
 const JMENA={}; NEED.forEach(n=>[...n.lPool,...n.pPool].forEach(s=>{if(s.kdo)JMENA[s.kdo]={jm:s.jm,rod:s.rod};}));
 function vyber(a){ return a[Math.floor(Math.random()*a.length)]; }
 function zamichej(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-const PRAH_SPIS=4, VER_ZTRATA=26;
+const PRAH_SPIS=4, VER_ZTRATA=17;
 
 let S, cas=null, anim=false, hintTxt={l:"",p:""};
 const $=id=>document.getElementById(id);
@@ -504,7 +512,8 @@ function prepVyber(strana){ const k=S.prep[S.i], s=(strana==="l"?k.l:k.p);
 function prepDal(){ S.faze="prep"; S.i++; if(S.i<S.prep.length) return render(); spustVyslech(); }
 
 /* ---------- víkend ---------- */
-function zdrojKlic(key){ const str=key.slice(-1),need=key.slice(0,-1); const k=S.needy.find(n=>n.need===need); if(!k)return null; return {src:str==="l"?k.l:k.p,usv:k.usv,need,str}; }
+// klíč výpovědi je potřeba + strana + člověk: dva lidé u téže potřeby si nesmí přepsat protokol
+function klic(q){ return q.need+q.str+(q.kdo||""); }
 function spustVyslech(){
   const karty=[], blafy=[];
   // Eskalace: StB všechno ví, ale nesmí to ukázat. Konkrétní otázku (jmenuje člověka i věc) položí
@@ -515,20 +524,32 @@ function spustVyslech(){
       const maLead=(src.typ==="papir"||src.typ==="svedek");    // stopa = papír nebo člověk-svědek
       if(pouzito){
         if(!maLead) return;                                     // uklidil jsi to čistě, nemají se čeho chytit, neptají se
-        const majiDukaz=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo]));
+        // důkaz mají z papíru, od svědka, co promluvil, NEBO od tebe: koho jsi jmenoval, toho si předvolali
+        const majiDukaz=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo])||!!S.zataženi[src.kdo]);
         karty.push({ot:(majiDukaz?src.ot:(src.otO||src.ot)),kdo:src.kdo,usv:k.usv,majiDukaz,ch:src.ch,pouzito:true,need:k.need,str,konkretni:majiDukaz});
       } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk = adjacent sonda, nikdy blind shot
         blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:k.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:k.need,str,konkretni:false});
       } }); });
-  // pár blafů, ne odškrtávání: správně zapřený blaf projde
-  for(let i=blafy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[blafy[i],blafy[j]]=[blafy[j],blafy[i]];}
-  karty.push(...blafy.slice(0, S.t===1?1:2));
+  // StB lovila i mimo tvůj týden: prošla lidi, se kterými ses potkat MOHL, a ptá se i na ně.
+  // Odtud se výslech doplňuje na plnou délku, když jsi po sobě moc stop nenechal.
+  const uz=new Set(karty.concat(blafy).map(klic));
+  NEED.filter(n=>n.t===S.t).forEach(n=>{
+    [["l",n.lPool],["p",n.pPool]].forEach(([str,pool])=>pool.forEach(src=>{
+      if(!src.kdo || (src.typ!=="papir"&&src.typ!=="svedek")) return;
+      const klic=n.need+str+src.kdo; if(uz.has(klic)) return; uz.add(klic);
+      blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:n.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:n.need,str,konkretni:false});
+    })); });
   if(S.t===2){ const kl=Object.keys(S.reklJsem);
     for(let i=kl.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[kl[i],kl[j]]=[kl[j],kl[i]];}
-    kl.slice(0,5).forEach(key=>{ const z=zdrojKlic(key); if(!z)return;
-      // reask = tatáž otázka znovu, doslova jak padla poprvé: „minule jste to říkal jinak" musí srovnávat srovnatelné
-      const drive=(S.otazky||{})[key];
-      karty.push({ot:(drive?drive.ot:z.src.ot),kdo:z.src.kdo,usv:z.usv,majiDukaz:false,ch:z.src.ch,pouzito:false,need:z.need,str:z.str,reask:true,predchozi:S.reklJsem[key],konkretni:drive?drive.k:true}); }); }
+    // reask = tatáž otázka znovu, doslova jak padla poprvé: „minule jste to říkal jinak" musí srovnávat srovnatelné
+    kl.slice(0,7).forEach(key=>{ const d=(S.otazky||{})[key]; if(!d) return;
+      karty.push({ot:d.ot,kdo:d.kdo,usv:d.usv,majiDukaz:false,ch:d.ch,pouzito:false,need:d.need,str:d.str,
+                  reask:true,predchozi:S.reklJsem[key],konkretni:!!d.k}); }); }
+  // správně zapřený blaf projde; hráč ale nepozná, která otázka blaf je, a to je celé jádro.
+  // Blafy se doplňují až nakonec, aby cíl platil pro celý výslech včetně reasků.
+  for(let i=blafy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[blafy[i],blafy[j]]=[blafy[j],blafy[i]];}
+  const CIL=S.t===1?10:12;                       // výslech má vždycky váhu, i když jsi hrál čistě
+  karty.push(...blafy.slice(0, Math.max(1, CIL-karty.length)));
   // sezení houstne: obecné sondy napřed, konkrétní otázky (kde něco mají) potom: uvnitř skupin náhodně
   const mich=a=>{ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
   Z.atmosfera(true);   // pokoj s transformátorem: drží po celý výslech, zhasne až s rozsudkem
@@ -538,34 +559,46 @@ function spustVyslech(){
   textCross("Sebrali tě v sobotu ráno. Vyšetřovatel má před sebou spis. A ty nevíš, co v něm je.",true);
   volbyRe("Posadit se");
 }
-function merky(){ $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")"; $("spisFill").style.transform="scaleX("+Math.min(100,S.spis/PRAH_SPIS*100)/100+")";
+const VERA_SLOVY=[[80,"zatím ano"],[60,"už ne úplně"],[40,"pochybuje"],[20,"skoro ne"],[0,"ani slovo"]];
+function merky(){
+  $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")";
+  const sl=VERA_SLOVY.find(([h])=>S.vera>=h) || VERA_SLOVY[VERA_SLOVY.length-1];
+  $("veraSlovo").textContent=sl[1];
+  // spis = hromádka listů, ne procenta: každý usvědčující kus je jeden list a poslední znamená obvinění
+  const box=$("spisListy");
+  if(box.children && box.children.length!==PRAH_SPIS && document.createElement){
+    box.innerHTML=""; for(let i=0;i<PRAH_SPIS;i++){ const d=document.createElement("div"); d.className="list"; box.appendChild(d); } }
+  if(box.children) for(let i=0;i<box.children.length;i++){
+    const byl=box.children[i].className.indexOf("psany")>=0, je=i<S.spis;
+    box.children[i].className="list"+(je?" psany":"")+(je&&!byl?" cerstvy":"");
+  }
   $("nalada").textContent = S.vera>66?"Nedívá se na tebe.":S.vera>33?"Píše rychleji.":"Přestal psát a dívá se na tebe.";
   // tep začne, teprve když je zle: do té doby má výslech jen svoje ticho
   Z.tepat(S.vera<70 ? Math.round((70-Math.max(0,S.vera))*1.4) : 0); }
-function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=false;
-  if(!q.reask) S.otazky[q.need+q.str]={ot:q.ot,k:!!q.konkretni};   // zapamatuj formulaci pro případný reask
-  if(q.reask){ const kl=q.need+q.str, ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
+function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q); let vysl,stamp=false;
+  // co jsi řekl, to je v protokolu: formulace i odpověď, ať už na to měli důkaz, nebo ne
+  if(!q.reask) S.otazky[kl]={ot:q.ot,k:!!q.konkretni,kdo:q.kdo,ch:q.ch,usv:q.usv,need:q.need,str:q.str};
+  if(q.reask){ const ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
       vysl=S.dokazano[kl]?"„Tohle máme v protokolu. Dokázané. A Vy to přede mnou dál zapíráte.“":"„Minule jste to říkal jinak.“ Listoval zpátky a četl si to dvakrát.";}
     else vysl=S.dokazano[kl]?"„No proto. Aspoň už nezapíráte, co víme oba.“":"Držíš se své verze slovo od slova. „...dobře.“";
     S.reklJsem[kl]=strana; }
-  else if(strana==="l"){ S.reklJsem[q.need+q.str]=strana;
-    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;
+  else if(strana==="l"){ S.reklJsem[kl]=strana;
+    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
       if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
       vysl=q.ch+" Ani se nezlobil. Jen si to zapsal.";} else vysl="Ticho. Pak: „Dobře.“ Píše dál."; }
-  else { S.reklJsem[q.need+q.str]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
+  else { S.reklJsem[kl]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
     if(q.usv&&q.pouzito){S.spis++;vysl="Psací stroj klapl. Zapsáno. Tenhle list si podtrhl.";} else vysl="Psací stroj klapl. Zapsáno."; }
   zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
-    akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[q.need+q.str],
+    akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[kl],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
   merky();
   if(stamp){ razitko(); S.razitkaTyden=(S.razitkaTyden||0)+1;
     $("nalada").textContent = S.vera>40?"Zvedl oči od papírů. Něco si připsal.":"Dívá se ti přímo do očí. Ví, že lžeš.";
     $("hra").classList.remove("zasah"); void $("hra").offsetWidth; $("hra").classList.add("zasah");
-    $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls");
-    if(q.usv&&q.pouzito&&!q.reask){ $("spisFill").classList.remove("puls"); void $("spisFill").offsetWidth; $("spisFill").classList.add("puls"); } }
+    $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls"); }
   pripis(vysl,true); volbyRe(S.i>=S.karty.length-1?"Konec výslechu":"Další otázka"); S.faze="vyslech-re";
 }
 function vyslechDal(){ if(S.vera<=0) return finale("zatcen","vera"); if(S.spis>=PRAH_SPIS) return finale("zatcen","spis");
@@ -1023,7 +1056,7 @@ const NEED=[
 const JMENA={}; NEED.forEach(n=>[...n.lPool,...n.pPool].forEach(s=>{if(s.kdo)JMENA[s.kdo]={jm:s.jm,rod:s.rod};}));
 function vyber(a){ return a[Math.floor(Math.random()*a.length)]; }
 function zamichej(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-const PRAH_SPIS=4, VER_ZTRATA=26;
+const PRAH_SPIS=4, VER_ZTRATA=17;
 
 let S, cas=null, anim=false, hintTxt={l:"",p:""};
 const $=id=>document.getElementById(id);
@@ -1134,7 +1167,8 @@ function prepVyber(strana){ const k=S.prep[S.i], s=(strana==="l"?k.l:k.p);
 function prepDal(){ S.faze="prep"; S.i++; if(S.i<S.prep.length) return render(); spustVyslech(); }
 
 /* ---------- víkend ---------- */
-function zdrojKlic(key){ const str=key.slice(-1),need=key.slice(0,-1); const k=S.needy.find(n=>n.need===need); if(!k)return null; return {src:str==="l"?k.l:k.p,usv:k.usv,need,str}; }
+// klíč výpovědi je potřeba + strana + člověk: dva lidé u téže potřeby si nesmí přepsat protokol
+function klic(q){ return q.need+q.str+(q.kdo||""); }
 function spustVyslech(){
   const karty=[], blafy=[];
   // Eskalace: StB všechno ví, ale nesmí to ukázat. Konkrétní otázku (jmenuje člověka i věc) položí
@@ -1145,20 +1179,32 @@ function spustVyslech(){
       const maLead=(src.typ==="papir"||src.typ==="svedek");    // stopa = papír nebo člověk-svědek
       if(pouzito){
         if(!maLead) return;                                     // uklidil jsi to čistě, nemají se čeho chytit, neptají se
-        const majiDukaz=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo]));
+        // důkaz mají z papíru, od svědka, co promluvil, NEBO od tebe: koho jsi jmenoval, toho si předvolali
+        const majiDukaz=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo])||!!S.zataženi[src.kdo]);
         karty.push({ot:(majiDukaz?src.ot:(src.otO||src.ot)),kdo:src.kdo,usv:k.usv,majiDukaz,ch:src.ch,pouzito:true,need:k.need,str,konkretni:majiDukaz});
       } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk = adjacent sonda, nikdy blind shot
         blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:k.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:k.need,str,konkretni:false});
       } }); });
-  // pár blafů, ne odškrtávání: správně zapřený blaf projde
-  for(let i=blafy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[blafy[i],blafy[j]]=[blafy[j],blafy[i]];}
-  karty.push(...blafy.slice(0, S.t===1?1:2));
+  // StB lovila i mimo tvůj týden: prošla lidi, se kterými ses potkat MOHL, a ptá se i na ně.
+  // Odtud se výslech doplňuje na plnou délku, když jsi po sobě moc stop nenechal.
+  const uz=new Set(karty.concat(blafy).map(klic));
+  NEED.filter(n=>n.t===S.t).forEach(n=>{
+    [["l",n.lPool],["p",n.pPool]].forEach(([str,pool])=>pool.forEach(src=>{
+      if(!src.kdo || (src.typ!=="papir"&&src.typ!=="svedek")) return;
+      const klic=n.need+str+src.kdo; if(uz.has(klic)) return; uz.add(klic);
+      blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:n.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:n.need,str,konkretni:false});
+    })); });
   if(S.t===2){ const kl=Object.keys(S.reklJsem);
     for(let i=kl.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[kl[i],kl[j]]=[kl[j],kl[i]];}
-    kl.slice(0,5).forEach(key=>{ const z=zdrojKlic(key); if(!z)return;
-      // reask = tatáž otázka znovu, doslova jak padla poprvé: „minule jste to říkal jinak" musí srovnávat srovnatelné
-      const drive=(S.otazky||{})[key];
-      karty.push({ot:(drive?drive.ot:z.src.ot),kdo:z.src.kdo,usv:z.usv,majiDukaz:false,ch:z.src.ch,pouzito:false,need:z.need,str:z.str,reask:true,predchozi:S.reklJsem[key],konkretni:drive?drive.k:true}); }); }
+    // reask = tatáž otázka znovu, doslova jak padla poprvé: „minule jste to říkal jinak" musí srovnávat srovnatelné
+    kl.slice(0,7).forEach(key=>{ const d=(S.otazky||{})[key]; if(!d) return;
+      karty.push({ot:d.ot,kdo:d.kdo,usv:d.usv,majiDukaz:false,ch:d.ch,pouzito:false,need:d.need,str:d.str,
+                  reask:true,predchozi:S.reklJsem[key],konkretni:!!d.k}); }); }
+  // správně zapřený blaf projde; hráč ale nepozná, která otázka blaf je, a to je celé jádro.
+  // Blafy se doplňují až nakonec, aby cíl platil pro celý výslech včetně reasků.
+  for(let i=blafy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[blafy[i],blafy[j]]=[blafy[j],blafy[i]];}
+  const CIL=S.t===1?10:12;                       // výslech má vždycky váhu, i když jsi hrál čistě
+  karty.push(...blafy.slice(0, Math.max(1, CIL-karty.length)));
   // sezení houstne: obecné sondy napřed, konkrétní otázky (kde něco mají) potom: uvnitř skupin náhodně
   const mich=a=>{ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
   Z.atmosfera(true);   // pokoj s transformátorem: drží po celý výslech, zhasne až s rozsudkem
@@ -1168,34 +1214,46 @@ function spustVyslech(){
   textCross("They picked you up on Saturday morning. The interrogator has a file in front of him. And you do not know what is in it.",true);
   volbyRe("Sit down");
 }
-function merky(){ $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")"; $("spisFill").style.transform="scaleX("+Math.min(100,S.spis/PRAH_SPIS*100)/100+")";
+const VERA_SLOVY=[[80,"so far"],[60,"less and less"],[40,"has doubts"],[20,"barely"],[0,"not a word"]];
+function merky(){
+  $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")";
+  const sl=VERA_SLOVY.find(([h])=>S.vera>=h) || VERA_SLOVY[VERA_SLOVY.length-1];
+  $("veraSlovo").textContent=sl[1];
+  // spis = hromádka listů, ne procenta: každý usvědčující kus je jeden list a poslední znamená obvinění
+  const box=$("spisListy");
+  if(box.children && box.children.length!==PRAH_SPIS && document.createElement){
+    box.innerHTML=""; for(let i=0;i<PRAH_SPIS;i++){ const d=document.createElement("div"); d.className="list"; box.appendChild(d); } }
+  if(box.children) for(let i=0;i<box.children.length;i++){
+    const byl=box.children[i].className.indexOf("psany")>=0, je=i<S.spis;
+    box.children[i].className="list"+(je?" psany":"")+(je&&!byl?" cerstvy":"");
+  }
   $("nalada").textContent = S.vera>66?"He isn’t looking at you.":S.vera>33?"He is writing faster.":"He has stopped writing and is looking at you.";
   // tep začne, teprve když je zle: do té doby má výslech jen svoje ticho
   Z.tepat(S.vera<70 ? Math.round((70-Math.max(0,S.vera))*1.4) : 0); }
-function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; let vysl,stamp=false;
-  if(!q.reask) S.otazky[q.need+q.str]={ot:q.ot,k:!!q.konkretni};   // zapamatuj formulaci pro případný reask
-  if(q.reask){ const kl=q.need+q.str, ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
+function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q); let vysl,stamp=false;
+  // co jsi řekl, to je v protokolu: formulace i odpověď, ať už na to měli důkaz, nebo ne
+  if(!q.reask) S.otazky[kl]={ot:q.ot,k:!!q.konkretni,kdo:q.kdo,ch:q.ch,usv:q.usv,need:q.need,str:q.str};
+  if(q.reask){ const ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
       vysl=S.dokazano[kl]?"“We have this in the record. Proven. And you sit here denying it still.”":"“Last time you said it differently.” He leafed back and read it twice.";}
     else vysl=S.dokazano[kl]?"“There we are. At least you have stopped denying what we both know.”":"You hold to your version word for word. “...very well.”";
     S.reklJsem[kl]=strana; }
-  else if(strana==="l"){ S.reklJsem[q.need+q.str]=strana;
-    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[q.need+q.str]=true;
+  else if(strana==="l"){ S.reklJsem[kl]=strana;
+    if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
       if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
       vysl=q.ch+" He was not even angry. He just wrote it down.";} else vysl="Silence. Then: “Fine.” He keeps writing."; }
-  else { S.reklJsem[q.need+q.str]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
+  else { S.reklJsem[kl]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
     if(q.usv&&q.pouzito){S.spis++;vysl="The typewriter clacks. On the record. That page he underlined.";} else vysl="The typewriter clacks. On the record."; }
   zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
-    akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[q.need+q.str],
+    akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[kl],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
   merky();
   if(stamp){ razitko(); S.razitkaTyden=(S.razitkaTyden||0)+1;
     $("nalada").textContent = S.vera>40?"He looked up from the papers. Made a note.":"He looks you straight in the eye. He knows you are lying.";
     $("hra").classList.remove("zasah"); void $("hra").offsetWidth; $("hra").classList.add("zasah");
-    $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls");
-    if(q.usv&&q.pouzito&&!q.reask){ $("spisFill").classList.remove("puls"); void $("spisFill").offsetWidth; $("spisFill").classList.add("puls"); } }
+    $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls"); }
   pripis(vysl,true); volbyRe(S.i>=S.karty.length-1?"End of interrogation":"Next question"); S.faze="vyslech-re";
 }
 function vyslechDal(){ if(S.vera<=0) return finale("zatcen","vera"); if(S.spis>=PRAH_SPIS) return finale("zatcen","spis");
@@ -1435,13 +1493,13 @@ nova();
   var j; try{ j=localStorage.getItem("pasmo-jazyk"); }catch(e){}
   if(j!=="cs"&&j!=="en"){ var nl=(navigator.language||"").toLowerCase(); j=(nl.indexOf("cs")===0||nl.indexOf("sk")===0)?"cs":"en"; }
   var T=j==="en"
-    ?{titul:"Pásmo: The Border Zone",vera:"credibility",spis:"what they have on you",razitko:"Caught",prepnout:"ČESKY"}
-    :{titul:"Pásmo: týden a výslech",vera:"věrohodnost",spis:"co na tebe mají",razitko:"Usvědčen",prepnout:"ENGLISH"};
+    ?{titul:"Pásmo: The Border Zone",vera:"believes you",spis:"in the file",razitko:"Caught",prepnout:"ČESKY"}
+    :{titul:"Pásmo: týden a výslech",vera:"věří vám",spis:"ve spisu",razitko:"Usvědčen",prepnout:"ENGLISH"};
   document.title=T.titul; document.documentElement.lang=j;
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607300600";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607300609";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
