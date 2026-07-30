@@ -1,4 +1,4 @@
-<!-- pasmo build 202607300624 -->
+<!-- pasmo build 202607300633 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -183,8 +183,13 @@ const IMG="tools/tisk/", DNY=["pondělí","úterý","středa","čtvrtek","pátek
 
 /* ---------- ZVUK ----------------------------------------------------------
    Všechno generované ve WebAudio, žádné soubory: dist tím nenaroste ani o bajt.
-   Paleta je chudá schválně: dřevo, papír, kov, dech. Nic melodického.
    Prohlížeč nepustí zvuk před prvním gestem, takže se kontext otevírá až tam.
+
+   VE HŘE HRAJÍ JEN TŘI VĚCI: hum výslechové místnosti, tep a razítko. Ty tři nesou
+   stav a dopad. Ostatní (klapot stroje, papír, pes, siréna, drát, dveře, volno) jsou
+   hotové a laditelné v tools/zvuky.html, ale hra je nevolá: zněly lacině a ozdoba,
+   která zní lacině, škodí víc, než kdyby nebyla. Zapnout je znamená vrátit volání
+   na místa označená ZVUK VYPNUT.
    Základ převzat z předpivotní hry (archiv/stara-hra/src/zvuk.js).           */
 const Z = {
   // bez prohlížeče (test/persony.js) je zvuk mrtvý: žádné plánované smyčky, žádné WebAudio
@@ -504,9 +509,8 @@ const MENE_POHYBU = typeof matchMedia!=="undefined" && matchMedia("(prefers-redu
 let psani=null;
 function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(fn){fn();}}; }
   let i=0; psani={el,t,done:null,tik:setInterval(()=>{ i++; el.textContent=t.slice(0,i);
-    if(t[i-1]!==" ") Z.klapot();
-    if(i%12===0)$("telo").scrollTop=$("telo").scrollHeight;
-    if(i>=t.length){ clearInterval(psani.tik); const d=psani.done; psani=null; Z.radek(); if(d)d(); } },28)};
+    if(i%12===0)$("telo").scrollTop=$("telo").scrollHeight;   // ZVUK VYPNUT: Z.klapot() na znak, Z.radek() na konci
+    if(i>=t.length){ clearInterval(psani.tik); const d=psani.done; psani=null; if(d)d(); } },28)};
   return {pak(fn){ if(psani&&psani.el===el)psani.done=fn; else fn(); }}; }
 function dopisHned(){ if(!psani)return; clearInterval(psani.tik); psani.el.textContent=psani.t; const d=psani.done; psani=null; if(d)d(); }
 
@@ -720,7 +724,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
-  if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena}); Z.poplach(); setTimeout(()=>Z.pes(),900); Z.chvej([60,40,60]);
+  if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena}); Z.chvej([60,40,60]);   // ZVUK VYPNUT: Z.poplach(), Z.pes()
     textCross("Ruka po tobě sáhla. Vytrhl ses. Běžíš tmou, větve tě šlehají do tváře, přeskočíš strouhu a padneš do brázdy. Kroky. Světlo přejede kolem. Ticho.\n\nByl jsi rychlejší. Jenže teď vědí, že v pásmu někdo je. A v dálce štěká pes.",true);
     volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; return; }
   // druhá záchrana: výbava: ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
@@ -731,7 +735,7 @@ function pruser(b){
   const ok = solidni || Math.random()<0.4;
   zaloguj({ev:"zachrana", beat:b.scena, vec:z.need, solidni, ok});
   if(!ok){ S.zrada=z.fail; return finale("draty",b); }
-  if(z.need==="kleště") Z.drat();
+  // ZVUK VYPNUT: Z.drat() u záchrany kleštěmi
   textCross(z.ok,true); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
 function prechodDal(){ S.i++; if(S.i<S.prechodKarty.length){S.faze="prechod"; return render();} return finale("prechod",null); }
 
@@ -747,7 +751,7 @@ function razitko(){ const r=$("razitko"); r.classList.remove("vid"); void r.offs
 /* ---------- konec ---------- */
 function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.add("noc"); document.body.classList.remove("tik","prechod");
   Z.atmosfera(false); Z.tepat(0);
-  if(druh==="prechod") Z.volno(); else if(druh==="zatcen") Z.dvere(); else { Z.pes(); Z.chvej(120); }
+  if(druh!=="prechod") Z.chvej(120);   // ZVUK VYPNUT: Z.volno() / Z.dvere() / Z.pes() podle konce
   zaloguj({ev:"konec", vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t, vera:S.vera, spis:S.spis});
   obraz(druh==="prechod"?"nocni_ulice.png":"checkpoint.png"); $("mery").style.display="none";
   const zap=[...new Set(S.stopy.filter(x=>x.kdo).map(x=>x.kdo))]; const udal=zap.some(k=>S.talked[k]);
@@ -774,7 +778,7 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
 function velke(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 
 /* ---------- pohyb + vstup ---------- */
-function swipe(side, fn){ if(anim) return; anim=true; Z.papir(); const k=$("karta");
+function swipe(side, fn){ if(anim) return; anim=true; const k=$("karta");   // ZVUK VYPNUT: Z.papir()
   k.style.transition="transform .26s ease, opacity .26s ease";
   k.style.transform=`translateX(${side==="l"?-135:135}%) rotate(${side==="l"?-12:12}deg)`; k.style.opacity="0";
   hint(null);
@@ -785,7 +789,7 @@ function swipe(side, fn){ if(anim) return; anim=true; Z.papir(); const k=$("kart
 }
 /* volba, po které karta zůstává: nakloní se na zvolenou stranu, dozvuk se připíše, karta dosedne zpět.
    Když rozuzlení přepíše celou obrazovku (konec hry), dokončí se odhoz jako u běžného swipu. */
-function potvrd(side, fn){ if(anim) return; anim=true; Z.cvak(); const k=$("karta"); hint(null);
+function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(null);   // ZVUK VYPNUT: Z.cvak()
   k.style.transition="transform .13s ease-out, opacity .13s";
   k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`; k.style.opacity="1";
   setTimeout(()=>{
@@ -886,8 +890,13 @@ const IMG="tools/tisk/", DNY=["Monday","Tuesday","Wednesday","Thursday","Friday"
 
 /* ---------- ZVUK ----------------------------------------------------------
    Všechno generované ve WebAudio, žádné soubory: dist tím nenaroste ani o bajt.
-   Paleta je chudá schválně: dřevo, papír, kov, dech. Nic melodického.
    Prohlížeč nepustí zvuk před prvním gestem, takže se kontext otevírá až tam.
+
+   VE HŘE HRAJÍ JEN TŘI VĚCI: hum výslechové místnosti, tep a razítko. Ty tři nesou
+   stav a dopad. Ostatní (klapot stroje, papír, pes, siréna, drát, dveře, volno) jsou
+   hotové a laditelné v tools/zvuky.html, ale hra je nevolá: zněly lacině a ozdoba,
+   která zní lacině, škodí víc, než kdyby nebyla. Zapnout je znamená vrátit volání
+   na místa označená ZVUK VYPNUT.
    Základ převzat z předpivotní hry (archiv/stara-hra/src/zvuk.js).           */
 const Z = {
   // bez prohlížeče (test/persony.js) je zvuk mrtvý: žádné plánované smyčky, žádné WebAudio
@@ -1207,9 +1216,8 @@ const MENE_POHYBU = typeof matchMedia!=="undefined" && matchMedia("(prefers-redu
 let psani=null;
 function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(fn){fn();}}; }
   let i=0; psani={el,t,done:null,tik:setInterval(()=>{ i++; el.textContent=t.slice(0,i);
-    if(t[i-1]!==" ") Z.klapot();
-    if(i%12===0)$("telo").scrollTop=$("telo").scrollHeight;
-    if(i>=t.length){ clearInterval(psani.tik); const d=psani.done; psani=null; Z.radek(); if(d)d(); } },28)};
+    if(i%12===0)$("telo").scrollTop=$("telo").scrollHeight;   // ZVUK VYPNUT: Z.klapot() na znak, Z.radek() na konci
+    if(i>=t.length){ clearInterval(psani.tik); const d=psani.done; psani=null; if(d)d(); } },28)};
   return {pak(fn){ if(psani&&psani.el===el)psani.done=fn; else fn(); }}; }
 function dopisHned(){ if(!psani)return; clearInterval(psani.tik); psani.el.textContent=psani.t; const d=psani.done; psani=null; if(d)d(); }
 
@@ -1423,7 +1431,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
-  if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena}); Z.poplach(); setTimeout(()=>Z.pes(),900); Z.chvej([60,40,60]);
+  if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena}); Z.chvej([60,40,60]);   // ZVUK VYPNUT: Z.poplach(), Z.pes()
     textCross("A hand grabbed at you. You tore free. You run through the dark, branches whipping your face, leap the ditch and drop into a furrow. Footsteps. A light sweeps past. Silence.\n\nYou were faster. But now they know someone is in the strip. And somewhere far off, a dog starts barking.",true);
     volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; return; }
   // druhá záchrana: výbava: ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
@@ -1434,7 +1442,7 @@ function pruser(b){
   const ok = solidni || Math.random()<0.4;
   zaloguj({ev:"zachrana", beat:b.scena, vec:z.need, solidni, ok});
   if(!ok){ S.zrada=z.fail; return finale("draty",b); }
-  if(z.need==="kleště") Z.drat();
+  // ZVUK VYPNUT: Z.drat() u záchrany kleštěmi
   textCross(z.ok,true); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
 function prechodDal(){ S.i++; if(S.i<S.prechodKarty.length){S.faze="prechod"; return render();} return finale("prechod",null); }
 
@@ -1450,7 +1458,7 @@ function razitko(){ const r=$("razitko"); r.classList.remove("vid"); void r.offs
 /* ---------- konec ---------- */
 function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.add("noc"); document.body.classList.remove("tik","prechod");
   Z.atmosfera(false); Z.tepat(0);
-  if(druh==="prechod") Z.volno(); else if(druh==="zatcen") Z.dvere(); else { Z.pes(); Z.chvej(120); }
+  if(druh!=="prechod") Z.chvej(120);   // ZVUK VYPNUT: Z.volno() / Z.dvere() / Z.pes() podle konce
   zaloguj({ev:"konec", vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t, vera:S.vera, spis:S.spis});
   obraz(druh==="prechod"?"nocni_ulice.png":"checkpoint.png"); $("mery").style.display="none";
   const zap=[...new Set(S.stopy.filter(x=>x.kdo).map(x=>x.kdo))]; const udal=zap.some(k=>S.talked[k]);
@@ -1477,7 +1485,7 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
 function velke(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 
 /* ---------- pohyb + vstup ---------- */
-function swipe(side, fn){ if(anim) return; anim=true; Z.papir(); const k=$("karta");
+function swipe(side, fn){ if(anim) return; anim=true; const k=$("karta");   // ZVUK VYPNUT: Z.papir()
   k.style.transition="transform .26s ease, opacity .26s ease";
   k.style.transform=`translateX(${side==="l"?-135:135}%) rotate(${side==="l"?-12:12}deg)`; k.style.opacity="0";
   hint(null);
@@ -1488,7 +1496,7 @@ function swipe(side, fn){ if(anim) return; anim=true; Z.papir(); const k=$("kart
 }
 /* volba, po které karta zůstává: nakloní se na zvolenou stranu, dozvuk se připíše, karta dosedne zpět.
    Když rozuzlení přepíše celou obrazovku (konec hry), dokončí se odhoz jako u běžného swipu. */
-function potvrd(side, fn){ if(anim) return; anim=true; Z.cvak(); const k=$("karta"); hint(null);
+function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(null);   // ZVUK VYPNUT: Z.cvak()
   k.style.transition="transform .13s ease-out, opacity .13s";
   k.style.transform=`translateX(${side==="l"?-8:8}%) rotate(${side==="l"?-2.5:2.5}deg)`; k.style.opacity="1";
   setTimeout(()=>{
@@ -1595,7 +1603,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607300624";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607300633";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
