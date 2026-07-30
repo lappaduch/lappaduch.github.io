@@ -1249,7 +1249,7 @@ function nactiMesto(){
 function ulozMesto(){ try{ localStorage.setItem("pasmo-mesto",JSON.stringify(MESTO));
   localStorage.setItem("pasmo-znam",JSON.stringify(ZNAM)); }catch(e){} }
 function noveMesto(){ MESTO=null; ZNAM={}; try{ localStorage.removeItem("pasmo-mesto"); localStorage.removeItem("pasmo-znam"); }catch(e){}
-  nactiMesto(); toast("nové město, lidi neznáš"); nova(); }
+  nactiMesto(); toast("a new town, you know nobody here"); nova(); }
 
 function nova(){
   S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,spaleno:{},zrada:null,utekl:false};
@@ -1320,8 +1320,8 @@ function renderIntro(){ const k=INTRO[S.introI]; document.body.classList.remove(
 function vzpominka(s){
   if(!s.kdo || !ZNAM[s.kdo]) return "";
   return ZNAM[s.kdo]==="mluvil"
-    ? "\n\nUž jednou o tobě mluvil. Pamatuješ si to až moc dobře."
-    : "\n\nJednou už tě v rukou měli a od něj se nedozvěděli nic.";
+    ? "\n\nHe talked about you once already. You remember that all too well."
+    : "\n\nThey had you once before, and from him they learned nothing.";
 }
 function renderPrep(){ const k=S.prep[S.i];
   obraz(k.img); hlava(); $("scena").textContent=`${DNY[S.i]}, ${k.scena}`;
@@ -1404,7 +1404,7 @@ function spustVyslech(){
   S.razitkaTyden=0; S.spisPred=S.spis; S.i=0; S.faze="vyslech-intro"; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`Saturday, interrogation, week ${S.t}`; merky();
   textCross("They picked you up on Saturday morning. The interrogator has a file in front of him. And you do not know what is in it."
-    + (zradilo ? "\n\nOtevřel desky a chvíli četl, než vůbec zvedl oči. Něco už tam bylo napsané ráno." : ""), true);
+    + (zradilo ? "\n\nHe opened the folder and read a while before he even looked up. Something had been written there this morning." : ""), true);
   volbyRe("Sit down");
 }
 const VERA_SLOVY=[[80,"so far"],[60,"less and less"],[40,"has doubts"],[20,"barely"],[0,"not a word"]];
