@@ -1,4 +1,4 @@
-<!-- pasmo build 202607302231 -->
+<!-- pasmo build 202607302232 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -1411,7 +1411,7 @@ function titulek(){
   if(!document.createElement) return;
   const hra=$("hra"); if(!hra.appendChild) return;
   const d=document.createElement("div"); d.id="titul";
-  d.innerHTML="<b>PÁSMO</b><small>jaro 1952</small>";
+  d.innerHTML="<b>PÁSMO</b><small>spring 1952</small>";
   const pryc=()=>{ if(d.remove) d.remove(); };
   d.addEventListener("click",pryc); d.addEventListener("touchstart",pryc,{passive:true});
   hra.appendChild(d); setTimeout(pryc, 3150);
@@ -1843,7 +1843,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607302231";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607302232";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
