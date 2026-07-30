@@ -1,4 +1,4 @@
-<!-- pasmo build 202607302212 -->
+<!-- pasmo build 202607302231 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -136,12 +136,21 @@
   #razitkoIntro.vid{ opacity:.88; transform:translate(-50%,-50%) rotate(-13deg) scale(1);
     transition:opacity .1s, transform .16s cubic-bezier(.2,.9,.3,1) }
 
-  /* název hry: velký, na první kartě, pak zmizí a už se nevrátí */
-  #titul{ position:absolute; left:0; right:0; top:23%; z-index:6; text-align:center; pointer-events:none;
-    font:bold 44px var(--stroj); letter-spacing:.34em; text-indent:.34em; color:#e7dfce;
-    text-shadow:0 2px 18px rgba(0,0,0,.85); opacity:0; animation:titulNaskok 2.6s ease-out forwards }
-  #titul small{ display:block; margin-top:9px; font:12px var(--stroj); letter-spacing:.2em; text-indent:.2em; color:#b7ad97 }
-  @keyframes titulNaskok{ 0%{ opacity:0; letter-spacing:.6em } 18%{ opacity:1 } 72%{ opacity:1 } 100%{ opacity:0 } }
+  /* rozednění: mezi nocí u okna a prvním dnem shánění se rozední. Plochý světelný nádech,
+     žádný gradient, žádné glow, jen barva papíru, do kterého hra hned potom přejde. */
+  #rozedneni{ position:absolute; inset:0; z-index:9; background:var(--papir); opacity:0; pointer-events:none }
+  #rozedneni.jede{ animation:rozednit 1s ease-out }
+  @keyframes rozednit{ 0%{ opacity:0 } 22%{ opacity:.82 } 100%{ opacity:0 } }
+
+  /* název hry stojí na prázdné obrazovce, ne přes hru: nejdřív tma a jméno, teprve pak svět */
+  #titul{ position:absolute; inset:0; z-index:12; background:#0c0a08; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; cursor:pointer; animation:titulOdchod 3.1s ease-out forwards }
+  #titul b{ font:bold 40px var(--stroj); letter-spacing:.34em; text-indent:.34em; color:#e7dfce;
+    animation:titulJmeno 1.6s ease-out both }
+  #titul small{ margin-top:14px; font:11.5px var(--stroj); letter-spacing:.22em; text-indent:.22em; color:#6f6757;
+    animation:titulJmeno 1.6s ease-out .5s both }
+  @keyframes titulJmeno{ from{ opacity:0; letter-spacing:.6em } to{ opacity:1 } }
+  @keyframes titulOdchod{ 0%,72%{ opacity:1 } 100%{ opacity:0 } }
   @keyframes dosednuti{ 0%{ transform:rotate(-6deg) scale(1.55); opacity:0 } 55%{ opacity:1 } 100%{ transform:rotate(-6deg) scale(1) } }
 
   /* dozvuk rozhodnutí se připisuje pod text téže karty (kurzívou jako dřív) */
@@ -180,6 +189,7 @@
     <div id="hintP" class="strankaHint"></div>
     <div id="razitko">Usvědčen</div>
     <div id="razitkoIntro">PTP 56</div>
+    <div id="rozedneni"></div>
     <div id="karta">
       <div id="obraz"></div>
       <div id="telo">
@@ -529,9 +539,13 @@ function nova(){
   render();
 }
 // náhodu nese obsazení (pooly) i pořadí dní: úvody karet jsou proto psané bez odkazu na konkrétní den
-function spustTyden(){ S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik");
+function spustTyden(){ const zNoci=document.body.classList.contains("noc");
+  S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik");
   Z.atmosfera(false); Z.tepat(0);   // přes den je venku, výslechová místnost mlčí
+  if(zNoci) rozedni();              // z tmy do papíru se nepřechází skokem, rozední se
   render(); }
+function rozedni(){ const r=$("rozedneni"); if(!r.classList) return;
+  r.classList.remove("jede"); void r.offsetWidth; r.classList.add("jede"); }
 
 function obraz(src,plynule){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); const o=$("obraz"), cil=`url('${u}')`;
   if(plynule && document.createElement && o.style.backgroundImage && o.style.backgroundImage!==cil){
@@ -580,13 +594,15 @@ function razitkoIntro(){
 }
 function schovejRazitkoIntro(){ const r=$("razitkoIntro"); if(r.classList) r.classList.remove("vid"); }
 
-/* Název hry přes první kartu: naskočí, chvíli drží a zmizí. Jinde se už neukáže. */
+/* Název hry na prázdné obrazovce: tma, jméno, pak teprve svět. Klepnutí ji přeskočí. */
 function titulek(){
   if(!document.createElement) return;
-  const jev=$("jeviste"); if(!jev.appendChild) return;
+  const hra=$("hra"); if(!hra.appendChild) return;
   const d=document.createElement("div"); d.id="titul";
-  d.innerHTML="PÁSMO<small>jaro 1952</small>";
-  jev.appendChild(d); setTimeout(()=>d.remove&&d.remove(), 2700);
+  d.innerHTML="<b>PÁSMO</b><small>jaro 1952</small>";
+  const pryc=()=>{ if(d.remove) d.remove(); };
+  d.addEventListener("click",pryc); d.addEventListener("touchstart",pryc,{passive:true});
+  hra.appendChild(d); setTimeout(pryc, 3150);
 }
 
 /* Odstavce první karty přicházejí po sobě, ne najednou: scéna má tři údery a mezi nimi ticho.
@@ -777,7 +793,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
   }
   textCross(t,true); volbyRe(S.t===1?"Zbývá poslední týden":"Neděle v noci");
 }
-function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spustPrechod(); }
+function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spustPrechod(); }   // po výslechu se rozední taky: sobota končí, začíná druhý týden
 
 /* ---------- PŘECHOD (finiš): swipe vlevo skrýt se, vpravo risknout. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
 const KRIT=[
@@ -1335,9 +1351,13 @@ function nova(){
   render();
 }
 // náhodu nese obsazení (pooly) i pořadí dní: úvody karet jsou proto psané bez odkazu na konkrétní den
-function spustTyden(){ S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik");
+function spustTyden(){ const zNoci=document.body.classList.contains("noc");
+  S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik");
   Z.atmosfera(false); Z.tepat(0);   // přes den je venku, výslechová místnost mlčí
+  if(zNoci) rozedni();              // z tmy do papíru se nepřechází skokem, rozední se
   render(); }
+function rozedni(){ const r=$("rozedneni"); if(!r.classList) return;
+  r.classList.remove("jede"); void r.offsetWidth; r.classList.add("jede"); }
 
 function obraz(src,plynule){ const u=(typeof OBRAZKY!=="undefined"&&OBRAZKY[src])?OBRAZKY[src]:IMG+src.replace(".png",".jpg"); const o=$("obraz"), cil=`url('${u}')`;
   if(plynule && document.createElement && o.style.backgroundImage && o.style.backgroundImage!==cil){
@@ -1386,13 +1406,15 @@ function razitkoIntro(){
 }
 function schovejRazitkoIntro(){ const r=$("razitkoIntro"); if(r.classList) r.classList.remove("vid"); }
 
-/* Název hry přes první kartu: naskočí, chvíli drží a zmizí. Jinde se už neukáže. */
+/* Název hry na prázdné obrazovce: tma, jméno, pak teprve svět. Klepnutí ji přeskočí. */
 function titulek(){
   if(!document.createElement) return;
-  const jev=$("jeviste"); if(!jev.appendChild) return;
+  const hra=$("hra"); if(!hra.appendChild) return;
   const d=document.createElement("div"); d.id="titul";
-  d.innerHTML="PÁSMO<small>spring 1952</small>";
-  jev.appendChild(d); setTimeout(()=>d.remove&&d.remove(), 2700);
+  d.innerHTML="<b>PÁSMO</b><small>jaro 1952</small>";
+  const pryc=()=>{ if(d.remove) d.remove(); };
+  d.addEventListener("click",pryc); d.addEventListener("touchstart",pryc,{passive:true});
+  hra.appendChild(d); setTimeout(pryc, 3150);
 }
 
 /* Odstavce první karty přicházejí po sobě, ne najednou: scéna má tři údery a mezi nimi ticho.
@@ -1583,7 +1605,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
   }
   textCross(t,true); volbyRe(S.t===1?"One week left":"Sunday night");
 }
-function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spustPrechod(); }
+function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spustPrechod(); }   // po výslechu se rozední taky: sobota končí, začíná druhý týden
 
 /* ---------- PŘECHOD (finiš): swipe vlevo skrýt se, vpravo risknout. Solidní výbava = víš správnou odpověď; slabá = hádáš. ---------- */
 const KRIT=[
@@ -1821,7 +1843,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607302212";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202607302231";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
