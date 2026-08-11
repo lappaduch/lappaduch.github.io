@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111031 -->
+<!-- pasmo build 202608111037 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -431,8 +431,8 @@ const NEED=[
    {kdo:"svec",jm:"švec Vaněk",rod:"m",typ:"svedek",talk:.45,pitch:"Švec Vaněk obrací boty proti světlu, mne podrážku palcem a vyptává se, na jakou cestu to má vydržet: jinak šije na tancovačku, jinak na hory. Co projde jeho verpánkem, vydrží roky.",re:"Přiklepl nové podrážky.",ot:"„Nechal jste si u ševce spravit boty?“",otO:"„Nechával jste si poslední dobou něco spravit?“",ch:"„Švec ví, na jakou cestu to bylo.“"},
    {kdo:"pokorny",jm:"sedlář Pokorný",rod:"m",typ:"svedek",talk:.35,pitch:"Sedlář Pokorný by ušil vysoké boty jako pro myslivce. Bere provázkem míru na nárt a u toho se vyptává: řemeslo je prý půlka práce, druhá půlka znát člověka, co v nich půjde.",re:"Přeměřil ti nárt provázkem.",ot:"„Objednal jste si boty u sedláře?“",otO:"„Byl jste poslední dobou u sedláře?“",ch:"„Sedlář Vám bral míru.“"}],
   pPool:[
-   {kdo:null,jm:"vlastní, obnošené",rod:"m",typ:"cisty",pitch:"Anebo necháš svoje, jak jsou. V mokru pouštějí, ale znáš je: víš, kde tlačí a co vydrží. Namažeš je sádlem a vycpeš novinami.",re:"Namazal jsi je sádlem a postavil ke kamnům.",ot:"„Chystal jste si výbavu na cestu?“",ch:""},
-   {kdo:null,jm:"otcovy holínky",rod:"m",typ:"cisty",pitch:"Anebo otcovy holínky z půdy: těžké, o číslo větší, ale kůže poctivá, předválečná. Vycpeš špičky hadrem a doufáš, že si nohy zvyknou.",re:"Vycpal jsi je hadrem.",ot:"„Sháněl jste si nějakou obuv?“",ch:""}]},
+   {kdo:null,jm:"vlastní, obnošené",rod:"m",typ:"cisty",pitch:"Anebo necháš svoje, jak jsou. V mokru pouštějí, ale znáš je: víš, kde tlačí a co vydrží. Namažeš je sádlem a vycpeš novinami.",re:"Nechal jsi je do rána u kamen.",ot:"„Chystal jste si výbavu na cestu?“",ch:""},
+   {kdo:null,jm:"otcovy holínky",rod:"m",typ:"cisty",pitch:"Anebo otcovy holínky z půdy: těžké, o číslo větší, ale kůže poctivá, předválečná. Vycpeš špičky hadrem a doufáš, že si nohy zvyknou.",re:"Prošel jsi v nich dvůr a zpátky.",ot:"„Sháněl jste si nějakou obuv?“",ch:""}]},
 
  {t:2,need:"úkryt",usv:true,img:"kostel.png",scena:"fara",
   uvod:"Poslední noc bude nejdelší: přečkat ji blízko drátů, počkat si na svou hodinu a nezmrznout. V pásmu se nedá postávat. Potřebuješ díru, kde tě do rána neuvidí živá duše.",
@@ -1258,8 +1258,8 @@ const NEED=[
    {kdo:"svec",jm:"cobbler Vaněk",rod:"m",typ:"svedek",talk:.45,pitch:"Cobbler Vaněk turns the boots against the light, rubs the sole with his thumb and asks what kind of journey they must survive: he stitches one way for a dance, another for the mountains. What leaves his bench lasts for years.",re:"He hammered on new soles.",ot:"“Did you have your boots repaired at the cobbler’s?”",otO:"“Have you had anything repaired lately?”",ch:"“The cobbler knows what road they were for.”"},
    {kdo:"pokorny",jm:"saddler Pokorný",rod:"m",typ:"svedek",talk:.35,pitch:"Saddler Pokorný would sew you high boots like a huntsman’s. He takes the measure of your instep with a string and asks questions while he does: the craft, he says, is half the work; the other half is knowing the man who will walk in them.",re:"He measured your instep with a string.",ot:"“Did you order boots from the saddler?”",otO:"“Have you been to the saddler recently?”",ch:"“The saddler took your measurements.”"}],
   pPool:[
-   {kdo:null,jm:"your own, worn out",rod:"m",typ:"cisty",pitch:"Or you keep your own as they are. They leak in the wet, but you know them: where they pinch and what they will take. You grease them with lard and stuff them with newspaper.",re:"You worked lard into them and stood them by the stove.",ot:"“Were you preparing equipment for a journey?”",ch:""},
-   {kdo:null,jm:"father’s old boots",rod:"m",typ:"cisty",pitch:"Or your father’s old boots from the attic: heavy, a size too big, but honest pre-war leather. You stuff the toes with rags and hope your feet learn them in time.",re:"You stuffed them with rags.",ot:"“Were you looking for footwear?”",ch:""}]},
+   {kdo:null,jm:"your own, worn out",rod:"m",typ:"cisty",pitch:"Or you keep your own as they are. They leak in the wet, but you know them: where they pinch and what they will take. You grease them with lard and stuff them with newspaper.",re:"You left them by the stove until morning.",ot:"“Were you preparing equipment for a journey?”",ch:""},
+   {kdo:null,jm:"father’s old boots",rod:"m",typ:"cisty",pitch:"Or your father’s old boots from the attic: heavy, a size too big, but honest pre-war leather. You stuff the toes with rags and hope your feet learn them in time.",re:"You walked them across the yard and back.",ot:"“Were you looking for footwear?”",ch:""}]},
 
  {t:2,need:"úkryt",usv:true,img:"kostel.png",scena:"the parsonage",
   uvod:"The last night will be the longest: wait it out close to the wire, hold for your hour, and do not freeze. You cannot just stand around in the strip. You need a hole where no living soul will see you till morning.",
@@ -1873,7 +1873,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111031";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111037";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
