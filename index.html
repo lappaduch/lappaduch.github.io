@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111201 -->
+<!-- pasmo build 202608111206 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -715,8 +715,13 @@ function spustVyslech(){
       if(pouzito){
         if(!maLead) return;                                     // uklidil jsi to čistě, nemají se čeho chytit, neptají se
         // důkaz mají z papíru, od svědka, co promluvil, NEBO od tebe: koho jsi jmenoval, toho si předvolali
-        const majiDukaz=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo])||!!S.zataženi[src.kdo]);
-        karty.push({ot:(majiDukaz?src.ot:(src.otO||src.ot)),kdo:src.kdo,usv:k.usv,majiDukaz,ch:src.ch,pouzito:true,need:k.need,str,konkretni:majiDukaz});
+        const samaVypoved=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo]));
+        const majiDukaz=(samaVypoved||!!S.zataženi[src.kdo]);
+        // Když důkaz stojí JEN na tom, že jsi toho člověka jmenoval, nesmí konfrontace tvrdit,
+        // že vypovídal: soupis v rozsudku ho vede jako „vyslýchán", ne „vypovídal", a dvě
+        // obrazovky by si odporovaly. Věta je bez jména, protože 7. pád jmen hra neskloňuje.
+        const ch=(samaVypoved?src.ch:"„Ten člověk už u nás seděl.“");
+        karty.push({ot:(majiDukaz?src.ot:(src.otO||src.ot)),kdo:src.kdo,usv:k.usv,majiDukaz,ch,pouzito:true,need:k.need,str,konkretni:majiDukaz});
       } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk = adjacent sonda, nikdy blind shot
         blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:k.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:k.need,str,konkretni:false});
       } }); });
@@ -1570,8 +1575,13 @@ function spustVyslech(){
       if(pouzito){
         if(!maLead) return;                                     // uklidil jsi to čistě, nemají se čeho chytit, neptají se
         // důkaz mají z papíru, od svědka, co promluvil, NEBO od tebe: koho jsi jmenoval, toho si předvolali
-        const majiDukaz=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo])||!!S.zataženi[src.kdo]);
-        karty.push({ot:(majiDukaz?src.ot:(src.otO||src.ot)),kdo:src.kdo,usv:k.usv,majiDukaz,ch:src.ch,pouzito:true,need:k.need,str,konkretni:majiDukaz});
+        const samaVypoved=(src.typ==="papir"||(src.typ==="svedek"&&S.talked[src.kdo]));
+        const majiDukaz=(samaVypoved||!!S.zataženi[src.kdo]);
+        // Když důkaz stojí JEN na tom, že jsi toho člověka jmenoval, nesmí konfrontace tvrdit,
+        // že vypovídal: soupis v rozsudku ho vede jako „vyslýchán", ne „vypovídal", a dvě
+        // obrazovky by si odporovaly. Věta je bez jména, protože 7. pád jmen hra neskloňuje.
+        const ch=(samaVypoved?src.ch:"“That one has already sat with us.”");
+        karty.push({ot:(majiDukaz?src.ot:(src.otO||src.ot)),kdo:src.kdo,usv:k.usv,majiDukaz,ch,pouzito:true,need:k.need,str,konkretni:majiDukaz});
       } else if(maLead&&src.kdo){                               // nepoužitý reálný člověk = adjacent sonda, nikdy blind shot
         blafy.push({ot:(src.otO||src.ot),kdo:src.kdo,usv:k.usv,majiDukaz:false,ch:src.ch,pouzito:false,need:k.need,str,konkretni:false});
       } }); });
@@ -1929,7 +1939,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111201";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111206";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
