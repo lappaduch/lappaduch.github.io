@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111310 -->
+<!-- pasmo build 202608111319 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -851,7 +851,7 @@ const KRIT=[
   inf:{text:"Máš domluvený nocleh: dovnitř se dostaneš a nikdo se ptát nebude. Uvnitř přečkáš v teple do hluboké noci. Vyjít teď, za šera, by tě vydalo prvnímu, kdo půjde kolem.", l:"Dovnitř, počkat na noc", p:"Jít radši hned", spravna:"l"},
   bl:{text:"Studená díra za městem, kam roky nikdo nevkročil. Že to tak zůstane i dnes, nevíš. Venku je bílý den a pláň bez jediného stromu.", l:"Zůstat, kde jsi", p:"Jít hned", spravna:"l"}},
  {need:"mapa", scena:"hlídka", img:"mapa.png",
-  zach:{need:"kleště", ok:"Dráty přímo před tebou. A hlídka se vrací dřív, než měla. Štípačky. Dva rychlé střihy, ostny povolí, protáhneš se dírou a tma tě spolkne.", fail:"Kleště sklouzly a drát zazvonil o sloupek. To stačilo."},
+  zach:{need:"kleště", ok:"Hlídka se vrací dřív, než měla. U cesty ostnatý plot. Štípačky. Dva rychlé střihy, ostny povolí, protáhneš se dírou a tma tě spolkne.", fail:"Kleště sklouzly a drát zazvonil o sloupek. To stačilo."},
   inf:{text:"Z mapy to víš přesně: hlídka projde po cestě ve dvě a pak je hodina klid. Věžní hodiny právě dozněly. Čas máš, ale ne nadlouho.", l:"Počkat, až přejdou", p:"Jít teď, v tom klidu", spravna:"p"},
   bl:{text:"Ve tmě před tebou se něco pohnulo. A po chvíli zas, o kus blíž. Hlídka, nebo jen vítr v drátech?", l:"Zalehnout a čekat", p:"Proklouznout hned", spravna:"l"},
   amb:{text:"U cesty, přesně tam, kudy jsi měl přejít, se rýsují dvě postavy s baterkami. Věděli to. Čekají na tebe.", l:"Zpátky a jinudy", p:"Risknout to tady", spravna:"l"}},
@@ -1734,7 +1734,7 @@ const KRIT=[
   inf:{text:"Your shelter is arranged: you can get inside and nobody will ask. Inside, you can wait in the warm until deep night. Stepping out now, at dusk, would hand you to the first passer-by.", l:"Inside, wait for night", p:"Better go now", spravna:"l"},
   bl:{text:"A cold hole outside town that nobody has set foot in for years. Whether that holds today, you do not know. Outside it is broad daylight and the plain has not one tree on it.", l:"Stay where you are", p:"Go now", spravna:"l"}},
  {need:"mapa", scena:"the patrol", img:"mapa.png",
-  zach:{need:"kleště", ok:"The wire right in front of you. And the patrol coming back early. The cutters. Two quick snips, the barbs give way, you squeeze through the gap and the dark swallows you.", fail:"The cutters slipped and the wire rang against the post. That was enough."},
+  zach:{need:"kleště", ok:"The patrol coming back early. A barbed fence along the track. The cutters. Two quick snips, the barbs give way, you squeeze through the gap and the dark swallows you.", fail:"The cutters slipped and the wire rang against the post. That was enough."},
   inf:{text:"You know it from the map, exactly: the patrol passes on the path at two, then an hour of quiet. The tower clock has just died away. You have time, but not much.", l:"Wait till they pass", p:"Go now, in the lull", spravna:"p"},
   bl:{text:"Something moved in the dark ahead. And again, a little closer. A patrol, or just wind in the wire?", l:"Drop and wait", p:"Slip through now", spravna:"l"},
   amb:{text:"By the path, exactly where you meant to cross, two figures with torches take shape. They knew. They are waiting for you.", l:"Back, another way", p:"Risk it here", spravna:"l"}},
@@ -1985,7 +1985,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111310";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111319";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
