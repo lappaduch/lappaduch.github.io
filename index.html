@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111252 -->
+<!-- pasmo build 202608111256 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -669,7 +669,11 @@ function vzpominka(s){
 function renderPrep(){ const k=S.prep[S.i];
   obraz(k.img); hlava(); $("scena").textContent=`${DNY[S.i]}, ${k.scena}`;
   textCross(k.uvod+"\n\n"+k.l.pitch+vzpominka(k.l)+"\n\n"+k.p.pitch+vzpominka(k.p),false);
-  hintTxt={l:"Poprosíš: "+velke(k.l.jm),p:"Poprosíš: "+velke(k.p.jm)};
+  // „Poprosíš:" platí na člověka. Šestnáct z dvaceti čistých cest ale žádný člověk není
+  // (dědovy hodinky, jít bez, naslepo, pěšky sám), a štítek u nich říkal, že je poprosíš.
+  // Kdo má kdo, toho jde poprosit; zbytek se pojmenuje sám, stejně jako štítky u drátů.
+  const stitek=s=>s.kdo?"Poprosíš: "+velke(s.jm):velke(s.jm);
+  hintTxt={l:stitek(k.l),p:stitek(k.p)};
   volbyDve("táhni doleva, nebo doprava");
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
@@ -1539,7 +1543,11 @@ function vzpominka(s){
 function renderPrep(){ const k=S.prep[S.i];
   obraz(k.img); hlava(); $("scena").textContent=`${DNY[S.i]}, ${k.scena}`;
   textCross(k.uvod+"\n\n"+k.l.pitch+vzpominka(k.l)+"\n\n"+k.p.pitch+vzpominka(k.p),false);
-  hintTxt={l:"You’ll ask: "+velke(k.l.jm),p:"You’ll ask: "+velke(k.p.jm)};
+  // „Poprosíš:" platí na člověka. Šestnáct z dvaceti čistých cest ale žádný člověk není
+  // (dědovy hodinky, jít bez, naslepo, pěšky sám), a štítek u nich říkal, že je poprosíš.
+  // Kdo má kdo, toho jde poprosit; zbytek se pojmenuje sám, stejně jako štítky u drátů.
+  const stitek=s=>s.kdo?"You will ask: "+velke(s.jm):velke(s.jm);
+  hintTxt={l:stitek(k.l),p:stitek(k.p)};
   volbyDve("swipe left or right");
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
@@ -1959,7 +1967,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111252";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111256";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
