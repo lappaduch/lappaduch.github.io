@@ -1,4 +1,4 @@
-<!-- pasmo build 202608110945 -->
+<!-- pasmo build 202608110946 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -447,7 +447,7 @@ const NEED=[
   uvod:"Ráno tě na mostě zastavil esenbák a beze slova natáhl ruku. Občanku vrátil a šel dál. Jenže tvoje jméno stojí na povolávacím rozkaze. Budeš se muset něčím prokázat. Nebo nikým nebýt.",
   lPool:[
    {kdo:"falso",jm:"falšovatel",rod:"m",typ:"papir",pitch:"Nad holičstvím sedí člověk, co dělá legitimace na cizí jméno. Pracuje u lampy se štětečkem a lupou. Razítko k nerozeznání od pravého. A mluví tak málo, že ani nevíš, jak se jmenuje.",re:"Podal ti ji, aniž zvedl oči.",ot:"„Máte u sebe legitimaci na jiné jméno?“",otO:"„Byl jste poslední dobou v domě nad holičstvím?“",ch:"„Tohle jsme u Vás našli.“"},
-   {kdo:"roubal",jm:"fotograf Roubal",rod:"m",typ:"papir",pitch:"Fotograf Roubal tě posadí pod lampu, cvakne a do týdne dodá legitimaci i s razítkem. V ateliéru voní vývojka a negativy zakládá do šuplíku ke všem ostatním.",re:"Zamkl fotku do zásuvky.",ot:"„Fotil Vás Roubal na nové doklady?“",otO:"„Nechal jste se v poslední době fotografovat?“",ch:"„U Roubala je Váš negativ.“"}],
+   {kdo:"roubal",jm:"fotograf Roubal",rod:"m",typ:"papir",pitch:"Fotograf Roubal tě posadí pod lampu, cvakne a do týdne dodá legitimaci i s razítkem. V ateliéru voní vývojka. Negativ pověsí uschnout a tužkou k němu připíše datum.",re:"Zamkl fotku do zásuvky.",ot:"„Fotil Vás Roubal na nové doklady?“",otO:"„Nechal jste se v poslední době fotografovat?“",ch:"„U Roubala je Váš negativ.“"}],
   pPool:[
    {kdo:null,jm:"jít bez",rod:"m",typ:"cisty",pitch:"Anebo půjdeš beze všech papírů. Nikým nebýt, nic u sebe nemít: jen tma, pole a jméno, které nahlas nevyslovíš.",re:"Spolehneš se na tmu.",ot:"„Opatřil jste si nové papíry?“",ch:""},
    {kdo:null,jm:"stará legitimace",rod:"z",typ:"cisty",pitch:"Anebo si necháš svou starou legitimaci: pravou, se jménem a fotkou z vojny. Nosíš ji od osmnácti; zná tvou kapsu líp než ty.",re:"Zastrčíš ji do podšívky.",ot:"„Máte u sebe nějaké doklady?“",ch:""}]},
@@ -1274,7 +1274,7 @@ const NEED=[
   uvod:"In the morning a policeman stopped you on the bridge and held out his hand without a word. He returned your ID and moved on. But your name is on a call-up order. You will need something to show. Or be nobody at all.",
   lPool:[
    {kdo:"falso",jm:"the forger",rod:"m",typ:"papir",pitch:"Above the barbershop sits a man who makes papers in other names. He works under a lamp with a fine brush and a loupe. The stamp is beyond telling from the real one. And he talks so little you do not even know his name.",re:"He handed it over without looking up.",ot:"“Are you carrying an identity card in another name?”",otO:"“Have you been to the house above the barbershop?”",ch:"“We found this on you.”"},
-   {kdo:"roubal",jm:"photographer Roubal",rod:"m",typ:"papir",pitch:"Photographer Roubal sits you under the lamp, clicks, and within a week delivers papers, stamp and all. The studio smells of developer, and the negatives go into the drawer with all the others.",re:"He locked the photo in a drawer.",ot:"“Did Roubal photograph you for new papers?”",otO:"“Have you had your photograph taken recently?”",ch:"“Your negative is at Roubal’s.”"}],
+   {kdo:"roubal",jm:"photographer Roubal",rod:"m",typ:"papir",pitch:"Photographer Roubal sits you under the lamp, clicks, and within a week delivers papers, stamp and all. The studio smells of developer. He hangs the negative up to dry and pencils the date beside it.",re:"He locked the photo in a drawer.",ot:"“Did Roubal photograph you for new papers?”",otO:"“Have you had your photograph taken recently?”",ch:"“Your negative is at Roubal’s.”"}],
   pPool:[
    {kdo:null,jm:"go without",rod:"m",typ:"cisty",pitch:"Or you go with no papers at all. Be nobody, carry nothing: just the dark, the fields, and a name you never say out loud.",re:"You trust the dark.",ot:"“Did you obtain new papers?”",ch:""},
    {kdo:null,jm:"your real ID",rod:"z",typ:"cisty",pitch:"Or you keep your own old ID: real, with your name and your army photo. You have carried it since you were eighteen; it knows your pocket better than you do.",re:"You tuck it into the lining.",ot:"“Do you have any papers on you?”",ch:""}]},
@@ -1873,7 +1873,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608110945";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608110946";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
