@@ -1,4 +1,4 @@
-<!-- pasmo build 202608110931 -->
+<!-- pasmo build 202608110934 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -898,13 +898,13 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   const zap=[...new Set(S.stopy.filter(x=>x.kdo).map(x=>x.kdo))]; const udal=zap.some(k=>S.talked[k]);
   let ja, nadpis, dodatek;
   if(druh==="prechod"){ nadpis="na druhé straně";
-    ja="Přešel jsi. Za starým brodem ti bavorský pohraničník beze slova podal cigaretu.";
+    ja="Za starým brodem ti bavorský pohraničník beze slova podal cigaretu.";
     dodatek=udal?"Ale ty, cos je zatáhl, teď sedí místo tebe.":"Nikdo tě neudal. Nikdo za tebe nesedí.";
   } else if(druh==="draty"){ nadpis="chycen u drátů";
-    ja="Došel jsi až k samotným drátům. A tam tě to dostihlo. § 95/2, tři roky, z toho v Jáchymově.";
+    ja="Světlo si tě našlo. Došli beze spěchu. § 95/2, tři roky, z toho v Jáchymově.";
     dodatek=S.zrada?S.zrada:S.pomaly?"Zaváhal jsi u drátů o vteřinu dýl, než noc dovolila. Kužel se zastavil na tobě.":S.prozrazenaTrasa?"Věděli, kudy půjdeš. Řekls jim to sám u výslechu.":"Výslech jsi ustál. A pak tě u drátů zradilo to, na čem jsi ušetřil.";
   } else { nadpis="usvědčen";
-    ja=(proc==="spis")?"Přiznals dost, aby to složili dohromady. § 95/2: čtyři roky, Jáchymov.":"Zapíral jsi, co měli. Nezlomili tě, ale nepustili. § 95/2: dva roky, Pankrác.";
+    ja=(proc==="spis")?"Nemuseli tě lámat. Stačilo počkat, až to řekneš sám. § 95/2: čtyři roky, Jáchymov.":"Zapíral jsi i to, co leželo na stole. Nezlomili tě, ale nepustili. § 95/2: dva roky, Pankrác.";
     dodatek=udal?"Někdo z nich promluvil. Stojí to v protokolu, hned pod tvým jménem.":"Nikdo tě neudal. Jen se ptali dost dlouho.";
   }
   // rozsudek je jediné místo, kde se dozvíš, kdo mluvil. Co se tu dozvíš, to už příště víš.
@@ -1725,13 +1725,13 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   const zap=[...new Set(S.stopy.filter(x=>x.kdo).map(x=>x.kdo))]; const udal=zap.some(k=>S.talked[k]);
   let ja, nadpis, dodatek;
   if(druh==="prechod"){ nadpis="on the other side";
-    ja="You crossed. Past the old ford, a Bavarian border guard handed you a cigarette without a word.";
+    ja="Past the old ford, a Bavarian border guard handed you a cigarette without a word.";
     dodatek=udal?"But the ones you dragged in are sitting there now, in your place.":"Nobody informed on you. Nobody is sitting in your place.";
   } else if(druh==="draty"){ nadpis="caught at the wire";
-    ja="You made it all the way to the wire. And there it caught up with you. §95/2: three years, part of them in Jáchymov.";
+    ja="The beam found you. They walked over without hurrying. §95/2: three years, part of them in Jáchymov.";
     dodatek=S.zrada?S.zrada:S.pomaly?"You hesitated at the wire a second longer than the night allowed. The beam stopped on you.":S.prozrazenaTrasa?"They knew which way you would go. You told them yourself, at the interrogation.":"You survived the interrogations. And then, at the wire, you were betrayed by everything you skimped on.";
   } else { nadpis="convicted";
-    ja=(proc==="spis")?"You admitted enough for them to piece it together. §95/2: four years, Jáchymov.":"You denied what they could prove. They did not break you. They did not let you go either. §95/2: two years, Pankrác prison.";
+    ja=(proc==="spis")?"They never had to break you. They only had to wait until you said it yourself. §95/2: four years, Jáchymov.":"You denied even what was lying on the table. They did not break you. They did not let you go either. §95/2: two years, Pankrác prison.";
     dodatek=udal?"One of them talked. It is in the record, right under your name.":"Nobody informed on you. They just kept asking long enough.";
   }
   // rozsudek je jediné místo, kde se dozvíš, kdo mluvil. Co se tu dozvíš, to už příště víš.
@@ -1873,7 +1873,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608110931";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608110934";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
