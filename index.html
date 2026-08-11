@@ -678,9 +678,10 @@ function renderPrep(){ const k=S.prep[S.i];
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`sobota, výslech ${S.t}. týdne, otázka ${S.i+1} z ${S.karty.length}`;
-  merky(); // Štítek musí sednout na KAŽDOU otázku. „Nebyl jsem tam" je alibi na místo, jenže po
-  // místě se ptá jen devatenáct otázek z dvaašedesáti; na „Půjčila Vám teta peníze?" nebo
-  // „Máte u sebe legitimaci na jiné jméno?" to nedává smysl. Tohle sedne na obojí.
+  merky();
+  // Štítek musí sednout na KAŽDOU otázku. Alibi na místo („nebyl jsem tam") sedne jen na
+  // devatenáct otázek z dvaašedesáti; na půjčené peníze od tety ani na legitimaci na cizí
+  // jméno nedává smysl. Tohle sedne na obojí.
   hintTxt={l:"ZAPŘU: o ničem nevím",p:"PŘIZNÁM: ano, je to tak"};
   volbyDve("rychle: vlevo zapřu, vpravo přiznám"); S.vahal=false;
   const e=$("text"); e.className=""; e.textContent=""; $("telo").scrollTop=0;
@@ -1555,9 +1556,10 @@ function renderPrep(){ const k=S.prep[S.i];
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`Saturday, interrogation, week ${S.t}, question ${S.i+1} of ${S.karty.length}`;
-  merky(); // Štítek musí sednout na KAŽDOU otázku. „Nebyl jsem tam" je alibi na místo, jenže po
-  // místě se ptá jen devatenáct otázek z dvaašedesáti; na „Půjčila Vám teta peníze?" nebo
-  // „Máte u sebe legitimaci na jiné jméno?" to nedává smysl. Tohle sedne na obojí.
+  merky();
+  // Štítek musí sednout na KAŽDOU otázku. Alibi na místo („nebyl jsem tam") sedne jen na
+  // devatenáct otázek z dvaašedesáti; na půjčené peníze od tety ani na legitimaci na cizí
+  // jméno nedává smysl. Tohle sedne na obojí.
   hintTxt={l:"DENY: I know nothing about it",p:"ADMIT: yes, that is so"};
   volbyDve("quick: left denies, right admits"); S.vahal=false;
   const e=$("text"); e.className=""; e.textContent=""; $("telo").scrollTop=0;
