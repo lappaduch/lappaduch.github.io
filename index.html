@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111039 -->
+<!-- pasmo build 202608111042 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -787,7 +787,7 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
   merky();
   if(stamp){ razitko(); S.razitkaTyden=(S.razitkaTyden||0)+1;
-    $("nalada").textContent = S.vera>40?"Zvedl oči od papírů. Něco si připsal.":"Dívá se ti přímo do očí. Ví, že lžeš.";
+    $("nalada").textContent = S.vera>40?"Zvedl oči od papírů. Něco si připsal.":"Dívá se ti přímo do očí.";
     $("hra").classList.remove("zasah"); void $("hra").offsetWidth; $("hra").classList.add("zasah");
     $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls"); }
   pripis(vysl,true); volbyRe(S.i>=S.karty.length-1?"Konec výslechu":"Další otázka"); S.faze="vyslech-re";
@@ -1614,7 +1614,7 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
   merky();
   if(stamp){ razitko(); S.razitkaTyden=(S.razitkaTyden||0)+1;
-    $("nalada").textContent = S.vera>40?"He looked up from the papers. Made a note.":"He looks you straight in the eye. He knows you are lying.";
+    $("nalada").textContent = S.vera>40?"He looked up from the papers. Made a note.":"He looks you straight in the eye.";
     $("hra").classList.remove("zasah"); void $("hra").offsetWidth; $("hra").classList.add("zasah");
     $("verFill").classList.remove("puls"); void $("verFill").offsetWidth; $("verFill").classList.add("puls"); }
   pripis(vysl,true); volbyRe(S.i>=S.karty.length-1?"End of interrogation":"Next question"); S.faze="vyslech-re";
@@ -1873,7 +1873,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111039";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111042";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
