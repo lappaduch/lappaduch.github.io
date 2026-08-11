@@ -1,4 +1,4 @@
-<!-- pasmo build 202608110901 -->
+<!-- pasmo build 202608110931 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -631,7 +631,7 @@ function dopisOdstavce(){   // netrpělivý hráč: doplň, co ještě nedošlo
   const e=$("text"), casti=k.text.split("\n\n"), mam=1+e.querySelectorAll(".pripis").length;
   for(let i=mam;i<casti.length;i++) pripisOdstavec(e,casti[i]);
 }
-function volbyRe(txt){ hintTxt={l:txt,p:txt}; $("napoveda").textContent=txt+" - táhni kterýmkoli směrem"; }
+function volbyRe(txt){ hintTxt={l:txt,p:txt}; $("napoveda").textContent=txt+": táhni kterýmkoli směrem"; }
 function volbyDve(hint){ $("napoveda").textContent=hint; }
 
 /* ---------- render ---------- */
@@ -674,8 +674,8 @@ function renderPrep(){ const k=S.prep[S.i];
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`sobota, výslech ${S.t}. týdne, otázka ${S.i+1} z ${S.karty.length}`;
-  merky(); hintTxt={l:"ZAPŘU - nebyl jsem tam",p:"PŘIZNÁM - ano, byl"};
-  volbyDve("rychle - vlevo zapřu, vpravo přiznám"); S.vahal=false;
+  merky(); hintTxt={l:"ZAPŘU: nebyl jsem tam",p:"PŘIZNÁM: ano, byl"};
+  volbyDve("rychle: vlevo zapřu, vpravo přiznám"); S.vahal=false;
   const e=$("text"); e.className=""; e.textContent=""; $("telo").scrollTop=0;
   pis(e,q.ot).pak(spustCas);   // otázka se píše na stroji; čas běží až od dopsání (tap dopíše hned)
 }
@@ -913,7 +913,7 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
     return `<div class="sl"><span>${velke(o.jm)}</span><span class="os2">${os2}</span></div>`; }).join("");
   const stamp=druh==="prechod"?"PŘEŠEL":druh==="draty"?"ZADRŽEN":"ODSOUZEN";
   $("scena").textContent=nadpis; $("text").className="";
-  $("text").innerHTML=`<div id="rozsudek"><div id="stampKonec">${stamp}</div><div class="ja">Ty - ${ja}</div>${radky}</div>`
+  $("text").innerHTML=`<div id="rozsudek"><div id="stampKonec">${stamp}</div><div class="ja">Ty: ${ja}</div>${radky}</div>`
     +`<div style="margin-top:12px;font-style:italic;color:#b7ad97;font-size:14px">${dodatek}</div>`;
   volbyRe("Znovu");
   if(LOG_JE) $("napoveda").innerHTML='<b>Znovu</b>: táhni kterýmkoli směrem. <b>L</b> = zkopírovat záznam pro autora';
@@ -1458,7 +1458,7 @@ function dopisOdstavce(){   // netrpělivý hráč: doplň, co ještě nedošlo
   const e=$("text"), casti=k.text.split("\n\n"), mam=1+e.querySelectorAll(".pripis").length;
   for(let i=mam;i<casti.length;i++) pripisOdstavec(e,casti[i]);
 }
-function volbyRe(txt){ hintTxt={l:txt,p:txt}; $("napoveda").textContent=txt+" - swipe either way"; }
+function volbyRe(txt){ hintTxt={l:txt,p:txt}; $("napoveda").textContent=txt+": swipe either way"; }
 function volbyDve(hint){ $("napoveda").textContent=hint; }
 
 /* ---------- render ---------- */
@@ -1501,8 +1501,8 @@ function renderPrep(){ const k=S.prep[S.i];
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`Saturday, interrogation, week ${S.t}, question ${S.i+1} of ${S.karty.length}`;
-  merky(); hintTxt={l:"DENY - I was never there",p:"ADMIT - yes, I was"};
-  volbyDve("quick - left denies, right admits"); S.vahal=false;
+  merky(); hintTxt={l:"DENY: I was never there",p:"ADMIT: yes, I was"};
+  volbyDve("quick: left denies, right admits"); S.vahal=false;
   const e=$("text"); e.className=""; e.textContent=""; $("telo").scrollTop=0;
   pis(e,q.ot).pak(spustCas);   // otázka se píše na stroji; čas běží až od dopsání (tap dopíše hned)
 }
@@ -1740,7 +1740,7 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
     return `<div class="sl"><span>${velke(o.jm)}</span><span class="os2">${os2}</span></div>`; }).join("");
   const stamp=druh==="prechod"?"CROSSED":druh==="draty"?"DETAINED":"CONVICTED";
   $("scena").textContent=nadpis; $("text").className="";
-  $("text").innerHTML=`<div id="rozsudek"><div id="stampKonec">${stamp}</div><div class="ja">You - ${ja}</div>${radky}</div>`
+  $("text").innerHTML=`<div id="rozsudek"><div id="stampKonec">${stamp}</div><div class="ja">You: ${ja}</div>${radky}</div>`
     +`<div style="margin-top:12px;font-style:italic;color:#b7ad97;font-size:14px">${dodatek}</div>`;
   volbyRe("Again");
   if(LOG_JE) $("napoveda").innerHTML='<b>Again</b>: swipe either way. <b>L</b> = copy the play log for the author';
@@ -1873,7 +1873,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608110901";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608110931";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
