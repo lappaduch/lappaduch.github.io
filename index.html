@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111243 -->
+<!-- pasmo build 202608111246 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -866,7 +866,7 @@ function spustPrechod(){
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
   obraz("nocni_ulice.png"); $("mery").style.display="none"; $("scena").textContent="neděle v noci";
-  textCross("Je po půlnoci. Vzal jsi, cos sehnal, a vyrazil k hranici. Dva týdny shánění máš v ranci a dvě soboty v jejich spisu.",true);
+  textCross("Je po půlnoci. Bereš, cos sehnal, a jdeš k hranici. Dva týdny shánění máš v ranci a dvě soboty v jejich spisu.",true);
   volbyRe("Vyrazit");
 }
 function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.add("noc","prechod");
@@ -1734,7 +1734,7 @@ function spustPrechod(){
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
   obraz("nocni_ulice.png"); $("mery").style.display="none"; $("scena").textContent="Sunday at night";
-  textCross("It is past midnight. You took what you had gathered and set out for the border. Two weeks of scrounging in your pack, two Saturdays in their file.",true);
+  textCross("It is past midnight. You take what you gathered and start for the border. Two weeks of scrounging in your pack, two Saturdays in their file.",true);
   volbyRe("Set out");
 }
 function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.add("noc","prechod");
@@ -1955,7 +1955,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111243";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111246";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
