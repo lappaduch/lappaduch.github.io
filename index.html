@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111410 -->
+<!-- pasmo build 202608111411 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -829,7 +829,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
     // velke(): bez razítka začíná souhrn tou druhou půlkou („jednu věc máš teď zapsanou"),
     // která je psaná tak, aby navazovala na první. Karta pak startovala malým písmenem.
     t=velke(c.join(" "))+".\n\n"+(S.vera<=40?(S.t===1?"Věří ti čím dál míň. Další týden bude horší.":"Věří ti čím dál míň. A zítra v noci jdeš.")
-      :"Ustál jsi to. Ale ví o tobě víc než ráno.");
+      :"Desky nechal otevřené. Než jsi došel ke dveřím, začal psát znovu.");
   }
   textCross(t,true); volbyRe(S.t===1?"Zbývá poslední týden":"Neděle v noci");
 }
@@ -1722,7 +1722,7 @@ function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.clas
     // velke(): bez razítka začíná souhrn tou druhou půlkou („jednu věc máš teď zapsanou"),
     // která je psaná tak, aby navazovala na první. Karta pak startovala malým písmenem.
     t=velke(c.join(" "))+".\n\n"+(S.vera<=40?(S.t===1?"They believe you less and less. Next week will be worse.":"They believe you less and less. And tomorrow night you go.")
-      :"You held up. But they know more about you than they did this morning.");
+      :"He left the folder open. Before you reached the door he started writing again.");
   }
   textCross(t,true); volbyRe(S.t===1?"One week left":"Sunday night");
 }
@@ -2005,7 +2005,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111410";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111411";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
