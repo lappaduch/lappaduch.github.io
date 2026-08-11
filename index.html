@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111339 -->
+<!-- pasmo build 202608111342 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -840,7 +840,14 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
    projde vždycky). Text neúspěchu proto mluví k hráči, který tu věc MÁ, jen v horší podobě.
    Nesmí tvrdit, že ji nemá. Dvě věty to dělaly („Ukázal jsi prázdné dlaně" u člověka, co má
    peníze od překupníka; „nebylo co jíst" u člověka, co si nasušil ze zahrady) a nikde se nic
-   nezlomilo, protože je to jen próza, která se rozchází se stavem. ---------- */
+   nezlomilo, protože je to jen próza, která se rozchází se stavem.
+
+   TÝŽ POZOR na inf a bl: text se pouští podle DRUHU výbavy, ne podle toho, kdo ji dal.
+   U každé potřeby jsou dva lidé na solidní straně a dvě cesty na čisté, takže věta musí
+   platit pro OBA. Dneska to kouslo třikrát: „Z mapy to víš přesně" (Rudolf kreslí, hajný
+   ukazuje klackem), „Kapsy máš prázdné" (jít bez papírů, nebo si nechat vlastní starou
+   legitimaci v podšívce) a „zadní vrátka nechána odemčená" (farář, ne výhybkář s klíčem
+   od boudy). Pokaždé to vypadá jako dobrá konkrétní věta a je špatně v půlce běhů. ---------- */
 const KRIT=[
  {need:"propustka", scena:"závora", img:"checkpoint.png",
   zach:{need:"peníze", ok:"Kužel baterky se zastavil na tobě. „Stůj!“ Jdeš pomalu blíž a do dlaně mu vtiskneš, co máš. Dlouhé ticho. Pak mávl rukou do tmy: jdi.", fail:"Nabídl jsi mu, co ti zbylo. Nestačilo to."},
@@ -1723,7 +1730,14 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
    projde vždycky). Text neúspěchu proto mluví k hráči, který tu věc MÁ, jen v horší podobě.
    Nesmí tvrdit, že ji nemá. Dvě věty to dělaly („Ukázal jsi prázdné dlaně" u člověka, co má
    peníze od překupníka; „nebylo co jíst" u člověka, co si nasušil ze zahrady) a nikde se nic
-   nezlomilo, protože je to jen próza, která se rozchází se stavem. ---------- */
+   nezlomilo, protože je to jen próza, která se rozchází se stavem.
+
+   TÝŽ POZOR na inf a bl: text se pouští podle DRUHU výbavy, ne podle toho, kdo ji dal.
+   U každé potřeby jsou dva lidé na solidní straně a dvě cesty na čisté, takže věta musí
+   platit pro OBA. Dneska to kouslo třikrát: „Z mapy to víš přesně" (Rudolf kreslí, hajný
+   ukazuje klackem), „Kapsy máš prázdné" (jít bez papírů, nebo si nechat vlastní starou
+   legitimaci v podšívce) a „zadní vrátka nechána odemčená" (farář, ne výhybkář s klíčem
+   od boudy). Pokaždé to vypadá jako dobrá konkrétní věta a je špatně v půlce běhů. ---------- */
 const KRIT=[
  {need:"propustka", scena:"the barrier", img:"checkpoint.png",
   zach:{need:"peníze", ok:"The torch beam stops on you. “Halt!” You walk toward him slowly and press what you have into his palm. A long silence. Then he waves you into the dark: go.", fail:"You offered him what you had left. It was not enough."},
@@ -1985,7 +1999,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111339";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111342";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
