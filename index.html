@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111223 -->
+<!-- pasmo build 202608111239 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -943,9 +943,10 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
       :odkud==="razitko"?"Zapíral jsi a oni to psali dál. Každá lež jim přidala list. § 95/2: čtyři roky, Jáchymov."
       :"Nemuseli tě lámat. Stačilo počkat, až to řekneš sám. § 95/2: čtyři roky, Jáchymov.")
       :"Zapíral jsi i to, co leželo na stole. Nezlomili tě, ale nepustili. § 95/2: dva roky, Pankrác.";
-    // Stejně jako u přechodu: když promluvil jeden, jmenuje se. Tenhle konec vidí zdaleka
-    // nejvíc hráčů, takže je to jméno vidět víc než to na druhé straně drátů.
-    dodatek=udal?(mluvili.length===1?("Promluvil"+(JMENA[mluvili[0]].rod==="z"?"a":"")+" "+JMENA[mluvili[0]].jm+". Stojí to v protokolu, hned pod tvým jménem."):"Někdo z nich promluvil. Stojí to v protokolu, hned pod tvým jménem."):"Nikdo tě neudal. Jen se ptali dost dlouho.";
+    // Kdo mluvil, říká soupis nad tím, a to jménem. Dodatek proto nesmí jmenovat: nesl by
+    // potřetí totéž, co už řekl řádek „Ty:" („za tebe mluvili jiní") a po něm soupis.
+    // Zbývá to, co soupis říct nemůže: kam to doputovalo.
+    dodatek=udal?"Stojí to v protokolu, hned pod tvým jménem.":"Nikdo tě neudal. Jen se ptali dost dlouho.";
   }
   // rozsudek je jediné místo, kde se dozvíš, kdo mluvil. Co se tu dozvíš, to už příště víš.
   zap.forEach(k=>{ ZNAM[k]=S.talked[k]?"mluvil":"mlcel"; }); ulozMesto();
@@ -1810,9 +1811,10 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
       :odkud==="razitko"?"You denied it and they wrote on. Every lie added a page. §95/2: four years, Jáchymov."
       :"They never had to break you. They only had to wait until you said it yourself. §95/2: four years, Jáchymov.")
       :"You denied even what was lying on the table. They did not break you. They did not let you go either. §95/2: two years, Pankrác prison.";
-    // Stejně jako u přechodu: když promluvil jeden, jmenuje se. Tenhle konec vidí zdaleka
-    // nejvíc hráčů, takže je to jméno vidět víc než to na druhé straně drátů.
-    dodatek=udal?(mluvili.length===1?(JMENA[mluvili[0]].jm+" talked. It is in the record, right under your name."):"One of them talked. It is in the record, right under your name."):"Nobody informed on you. They just kept asking.";
+    // Kdo mluvil, říká soupis nad tím, a to jménem. Dodatek proto nesmí jmenovat: nesl by
+    // potřetí totéž, co už řekl řádek „Ty:" („za tebe mluvili jiní") a po něm soupis.
+    // Zbývá to, co soupis říct nemůže: kam to doputovalo.
+    dodatek=udal?"It is in the record, right under your name.":"Nobody informed on you. They just kept asking.";
   }
   // rozsudek je jediné místo, kde se dozvíš, kdo mluvil. Co se tu dozvíš, to už příště víš.
   zap.forEach(k=>{ ZNAM[k]=S.talked[k]?"mluvil":"mlcel"; }); ulozMesto();
@@ -1953,7 +1955,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111223";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111239";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
