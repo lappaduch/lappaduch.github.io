@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111416 -->
+<!-- pasmo build 202608111423 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -542,9 +542,10 @@ function nova(){
 function spustTyden(){ const zNoci=document.body.classList.contains("noc");
   S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik");
   Z.atmosfera(false); Z.tepat(0);   // přes den je venku, výslechová místnost mlčí
-  // Nálada je uvnitř lišty a lišta se přes den nevypíná, takže po prvním výslechu visela
-  // „Nedívá se na tebe." na všech pěti kartách druhého týdne. Je úterý a on tam není.
-  // Lišta zůstává (stav nese ona, pravidlo 5), mizí jen ten, kdo v místnosti není.
+  // Náladu po výslechu nikdo nemazal, takže „Nedívá se na tebe." zůstávala v DOM na všech
+  // pěti kartách druhého týdne. Vidět to nebylo: přes den nemá body třídu noc a CSS celou
+  // lištu schová. Od zobrazení to ale dělí jediný classList.add("noc") jinde v kódu, a věta
+  // z jiné scény nemá na čem viset ani schovaně.
   $("nalada").textContent="";
   if(zNoci) rozedni();              // z tmy do papíru se nepřechází skokem, rozední se
   render(); }
@@ -1439,9 +1440,10 @@ function nova(){
 function spustTyden(){ const zNoci=document.body.classList.contains("noc");
   S.faze="prep"; S.i=0; S.prep=zamichej(S.needy.filter(n=>n.t===S.t)); document.body.classList.remove("noc","tik");
   Z.atmosfera(false); Z.tepat(0);   // přes den je venku, výslechová místnost mlčí
-  // Nálada je uvnitř lišty a lišta se přes den nevypíná, takže po prvním výslechu visela
-  // „Nedívá se na tebe." na všech pěti kartách druhého týdne. Je úterý a on tam není.
-  // Lišta zůstává (stav nese ona, pravidlo 5), mizí jen ten, kdo v místnosti není.
+  // Náladu po výslechu nikdo nemazal, takže „Nedívá se na tebe." zůstávala v DOM na všech
+  // pěti kartách druhého týdne. Vidět to nebylo: přes den nemá body třídu noc a CSS celou
+  // lištu schová. Od zobrazení to ale dělí jediný classList.add("noc") jinde v kódu, a věta
+  // z jiné scény nemá na čem viset ani schovaně.
   $("nalada").textContent="";
   if(zNoci) rozedni();              // z tmy do papíru se nepřechází skokem, rozední se
   render(); }
@@ -2013,7 +2015,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111416";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111423";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
