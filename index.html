@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111301 -->
+<!-- pasmo build 202608111305 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -959,7 +959,12 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
     dodatek=udal?"Stojí to v protokolu, hned pod tvým jménem.":"Nikdo tě neudal. Jen se ptali dost dlouho.";
   }
   // rozsudek je jediné místo, kde se dozvíš, kdo mluvil. Co se tu dozvíš, to už příště víš.
-  zap.forEach(k=>{ ZNAM[k]=S.talked[k]?"mluvil":"mlcel"; }); ulozMesto();
+  // Čistá cesta se do paměti NEZAPISUJE. Překupník a starý četník mají kdo, takže se do
+  // ZNAM dostávali jako „mlcel", a příští běh o nich hlásil „Jednou už tě v rukou měli a od
+  // něj se nedozvěděli nic." Jenže po čisté cestě se jich nikdo neptal: ta věta slibuje
+  // prověřeného svědka tam, kde je celá pointa v tom, že žádný svědek není.
+  const ciste=new Set(S.stopy.filter(x=>x.typ==="cisty"&&x.kdo).map(x=>x.kdo));
+  zap.forEach(k=>{ if(!ciste.has(k)) ZNAM[k]=S.talked[k]?"mluvil":"mlcel"; }); ulozMesto();
   const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?("vypovídal"+a+", propuštěn"+a):S.zataženi[k]?("vyslýchán"+a):"nic";
     return `<div class="sl"><span>${velke(o.jm)}</span><span class="os2">${os2}</span></div>`; }).join("");
   const stamp=druh==="prechod"?"PŘEŠEL":druh==="draty"?"ZADRŽEN":"ODSOUZEN";
@@ -1837,7 +1842,12 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
     dodatek=udal?"It is in the record, right under your name.":"Nobody informed on you. They just kept asking.";
   }
   // rozsudek je jediné místo, kde se dozvíš, kdo mluvil. Co se tu dozvíš, to už příště víš.
-  zap.forEach(k=>{ ZNAM[k]=S.talked[k]?"mluvil":"mlcel"; }); ulozMesto();
+  // Čistá cesta se do paměti NEZAPISUJE. Překupník a starý četník mají kdo, takže se do
+  // ZNAM dostávali jako „mlcel", a příští běh o nich hlásil „Jednou už tě v rukou měli a od
+  // něj se nedozvěděli nic." Jenže po čisté cestě se jich nikdo neptal: ta věta slibuje
+  // prověřeného svědka tam, kde je celá pointa v tom, že žádný svědek není.
+  const ciste=new Set(S.stopy.filter(x=>x.typ==="cisty"&&x.kdo).map(x=>x.kdo));
+  zap.forEach(k=>{ if(!ciste.has(k)) ZNAM[k]=S.talked[k]?"mluvil":"mlcel"; }); ulozMesto();
   const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?"testified, released":S.zataženi[k]?"interrogated":"nothing";
     return `<div class="sl"><span>${velke(o.jm)}</span><span class="os2">${os2}</span></div>`; }).join("");
   const stamp=druh==="prechod"?"CROSSED":druh==="draty"?"DETAINED":"CONVICTED";
@@ -1975,7 +1985,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111301";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111305";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
