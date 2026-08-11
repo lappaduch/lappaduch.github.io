@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111305 -->
+<!-- pasmo build 202608111310 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -384,7 +384,7 @@ const INTRO=[
  {img:"auto.png", scena:"jaro 1952, město u západní hranice", noc:true, prisun:true, titul:true, poOdstavcich:true,
   text:"Auto stojí pod lampou od půlnoci.\n\nVe tři se rozsvítí okno naproti. Za chvíli vedou pana Buriana dolů, nemá kabát. Nikdo nekřičí, dveře klapnou a auto odjede.\n\nRáno je jeho dílna zamčená a nikdo se neptá."},
  {img:"dokumenty.png", scena:"co přišlo tobě", noc:true, razitko:"PTP", text:
-  "V pátek přijde obálka i na tebe. Nástup čtrnáctého k Pomocným technickým praporům: uran v Jáchymově, roky v dolech bez soudu a bez data konce.\n\nNepůjdeš. Padesát kilometrů na západ je hranice.\n\nČtrnáct dní na přípravu, každou sobotu výslech. Zapřít jde jen to, po čem nezůstala stopa.\n\nTáhni kartu doleva, nebo doprava."},
+  "V pátek přijde obálka i na tebe. Nástup dvacátého k Pomocným technickým praporům: uran v Jáchymově, roky v dolech bez soudu a bez data konce.\n\nNepůjdeš. Padesát kilometrů na západ je hranice.\n\nČtrnáct dní na přípravu, každou sobotu výslech. Zapřít jde jen to, po čem nezůstala stopa.\n\nTáhni kartu doleva, nebo doprava."},
 ];
 
 // usv = úsvědčující akt (přiznání staví jejich případ)
@@ -1267,7 +1267,7 @@ const INTRO=[
  {img:"auto.png", scena:"spring 1952, a town near the western border", noc:true, prisun:true, titul:true, poOdstavcich:true,
   text:"The car has been parked under the lamp since midnight.\n\nAt three the window across the street lights up. Soon they walk Mr. Burian down, no coat on him. Nobody shouts, the doors clap shut and the car drives off.\n\nIn the morning his workshop is locked and nobody asks."},
  {img:"dokumenty.png", scena:"what came for you", noc:true, razitko:"PTP", text:
-  "On Friday an envelope comes for you too. Report on the fourteenth to the Auxiliary Technical Battalions: uranium at Jáchymov, years in the mines with no trial and no end date.\n\nYou will not go. Fifty kilometres west lies the border.\n\nFourteen days to prepare, an interrogation every Saturday. You can only deny what left no trace.\n\nSwipe the card left or right."},
+  "On Friday an envelope comes for you too. Report on the twentieth to the Auxiliary Technical Battalions: uranium at Jáchymov, years in the mines with no trial and no end date.\n\nYou will not go. Fifty kilometres west lies the border.\n\nFourteen days to prepare, an interrogation every Saturday. You can only deny what left no trace.\n\nSwipe the card left or right."},
 ];
 
 // usv = úsvědčující akt (přiznání staví jejich případ)
@@ -1985,7 +1985,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111305";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111310";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
