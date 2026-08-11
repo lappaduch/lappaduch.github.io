@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111154 -->
+<!-- pasmo build 202608111157 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -527,7 +527,7 @@ function noveMesto(){ MESTO=null; ZNAM={}; try{ localStorage.removeItem("pasmo-m
   nactiMesto(); toast("nové město, lidi neznáš"); nova(); }
 
 function nova(){
-  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false};
+  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false};
   if(!MESTO) nactiMesto();
   // vylosuj obsazení pro tenhle běh: každou potřebu nabízí jiný člověk z poolu
   S.needy = NEED.map(n=>({ t:n.t, need:n.need, usv:n.usv, img:n.img, scena:n.scena, uvod:n.uvod, l:vyber(n.lPool), p:vyber(n.pPool) }));
@@ -705,7 +705,7 @@ function spustVyslech(){
   S.prep.forEach(k=>{ if(zradilo>=2) return;
     const src=(S.mam[k.need]==="l")?k.l:k.p;
     if(k.usv && src.typ==="svedek" && S.talked[src.kdo] && !S.zVypovedi[k.need]){
-      S.zVypovedi[k.need]=true; S.spis++; zradilo++; } });
+      S.zVypovedi[k.need]=true; doSpisu("udani"); zradilo++; } });
   // Eskalace: StB všechno ví, ale nesmí to ukázat. Konkrétní otázku (jmenuje člověka i věc) položí
   // jen tam, kde má důkaz: papír v evidenci, svědka, co promluvil. Jinak sonduje obecně (otO):
   // ptá se vedle toho, co tuší, a konkrétnost otázky je tím pádem sama o sobě informace.
@@ -766,6 +766,10 @@ function merky(){
   $("nalada").textContent = S.vera>66?"Nedívá se na tebe.":S.vera>33?"Píše rychleji.":"Přestal psát a dívá se na tebe.";
   // tep začne, teprve když je zle: do té doby má výslech jen svoje ticho
   Z.tepat(S.vera<70 ? Math.round((70-Math.max(0,S.vera))*1.4) : 0); }
+// Spis roste třemi cestami a rozsudek to potřebuje vědět: „stačilo počkat, až to řekneš sám"
+// platí jen pro jednu z nich. Kdo zapíral a nechal si otisknout razítko, řekl přesně nic;
+// koho udal svědek, ten taky ne.
+function doSpisu(duvod){ S.spis++; S.spisOd[duvod]=(S.spisOd[duvod]||0)+1; }
 function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q); let vysl,stamp=false;
   // co jsi řekl, to je v protokolu: formulace i odpověď, ať už na to měli důkaz, nebo ne
   if(!q.reask) S.otazky[kl]={ot:q.ot,k:!!q.konkretni,kdo:q.kdo,ch:q.ch,usv:q.usv,need:q.need,str:q.str};
@@ -776,12 +780,12 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[kl]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
-      if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
+      if(q.usv&&q.pouzito)doSpisu("razitko");   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
       vysl=q.ch+" Ani se nezlobil. Jen si to zapsal.";} else vysl="Ticho. Pak: „Dobře.“ Píše dál."; }
   else { S.reklJsem[kl]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
-    if(q.usv&&q.pouzito){S.spis++;vysl="Psací stroj klapl. Zapsáno. Tenhle list si podtrhl.";} else vysl="Psací stroj klapl. Zapsáno."; }
+    if(q.usv&&q.pouzito){doSpisu("rekl");vysl="Psací stroj klapl. Zapsáno. Tenhle list si podtrhl.";} else vysl="Psací stroj klapl. Zapsáno."; }
   zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[kl],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
@@ -921,7 +925,14 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
     ja="Světlo si tě našlo. Došli beze spěchu. § 95/2, tři roky, z toho v Jáchymově.";
     dodatek=S.zrada?S.zrada:S.pomaly?"Zaváhal jsi u drátů o vteřinu dýl, než noc dovolila. Kužel se zastavil na tobě.":S.prozrazenaTrasa?"Věděli, kudy půjdeš. Řekls jim to sám u výslechu.":"Výslech jsi ustál. A pak tě u drátů zradilo to, na čem jsi ušetřil.";
   } else { nadpis="usvědčen";
-    ja=(proc==="spis")?"Nemuseli tě lámat. Stačilo počkat, až to řekneš sám. § 95/2: čtyři roky, Jáchymov.":"Zapíral jsi i to, co leželo na stole. Nezlomili tě, ale nepustili. § 95/2: dva roky, Pankrác.";
+    // Spis se plní třemi cestami a rozsudek říkal jen jednu z nich. Naměřeno na čtyřech
+    // tisících běhů: u zatčení převažuje UDÁNÍ (2088), ne přiznání (608) ani razítka (107),
+    // takže ta jediná věta vinila hráče z toho, co ve většině běhů udělalo město.
+    const odkud=Object.keys(S.spisOd||{}).sort((x,y)=>S.spisOd[y]-S.spisOd[x])[0];
+    ja=(proc==="spis")?(odkud==="udani"?"Neřekl jsi skoro nic. Za tebe mluvili jiní. § 95/2: čtyři roky, Jáchymov."
+      :odkud==="razitko"?"Zapíral jsi a oni to psali dál. Každá lež jim přidala list. § 95/2: čtyři roky, Jáchymov."
+      :"Nemuseli tě lámat. Stačilo počkat, až to řekneš sám. § 95/2: čtyři roky, Jáchymov.")
+      :"Zapíral jsi i to, co leželo na stole. Nezlomili tě, ale nepustili. § 95/2: dva roky, Pankrác.";
     dodatek=udal?"Někdo z nich promluvil. Stojí to v protokolu, hned pod tvým jménem.":"Nikdo tě neudal. Jen se ptali dost dlouho.";
   }
   // rozsudek je jediné místo, kde se dozvíš, kdo mluvil. Co se tu dozvíš, to už příště víš.
@@ -1371,7 +1382,7 @@ function noveMesto(){ MESTO=null; ZNAM={}; try{ localStorage.removeItem("pasmo-m
   nactiMesto(); toast("a new town, you know nobody here"); nova(); }
 
 function nova(){
-  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false};
+  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false};
   if(!MESTO) nactiMesto();
   // vylosuj obsazení pro tenhle běh: každou potřebu nabízí jiný člověk z poolu
   S.needy = NEED.map(n=>({ t:n.t, need:n.need, usv:n.usv, img:n.img, scena:n.scena, uvod:n.uvod, l:vyber(n.lPool), p:vyber(n.pPool) }));
@@ -1549,7 +1560,7 @@ function spustVyslech(){
   S.prep.forEach(k=>{ if(zradilo>=2) return;
     const src=(S.mam[k.need]==="l")?k.l:k.p;
     if(k.usv && src.typ==="svedek" && S.talked[src.kdo] && !S.zVypovedi[k.need]){
-      S.zVypovedi[k.need]=true; S.spis++; zradilo++; } });
+      S.zVypovedi[k.need]=true; doSpisu("udani"); zradilo++; } });
   // Eskalace: StB všechno ví, ale nesmí to ukázat. Konkrétní otázku (jmenuje člověka i věc) položí
   // jen tam, kde má důkaz: papír v evidenci, svědka, co promluvil. Jinak sonduje obecně (otO):
   // ptá se vedle toho, co tuší, a konkrétnost otázky je tím pádem sama o sobě informace.
@@ -1610,6 +1621,10 @@ function merky(){
   $("nalada").textContent = S.vera>66?"He isn’t looking at you.":S.vera>33?"He is writing faster.":"He has stopped writing and is looking at you.";
   // tep začne, teprve když je zle: do té doby má výslech jen svoje ticho
   Z.tepat(S.vera<70 ? Math.round((70-Math.max(0,S.vera))*1.4) : 0); }
+// Spis roste třemi cestami a rozsudek to potřebuje vědět: „stačilo počkat, až to řekneš sám"
+// platí jen pro jednu z nich. Kdo zapíral a nechal si otisknout razítko, řekl přesně nic;
+// koho udal svědek, ten taky ne.
+function doSpisu(duvod){ S.spis++; S.spisOd[duvod]=(S.spisOd[duvod]||0)+1; }
 function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q); let vysl,stamp=false;
   // co jsi řekl, to je v protokolu: formulace i odpověď, ať už na to měli důkaz, nebo ne
   if(!q.reask) S.otazky[kl]={ot:q.ot,k:!!q.konkretni,kdo:q.kdo,ch:q.ch,usv:q.usv,need:q.need,str:q.str};
@@ -1620,12 +1635,12 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[kl]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
-      if(q.usv&&q.pouzito)S.spis++;   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
+      if(q.usv&&q.pouzito)doSpisu("razitko");   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
       vysl=q.ch+" He was not even angry. He just wrote it down.";} else vysl="Silence. Then: “Fine.” He keeps writing."; }
   else { S.reklJsem[kl]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
-    if(q.usv&&q.pouzito){S.spis++;vysl="The typewriter clacks. On the record. That page he underlined.";} else vysl="The typewriter clacks. On the record."; }
+    if(q.usv&&q.pouzito){doSpisu("rekl");vysl="The typewriter clacks. On the record. That page he underlined.";} else vysl="The typewriter clacks. On the record."; }
   zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[kl],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
@@ -1765,7 +1780,14 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
     ja="The beam found you. They walked over without hurrying. §95/2: three years, part of them in Jáchymov.";
     dodatek=S.zrada?S.zrada:S.pomaly?"You hesitated at the wire a second longer than the night allowed. The beam stopped on you.":S.prozrazenaTrasa?"They knew which way you would go. You told them yourself, at the interrogation.":"You survived the interrogations. And then, at the wire, you were betrayed by everything you skimped on.";
   } else { nadpis="convicted";
-    ja=(proc==="spis")?"They never had to break you. They only had to wait until you said it yourself. §95/2: four years, Jáchymov.":"You denied even what was lying on the table. They did not break you. They did not let you go either. §95/2: two years, Pankrác prison.";
+    // Spis se plní třemi cestami a rozsudek říkal jen jednu z nich. Naměřeno na čtyřech
+    // tisících běhů: u zatčení převažuje UDÁNÍ (2088), ne přiznání (608) ani razítka (107),
+    // takže ta jediná věta vinila hráče z toho, co ve většině běhů udělalo město.
+    const odkud=Object.keys(S.spisOd||{}).sort((x,y)=>S.spisOd[y]-S.spisOd[x])[0];
+    ja=(proc==="spis")?(odkud==="udani"?"You said almost nothing. Others said it for you. §95/2: four years, Jáchymov."
+      :odkud==="razitko"?"You denied it and they wrote on. Every lie added a page. §95/2: four years, Jáchymov."
+      :"They never had to break you. They only had to wait until you said it yourself. §95/2: four years, Jáchymov.")
+      :"You denied even what was lying on the table. They did not break you. They did not let you go either. §95/2: two years, Pankrác prison.";
     dodatek=udal?"One of them talked. It is in the record, right under your name.":"Nobody informed on you. They just kept asking long enough.";
   }
   // rozsudek je jediné místo, kde se dozvíš, kdo mluvil. Co se tu dozvíš, to už příště víš.
@@ -1907,7 +1929,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111154";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111157";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
