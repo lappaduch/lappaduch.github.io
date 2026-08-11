@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111042 -->
+<!-- pasmo build 202608111043 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -750,7 +750,7 @@ function spustVyslech(){
     + (zradilo ? "\n\nOtevřel desky a chvíli četl, než vůbec zvedl oči. Něco už tam bylo napsané ráno." : ""), true);
   volbyRe("Posadit se");
 }
-const VERA_SLOVY=[[80,"zatím ano"],[60,"už ne úplně"],[40,"pochybuje"],[20,"skoro ne"],[0,"ani slovo"]];
+const VERA_SLOVY=[[80,"zatím ano"],[60,"už ne úplně"],[40,"jen napůl"],[20,"skoro ne"],[0,"ani slovo"]];
 function merky(){
   $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")";
   const sl=VERA_SLOVY.find(([h])=>S.vera>=h) || VERA_SLOVY[VERA_SLOVY.length-1];
@@ -1577,7 +1577,7 @@ function spustVyslech(){
     + (zradilo ? "\n\nHe opened the folder and read a while before he even looked up. Something had been written there this morning." : ""), true);
   volbyRe("Sit down");
 }
-const VERA_SLOVY=[[80,"so far"],[60,"less and less"],[40,"has doubts"],[20,"barely"],[0,"not a word"]];
+const VERA_SLOVY=[[80,"so far"],[60,"less and less"],[40,"half of it"],[20,"barely"],[0,"not a word"]];
 function merky(){
   $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")";
   const sl=VERA_SLOVY.find(([h])=>S.vera>=h) || VERA_SLOVY[VERA_SLOVY.length-1];
@@ -1873,7 +1873,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111042";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111043";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
