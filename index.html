@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111342 -->
+<!-- pasmo build 202608111347 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -789,7 +789,7 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
   if(q.reask){ const ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
       vysl=S.dokazano[kl]?"„Máme to v protokolu.“ Otočil list k tobě a čekal.":"„Minule jste to říkal jinak.“ Listoval zpátky a četl si to dvakrát.";}
-    else vysl=S.dokazano[kl]?"„No vidíte.“ Přeškrtl jeden řádek a psal dál.":"„...dobře.“ A nic si nepřipsal.";
+    else vysl=S.dokazano[kl]?"„No vidíte.“ Přeškrtl jeden řádek a psal dál.":"Srovnal starší zápis s novým a chvíli mezi nimi přejížděl očima. Pak desky zavřel.";
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[kl]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
@@ -1679,7 +1679,7 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
   if(q.reask){ const ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
       vysl=S.dokazano[kl]?"“We have it in the record.” He turned the page toward you and waited.":"“Last time you said it differently.” He leafed back and read it twice.";}
-    else vysl=S.dokazano[kl]?"“There we are.” He struck out a line and wrote on.":"“...very well.” And he wrote nothing down.";
+    else vysl=S.dokazano[kl]?"“There we are.” He struck out a line and wrote on.":"He set the older entry beside the new one and looked from one to the other for a while. Then he closed the folder.";
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[kl]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
@@ -1999,7 +1999,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111342";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111347";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
