@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111357 -->
+<!-- pasmo build 202608111410 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -972,7 +972,10 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   // prověřeného svědka tam, kde je celá pointa v tom, že žádný svědek není.
   const ciste=new Set(S.stopy.filter(x=>x.typ==="cisty"&&x.kdo).map(x=>x.kdo));
   zap.forEach(k=>{ if(!ciste.has(k)) ZNAM[k]=S.talked[k]?"mluvil":"mlcel"; }); ulozMesto();
-  const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?("vypovídal"+a+", propuštěn"+a):S.zataženi[k]?("vyslýchán"+a):"nic";
+  // Soupis je protokol, ne vypravěč, takže osudy musí být v jednom rejstříku. „nic" psané
+  // pod „vyslýchán" a „vypovídal, propuštěn" je jazyk odjinud. Kdo z nich vyvázl, je pro
+  // úřad člověk bez záznamu, a to je zároveň celá odměna za čistou cestu.
+  const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?("vypovídal"+a+", propuštěn"+a):S.zataženi[k]?("vyslýchán"+a):"bez záznamu";
     return `<div class="sl"><span>${velke(o.jm)}</span><span class="os2">${os2}</span></div>`; }).join("");
   const stamp=druh==="prechod"?"PŘEŠEL":druh==="draty"?"ZADRŽEN":"ODSOUZEN";
   $("scena").textContent=nadpis; $("text").className="";
@@ -1862,7 +1865,10 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   // prověřeného svědka tam, kde je celá pointa v tom, že žádný svědek není.
   const ciste=new Set(S.stopy.filter(x=>x.typ==="cisty"&&x.kdo).map(x=>x.kdo));
   zap.forEach(k=>{ if(!ciste.has(k)) ZNAM[k]=S.talked[k]?"mluvil":"mlcel"; }); ulozMesto();
-  const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?"testified, released":S.zataženi[k]?"interrogated":"nothing";
+  // Soupis je protokol, ne vypravěč, takže osudy musí být v jednom rejstříku. „nic" psané
+  // pod „vyslýchán" a „vypovídal, propuštěn" je jazyk odjinud. Kdo z nich vyvázl, je pro
+  // úřad člověk bez záznamu, a to je zároveň celá odměna za čistou cestu.
+  const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?("vypovídal"+a+", propuštěn"+a):S.zataženi[k]?("vyslýchán"+a):"bez záznamu";
     return `<div class="sl"><span>${velke(o.jm)}</span><span class="os2">${os2}</span></div>`; }).join("");
   const stamp=druh==="prechod"?"CROSSED":druh==="draty"?"DETAINED":"CONVICTED";
   $("scena").textContent=nadpis; $("text").className="";
@@ -1999,7 +2005,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111357";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111410";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
