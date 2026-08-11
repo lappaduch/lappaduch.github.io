@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111055 -->
+<!-- pasmo build 202608111118 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -393,7 +393,7 @@ const NEED=[
   uvod:"V zásuvce pod prádlem máš dvě stě třicet korun a v duchu počítáš: převaděč, jízdenka, stovka do správné dlaně. Vychází to černě, ať to skládáš jakkoli.",
   lPool:[
    {kdo:"zdena",jm:"teta Zdena",rod:"z",typ:"svedek",talk:.75,pitch:"Teta Zdena ti po mši stiskla ruku, ať se kdykoli ozveš: rodina je rodina. Důchod si skládá do plechovky od cikorky a každé ráno s babkami na lavičce u kostela proberou celé město.",re:"Vtiskla ti do dlaně svinuté bankovky.",ot:"„Půjčila Vám teta Zdena peníze?“",otO:"„Nějak jste si polepšil, slyšíme. Půjčil Vám někdo?“",ch:"„Vaše teta to potvrdila.“"},
-   {kdo:"vavra",jm:"kmotr Vávra",rod:"m",typ:"svedek",talk:.8,pitch:"Kmotr Vávra má vždycky pár stovek stranou. Večer co večer sedí U Lípy nad třetím pivem, hraje mariáš a s každým, kdo si přisedne, se dá do řeči; půlka hospody mu říká strejdo.",re:"Odpočítal bankovky pod stolem.",ot:"„Bral jste peníze od Vávry?“",otO:"„Hrál jste minulý týden mariáš U Lípy?“",ch:"„Vávra o Vás mluvil.“"}],
+   {kdo:"vavra",jm:"kmotr Vávra",rod:"m",typ:"svedek",talk:.8,pitch:"Kmotr Vávra má vždycky pár stovek stranou. Večer co večer sedí U Lípy nad třetím pivem, hraje mariáš a půlka hospody mu říká strejdo. Když se karty nesejdou, dluží po okrese.",re:"Odpočítal bankovky pod stolem.",ot:"„Bral jste peníze od Vávry?“",otO:"„Hrál jste minulý týden mariáš U Lípy?“",ch:"„Vávra o Vás mluvil.“"}],
   pPool:[
    {kdo:"vekslak",jm:"překupník",rod:"m",typ:"cisty",pitch:"Anebo překupník z nádraží. Postává u stánku s límcem nahoru, koupí i prodá beze slova a bez jména. Nikdo neví, kde bydlí, a nikoho to nezajímá.",re:"Přepočítal a zmizel v davu.",ot:"„Prodal jste něco překupníkovi na nádraží?“",ch:""},
    {kdo:null,jm:"dědovy hodinky",rod:"m",typ:"cisty",pitch:"Anebo dědovy zlaté hodinky. Deset let leží v šupleti v kapesníku. V okresním městě, kde tě neznají, by za ně u zlatníka něco dali.",re:"Schoval jsi peníze hluboko do bot.",ot:"„Zpeněžil jste něco cenného?“",ch:""}]},
@@ -1225,7 +1225,7 @@ const NEED=[
   uvod:"In the drawer under your linen lie two hundred and thirty crowns, and you keep counting: the guide, the ticket, a hundred for the right palm. It comes out short no matter how you stack it.",
   lPool:[
    {kdo:"zdena",jm:"aunt Zdena",rod:"z",typ:"svedek",talk:.75,pitch:"Aunt Zdena squeezed your hand after Mass: come to her anytime, family is family. She keeps her pension in an old chicory tin, and every morning she sits with the other grannies on the bench by the church, going over the whole town.",re:"She pressed a roll of banknotes into your palm.",ot:"“Did your aunt Zdena lend you money?”",otO:"“Doing well for yourself lately, we hear. Did someone lend you money?”",ch:"“Your aunt confirmed it.”"},
-   {kdo:"vavra",jm:"uncle Vávra",rod:"m",typ:"svedek",talk:.8,pitch:"Uncle Vávra always has a few hundred set aside. Every evening he sits in the Linden Tavern over his third beer, playing cards and chatting with anyone who sits down; half the pub calls him uncle.",re:"He dealt out the notes under the table.",ot:"“Did you take money from Vávra?”",otO:"“Did you play cards at the Linden last week?”",ch:"“Vávra talked about you.”"}],
+   {kdo:"vavra",jm:"uncle Vávra",rod:"m",typ:"svedek",talk:.8,pitch:"Uncle Vávra always has a few hundred set aside. Every evening he sits in the Linden Tavern over his third beer at cards, and half the pub calls him uncle. When the cards go against him, he owes money all over the district.",re:"He dealt out the notes under the table.",ot:"“Did you take money from Vávra?”",otO:"“Did you play cards at the Linden last week?”",ch:"“Vávra talked about you.”"}],
   pPool:[
    {kdo:"vekslak",jm:"the dealer",rod:"m",typ:"cisty",pitch:"Or the dealer at the station. He loiters by the newsstand, collar up, buys and sells without a word or a name. Nobody knows where he lives, and nobody cares.",re:"He counted it and vanished into the crowd.",ot:"“Did you sell something to the dealer at the station?”",ch:""},
    {kdo:null,jm:"grandpa’s watch",rod:"m",typ:"cisty",pitch:"Or grandpa’s gold watch. Ten years in the drawer, wrapped in a handkerchief. In the district town, where nobody knows you, a goldsmith would pay something for it.",re:"You hid the money deep in your boots.",ot:"“Did you sell anything of value?”",ch:""}]},
@@ -1883,7 +1883,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111055";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111118";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
