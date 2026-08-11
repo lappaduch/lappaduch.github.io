@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111347 -->
+<!-- pasmo build 202608111357 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -850,7 +850,7 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
    od boudy). Pokaždé to vypadá jako dobrá konkrétní věta a je špatně v půlce běhů. ---------- */
 const KRIT=[
  {need:"propustka", scena:"závora", img:"checkpoint.png",
-  zach:{need:"peníze", ok:"Kužel baterky se zastavil na tobě. „Stůj!“ Jdeš pomalu blíž a do dlaně mu vtiskneš, co máš. Dlouhé ticho. Pak mávl rukou do tmy: jdi.", fail:"Nabídl jsi mu, co ti zbylo. Nestačilo to."},
+  zach:{need:"peníze", ok:"Kužel baterky se zastavil na tobě a nehnul se. Jdeš pomalu blíž a do dlaně mu vtiskneš, co máš. Dlouhé ticho. Pak mávl rukou do tmy: jdi.", fail:"Nabídl jsi mu, co ti zbylo. Nestačilo to."},
   inf:{text:"Závora a osvětlená budka. Máš razítkovanou propustku: stráž tě mávnutím pustí, sotva ji ukážeš. Kolem budky je pole bez jediného keře a světlo z okna dosahuje daleko.", l:"Ukázat propustku", p:"Obejít potmě", spravna:"l"},
   bl:{text:"Závora a budka, ve které se svítí. Příkop podél silnice tě vede rovnou pod osvětlené okno budky. Přes pole je to holá pláň, zato dál od světla.", l:"Příkopem", p:"Přes pole", spravna:"p"}},
  {need:"úkryt", scena:"poslední noc", img:"kostel.png",
@@ -1740,7 +1740,7 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
    od boudy). Pokaždé to vypadá jako dobrá konkrétní věta a je špatně v půlce běhů. ---------- */
 const KRIT=[
  {need:"propustka", scena:"the barrier", img:"checkpoint.png",
-  zach:{need:"peníze", ok:"The torch beam stops on you. “Halt!” You walk toward him slowly and press what you have into his palm. A long silence. Then he waves you into the dark: go.", fail:"You offered him what you had left. It was not enough."},
+  zach:{need:"peníze", ok:"The torch beam stops on you and holds. You walk toward him slowly and press what you have into his palm. A long silence. Then he waves you into the dark: go.", fail:"You offered him what you had left. It was not enough."},
   inf:{text:"A barrier and a lit guardhouse. You have a stamped permit: the guard will wave you through the moment you show it. The field around the guardhouse has not a single bush on it, and the light from the window carries a long way.", l:"Show the permit", p:"Slip around in the dark", spravna:"l"},
   bl:{text:"A barrier, and a guardhouse with the light on. The ditch along the road leads right under the lit window. The field is open ground, but far from the light.", l:"Through the ditch", p:"Across the field", spravna:"p"}},
  {need:"úkryt", scena:"the last night", img:"kostel.png",
@@ -1999,7 +1999,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111347";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111357";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
