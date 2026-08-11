@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111014 -->
+<!-- pasmo build 202608111031 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -390,7 +390,7 @@ const INTRO=[
 // usv = úsvědčující akt (přiznání staví jejich případ)
 const NEED=[
  {t:1,need:"peníze",usv:false,img:"vlak.png",scena:"nádraží",
-  uvod:"V zásuvce pod prádlem máš dvě stě třicet korun a v duchu počítáš: převaděč, jízdenka, stovka do správné dlaně. Vychází to černě, ať to skládáš jakkoli. Bez peněz se nehneš z místa.",
+  uvod:"V zásuvce pod prádlem máš dvě stě třicet korun a v duchu počítáš: převaděč, jízdenka, stovka do správné dlaně. Vychází to černě, ať to skládáš jakkoli.",
   lPool:[
    {kdo:"zdena",jm:"teta Zdena",rod:"z",typ:"svedek",talk:.75,pitch:"Teta Zdena ti po mši stiskla ruku, ať se kdykoli ozveš: rodina je rodina. Důchod si skládá do plechovky od cikorky a každé ráno s babkami na lavičce u kostela proberou celé město.",re:"Vtiskla ti do dlaně svinuté bankovky.",ot:"„Půjčila Vám teta Zdena peníze?“",otO:"„Nějak jste si polepšil, slyšíme. Půjčil Vám někdo?“",ch:"„Vaše teta to potvrdila.“"},
    {kdo:"vavra",jm:"kmotr Vávra",rod:"m",typ:"svedek",talk:.8,pitch:"Kmotr Vávra má vždycky pár stovek stranou. Večer co večer sedí U Lípy nad třetím pivem, hraje mariáš a s každým, kdo si přisedne, se dá do řeči; půlka hospody mu říká strejdo.",re:"Odpočítal bankovky pod stolem.",ot:"„Bral jste peníze od Vávry?“",otO:"„Hrál jste minulý týden mariáš U Lípy?“",ch:"„Vávra o Vás mluvil.“"}],
@@ -417,7 +417,7 @@ const NEED=[
    {kdo:null,jm:"vlastní průzkum",rod:"m",typ:"cisty",pitch:"Anebo vezmeš otcovo kukátko a v neděli se z návrší budeš dívat sám: kudy chodí sedláci, odkud je vidět na dráty. Co uvidíš, to máš.",re:"Zapamatoval sis dvě cesty a strouhu.",ot:"„Chodil jste se dívat k hranici?“",ch:""}]},
 
  {t:1,need:"proviant",usv:false,img:"chleb.png",scena:"krám",
-  uvod:"K lesu u hranice dva dny poli a strouhami, žádné dveře, na které by ses odvážil zaklepat. Chleba, špek, něco proti žízni; doma ve špíži stojí tři sklenice sádla a pytlík krup.",
+  uvod:"Do lesa u hranice vedou dva dny poli a strouhami, žádné dveře, na které by ses odvážil zaklepat. Chleba, špek, něco proti žízni; doma ve špíži stojí tři sklenice sádla a pytlík krup.",
   lPool:[
    {kdo:"betka",jm:"hokyně Bětka",rod:"z",typ:"svedek",talk:.7,pitch:"Hokyně Bětka váží, stříhá lístky a vede řeč s celou frontou: ví, komu stůně tchyně. Naložila by ti všechno naráz a přihodila něco navrch, jako když jsi chodil pro kvasnice.",re:"Přidala i kus špeku.",ot:"„Dělal jste si zásoby u hokyně?“",otO:"„Nakupoval jste ve větším než obvykle?“",ch:"„Hokyně spočítala, co jste odnesl.“"},
    {kdo:"chalupa",jm:"hostinský Chalupa",rod:"m",typ:"svedek",talk:.3,pitch:"Hostinský Chalupa umí zabalit balík do novin, že vypadá jako prádlo. Celý den za výčepem půl města poslouchá a druhou půlku hostí; co dáš na pult, zmizí pod ním, než dopiješ.",re:"Srovnal to do novin a přeložil rohy.",ot:"„Kupoval jste jídlo od hostinského?“",otO:"„Chodíte večer do hostince?“",ch:"„Hostinský Vám to balil do novin.“"}],
@@ -426,7 +426,7 @@ const NEED=[
    {kdo:null,jm:"nasušené ze zahrady",rod:"m",typ:"cisty",pitch:"Anebo nasušíš, co dala zahrada: jablka za oknem, tvrdý sýr, starší chleba. Bude to jak dřevo, ale je to tvoje, od hlíny po kůrku.",re:"Zašil jsi to do plátěného pytlíku.",ot:"„Připravoval jste si potraviny?“",ch:""}]},
 
  {t:1,need:"boty",usv:false,img:"kufr.png",scena:"u ševce",
-  uvod:"Večer obracíš v rukou svoje boty: podrážka na třech flocích, švy pouštějí. A před tebou rozmoklá pole a celá noc chůze potmě. Došly ledacos. Tohle by mohly nedojít.",
+  uvod:"Po práci obracíš v rukou svoje boty: podrážka na třech flocích, švy pouštějí. A před tebou rozmoklá pole a celá noc chůze potmě. Došly ledacos. Tohle by mohly nedojít.",
   lPool:[
    {kdo:"svec",jm:"švec Vaněk",rod:"m",typ:"svedek",talk:.45,pitch:"Švec Vaněk obrací boty proti světlu, mne podrážku palcem a vyptává se, na jakou cestu to má vydržet: jinak šije na tancovačku, jinak na hory. Co projde jeho verpánkem, vydrží roky.",re:"Přiklepl nové podrážky.",ot:"„Nechal jste si u ševce spravit boty?“",otO:"„Nechával jste si poslední dobou něco spravit?“",ch:"„Švec ví, na jakou cestu to bylo.“"},
    {kdo:"pokorny",jm:"sedlář Pokorný",rod:"m",typ:"svedek",talk:.35,pitch:"Sedlář Pokorný by ušil vysoké boty jako pro myslivce. Bere provázkem míru na nárt a u toho se vyptává: řemeslo je prý půlka práce, druhá půlka znát člověka, co v nich půjde.",re:"Přeměřil ti nárt provázkem.",ot:"„Objednal jste si boty u sedláře?“",otO:"„Byl jste poslední dobou u sedláře?“",ch:"„Sedlář Vám bral míru.“"}],
@@ -471,7 +471,7 @@ const NEED=[
    {kdo:null,jm:"na kole, oklikou",rod:"m",typ:"cisty",pitch:"Anebo na kole přes Doubravku, kudy nejezdí nic než traktor. Kolo necháš v houští u posledního stavení a dál po svých.",re:"Nasedneš za tmy a šlapeš.",ot:"„Vyrážel jste někam na kole?“",ch:""}]},
 
  {t:2,need:"spojka",usv:true,img:"dopis.png",scena:"pošta",
-  uvod:"Za čárou to nekončí. Bavorská strana je plná patrol a táborů pro ty, co přešli špatně. Potřebuješ někoho, kdo tam počká a schová tě. Jinak přejdeš dráty, aby tě sebrali o kilometr dál.",
+  uvod:"Za čárou to nekončí. Bavorská strana je plná patrol a táborů pro ty, co přešli špatně. Kdo tam nikoho nemá, přejde dráty a seberou ho o kilometr dál.",
   lPool:[
    {kdo:"prostrednik",jm:"prostředník",rod:"m",typ:"papir",pitch:"Prostředník od pošty dostane psaní přes čáru: má cesty, po kterých chodí dopisy od války. Napíšeš kdy a kde, zalepíš, on pošle dál; doručeno prý do týdne, jistě jak úmrtní oznámení.",re:"Předals obálku bez adresy.",ot:"„Psal jste někomu na druhou stranu?“",otO:"„Posílal jste v poslední době nějaké psaní?“",ch:"„Ten dopis máme.“"},
    {kdo:"pisar",jm:"písař od převaděčů",rod:"m",typ:"papir",pitch:"Písař od převaděčů vyřizuje vzkazy ústně. Sedává v pátek u nádraží, vyslechne, kývne. A do notesu si vede, komu co slíbil; pořádek prý musí být i v tomhle řemesle.",re:"Zapsal si tě do notesu a zaklapl ho.",ot:"„Vzkazoval jste něco přes převaděče?“",otO:"„Čekal jste v pátek večer u nádraží?“",ch:"„Byl jste v jeho seznamu.“"}],
@@ -1217,7 +1217,7 @@ const INTRO=[
 // usv = úsvědčující akt (přiznání staví jejich případ)
 const NEED=[
  {t:1,need:"peníze",usv:false,img:"vlak.png",scena:"the station",
-  uvod:"In the drawer under your linen lie two hundred and thirty crowns, and you keep counting: the guide, the ticket, a hundred for the right palm. It comes out short no matter how you stack it. Without money you are not going anywhere.",
+  uvod:"In the drawer under your linen lie two hundred and thirty crowns, and you keep counting: the guide, the ticket, a hundred for the right palm. It comes out short no matter how you stack it.",
   lPool:[
    {kdo:"zdena",jm:"aunt Zdena",rod:"z",typ:"svedek",talk:.75,pitch:"Aunt Zdena squeezed your hand after Mass: come to her anytime, family is family. She keeps her pension in an old chicory tin, and every morning she sits with the other grannies on the bench by the church, going over the whole town.",re:"She pressed a roll of banknotes into your palm.",ot:"“Did your aunt Zdena lend you money?”",otO:"“Doing well for yourself lately, we hear. Did someone lend you money?”",ch:"“Your aunt confirmed it.”"},
    {kdo:"vavra",jm:"uncle Vávra",rod:"m",typ:"svedek",talk:.8,pitch:"Uncle Vávra always has a few hundred set aside. Every evening he sits in the Linden Tavern over his third beer, playing cards and chatting with anyone who sits down; half the pub calls him uncle.",re:"He dealt out the notes under the table.",ot:"“Did you take money from Vávra?”",otO:"“Did you play cards at the Linden last week?”",ch:"“Vávra talked about you.”"}],
@@ -1244,7 +1244,7 @@ const NEED=[
    {kdo:null,jm:"scout it yourself",rod:"m",typ:"cisty",pitch:"Or you take your father’s field glasses and spend Sunday watching from the hill: where the farmers walk, where the wire can be seen from. What you see is yours.",re:"You memorised two paths and a ditch.",ot:"“Did you go watching the border?”",ch:""}]},
 
  {t:1,need:"proviant",usv:false,img:"chleb.png",scena:"the shop",
-  uvod:"Two days through fields and ditches to the woods by the border, not one door you would dare to knock on. Bread, bacon, something for the thirst; at home in the pantry stand three jars of lard and a bag of groats.",
+  uvod:"Getting to the woods by the border means two days through fields and ditches, not one door you would dare to knock on. Bread, bacon, something for the thirst; at home in the pantry stand three jars of lard and a bag of groats.",
   lPool:[
    {kdo:"betka",jm:"grocer Bětka",rod:"z",typ:"svedek",talk:.7,pitch:"Grocer Bětka weighs, clips ration coupons and keeps up a conversation with the whole queue: she knows whose mother-in-law is ailing. She would load you up all at once and throw something in on top, like when you were a boy sent for yeast.",re:"She added a piece of bacon.",ot:"“Did you stock up at the grocer’s?”",otO:"“Have you been buying more than usual?”",ch:"“The grocer added up what you carried off.”"},
    {kdo:"chalupa",jm:"innkeeper Chalupa",rod:"m",typ:"svedek",talk:.3,pitch:"Innkeeper Chalupa can wrap a parcel in newspaper so it looks like laundry. All day behind the tap he listens to half the town and pours for the other half; whatever you put on the counter is gone beneath it before you finish your beer.",re:"He squared it into newspaper and folded the corners.",ot:"“Did you buy food from the innkeeper?”",otO:"“Do you go to the tavern in the evenings?”",ch:"“The innkeeper wrapped it in newspaper.”"}],
@@ -1253,7 +1253,7 @@ const NEED=[
    {kdo:null,jm:"dried from the garden",rod:"m",typ:"cisty",pitch:"Or you dry what the garden gave: apples on the windowsill, hard cheese, last week’s bread. It will chew like wood, but it is yours, from the soil to the crust.",re:"You sewed it into a linen bag.",ot:"“Were you preparing provisions?”",ch:""}]},
 
  {t:1,need:"boty",usv:false,img:"kufr.png",scena:"the cobbler’s",
-  uvod:"In the evening you turn your boots over in your hands: the sole hangs on three tacks, the seams are going. Ahead of you, soaked fields and a whole night of walking in the dark. They have carried you far. But maybe not this far.",
+  uvod:"After the shift you turn your boots over in your hands: the sole hangs on three tacks, the seams are going. Ahead of you, soaked fields and a whole night of walking in the dark. They have carried you far. But maybe not this far.",
   lPool:[
    {kdo:"svec",jm:"cobbler Vaněk",rod:"m",typ:"svedek",talk:.45,pitch:"Cobbler Vaněk turns the boots against the light, rubs the sole with his thumb and asks what kind of journey they must survive: he stitches one way for a dance, another for the mountains. What leaves his bench lasts for years.",re:"He hammered on new soles.",ot:"“Did you have your boots repaired at the cobbler’s?”",otO:"“Have you had anything repaired lately?”",ch:"“The cobbler knows what road they were for.”"},
    {kdo:"pokorny",jm:"saddler Pokorný",rod:"m",typ:"svedek",talk:.35,pitch:"Saddler Pokorný would sew you high boots like a huntsman’s. He takes the measure of your instep with a string and asks questions while he does: the craft, he says, is half the work; the other half is knowing the man who will walk in them.",re:"He measured your instep with a string.",ot:"“Did you order boots from the saddler?”",otO:"“Have you been to the saddler recently?”",ch:"“The saddler took your measurements.”"}],
@@ -1298,7 +1298,7 @@ const NEED=[
    {kdo:null,jm:"by bike, the long way",rod:"m",typ:"cisty",pitch:"Or by bike through Doubravka, where nothing passes but a tractor. You leave the bike in a thicket by the last farmhouse and go the rest on foot.",re:"You get on in the dark and pedal.",ot:"“Did you ride out somewhere by bike?”",ch:""}]},
 
  {t:2,need:"spojka",usv:true,img:"dopis.png",scena:"the post office",
-  uvod:"It does not end at the line. The Bavarian side is thick with patrols and camps for those who crossed wrong. You need someone to wait for you there and hide you. Otherwise you cross the wire only to be picked up a kilometre later.",
+  uvod:"It does not end at the line. The Bavarian side is thick with patrols and camps for those who crossed wrong. A man with nobody waiting crosses the wire and is picked up a kilometre later.",
   lPool:[
    {kdo:"prostrednik",jm:"the go-between",rod:"m",typ:"papir",pitch:"The go-between at the post office can get a letter across the line: he has routes the mail has travelled since the war. You write when and where, seal it, he sends it on; delivered within the week, they say, sure as a death notice.",re:"You left an envelope with no address on it.",ot:"“Did you write to someone on the other side?”",otO:"“Have you posted any letters recently?”",ch:"“We have the letter.”"},
    {kdo:"pisar",jm:"the smugglers’ clerk",rod:"m",typ:"papir",pitch:"The smugglers’ clerk passes messages by word of mouth. He sits by the station on Fridays, hears you out, nods. And keeps a notebook of what he promised to whom; order, he says, matters even in this trade.",re:"He wrote you into his notebook and snapped it shut.",ot:"“Did you send word through the smugglers?”",otO:"“Were you waiting by the station on Friday evening?”",ch:"“You were in his list.”"}],
@@ -1873,7 +1873,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111014";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111031";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
