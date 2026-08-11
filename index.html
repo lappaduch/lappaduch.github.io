@@ -1868,7 +1868,7 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   // Soupis je protokol, ne vypravěč, takže osudy musí být v jednom rejstříku. „nic" psané
   // pod „vyslýchán" a „vypovídal, propuštěn" je jazyk odjinud. Kdo z nich vyvázl, je pro
   // úřad člověk bez záznamu, a to je zároveň celá odměna za čistou cestu.
-  const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?("vypovídal"+a+", propuštěn"+a):S.zataženi[k]?("vyslýchán"+a):"bez záznamu";
+  const radky=zap.map(k=>{ const o=JMENA[k],a=o.rod==="z"?"a":""; let os2=S.talked[k]?"testified, released":S.zataženi[k]?"interrogated":"no record";
     return `<div class="sl"><span>${velke(o.jm)}</span><span class="os2">${os2}</span></div>`; }).join("");
   const stamp=druh==="prechod"?"CROSSED":druh==="draty"?"DETAINED":"CONVICTED";
   $("scena").textContent=nadpis; $("text").className="";
