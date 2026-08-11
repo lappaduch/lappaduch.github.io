@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111214 -->
+<!-- pasmo build 202608111219 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -882,7 +882,12 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
-  const fl=["Ticho. Prošel jsi.","Dech zadržený. A je to za tebou.","Nikdo. Jdeš dál.","Srdce až v krku, ale kolem klid."][S.i%4];
+  // Beaty jsou POŘÁD čtyři plus jeden a tenhle výběr bral modulo čtyři, takže pátý beat
+  // vždycky zopakoval větu prvního. Pět slotů, pět vět, index sedí na beat.
+  // Projít se dá jen správnou stranou, takže tři z nich smí být konkrétní: u závory jsi vždy
+  // za ní, u úkrytu jsi vždy zůstal, na silnici jsi vždy nešel do běhu. U hlídky a na druhé
+  // straně se správná strana mezi variantami liší, tam musí věta zůstat obecná.
+  const fl=["Závora zůstala za tebou. Nikdo nevyšel.","Přečkal jsi. Venku je černo.","Ticho. Prošel jsi.","Silnice je za tebou. Nikdo nekřičel.","Srdce až v krku, ale kolem klid."][S.i%5];
   pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
@@ -1742,7 +1747,12 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
-  const fl=["Silence. You are through.","Breath held. And it is behind you.","Nobody. You move on.","Heart in your throat, but all quiet."][S.i%4];
+  // Beaty jsou POŘÁD čtyři plus jeden a tenhle výběr bral modulo čtyři, takže pátý beat
+  // vždycky zopakoval větu prvního. Pět slotů, pět vět, index sedí na beat.
+  // Projít se dá jen správnou stranou, takže tři z nich smí být konkrétní: u závory jsi vždy
+  // za ní, u úkrytu jsi vždy zůstal, na silnici jsi vždy nešel do běhu. U hlídky a na druhé
+  // straně se správná strana mezi variantami liší, tam musí věta zůstat obecná.
+  const fl=["The barrier is behind you. Nobody came out.","You waited it out. Outside it is black.","Silence. You are through.","The road is behind you. Nobody shouted.","Heart in your throat, but all quiet."][S.i%5];
   pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
@@ -1939,7 +1949,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111214";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111219";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
