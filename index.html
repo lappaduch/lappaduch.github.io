@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111239 -->
+<!-- pasmo build 202608111243 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -752,7 +752,7 @@ function spustVyslech(){
   S.razitkaTyden=0; S.spisPred=S.spis; S.i=0; S.faze="vyslech-intro"; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`sobota, výslech ${S.t}. týdne`; merky();
   textCross("Sebrali tě v sobotu ráno. Vyšetřovatel má před sebou spis. A ty nevíš, co v něm je."
-    + (zradilo ? "\n\nOtevřel desky a chvíli četl, než vůbec zvedl oči. Něco už tam bylo napsané ráno." : ""), true);
+    + (zradilo ? "\n\nOtevřel desky a chvíli četl, než vůbec zvedl oči. Něco už tam bylo, než jsi přišel." : ""), true);
   volbyRe("Posadit se");
 }
 const VERA_SLOVY=[[80,"zatím ano"],[60,"už ne úplně"],[40,"jen napůl"],[20,"skoro ne"],[0,"ani slovo"]];
@@ -1620,7 +1620,7 @@ function spustVyslech(){
   S.razitkaTyden=0; S.spisPred=S.spis; S.i=0; S.faze="vyslech-intro"; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`Saturday, interrogation, week ${S.t}`; merky();
   textCross("They picked you up on Saturday morning. The interrogator has a file in front of him. And you do not know what is in it."
-    + (zradilo ? "\n\nHe opened the folder and read a while before he even looked up. Something had been written there this morning." : ""), true);
+    + (zradilo ? "\n\nHe opened the folder and read a while before he even looked up. Something was in it before you arrived." : ""), true);
   volbyRe("Sit down");
 }
 const VERA_SLOVY=[[80,"so far"],[60,"less and less"],[40,"half of it"],[20,"barely"],[0,"not a word"]];
@@ -1955,7 +1955,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111239";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111243";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
