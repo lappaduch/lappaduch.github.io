@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111043 -->
+<!-- pasmo build 202608111055 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -794,14 +794,19 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
 }
 function vyslechDal(){ if(S.vera<=0) return finale("zatcen","vera"); if(S.spis>=PRAH_SPIS) return finale("zatcen","spis");
   S.i++; if(S.i<S.karty.length){S.faze="vyslech"; return render();} return vyslechSouhrn(); }
+// Pravidlo 5: žádná čísla na obrazovce. Souhrn týdne je jediné místo, kde se počítá, a psal
+// to číslicí („Chytil tě 2x"). Slovem to sedí i do sazby roku 1952. Index je počet otázek
+// v týdnu, těch je nejvýš dvanáct, ale radši o jednu víc než spadnout na undefined.
+const KRAT=["","jednou","dvakrát","třikrát","čtyřikrát","pětkrát","šestkrát","sedmkrát","osmkrát","devětkrát","desetkrát","jedenáctkrát","dvanáctkrát","třináctkrát"];
+const VECI=["","jednu věc","dvě věci","tři věci","čtyři věci","pět věcí","šest věcí","sedm věcí","osm věcí","devět věcí","deset věcí","jedenáct věcí","dvanáct věcí","třináct věcí"];
 function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.classList.add("noc"); document.body.classList.remove("tik","prechod");
   const raz=S.razitkaTyden||0, spisNew=S.spis-(S.spisPred||0);
   obraz("dokumenty.png"); $("mery").style.display=""; merky(); $("scena").textContent=`konec výslechu ${S.t}. týdne`;
   let t;
   if(raz===0&&spisNew===0) t="Vyšetřovatel zaklapl desky. „Zatím běžte.“\n\nCestou ke dveřím čekáš, že tě zavolá zpátky. Nezavolá.";
   else{ const c=[];
-    if(raz>0) c.push(raz===1?"Jednou tě chytil při lži":"Chytil tě "+raz+"x při lži");
-    if(spisNew>0) c.push((raz>0?"a ":"")+(spisNew===1?"jednu věc máš teď zapsanou ve spisu":spisNew+" věci máš teď zapsané ve spisu"));
+    if(raz>0) c.push(raz===1?"Jednou tě chytil při lži":"Chytil tě "+KRAT[raz]+" při lži");
+    if(spisNew>0) c.push((raz>0?"a ":"")+(spisNew===1?"jednu věc máš teď zapsanou ve spisu":VECI[spisNew]+" máš teď zapsané ve spisu"));
     t=c.join(" ")+".\n\n"+(S.vera<=40?"Věří ti čím dál míň. Další týden bude horší.":"Ustál jsi to. Ale ví o tobě víc než ráno.");
   }
   textCross(t,true); volbyRe(S.t===1?"Zbývá poslední týden":"Neděle v noci");
@@ -1621,14 +1626,19 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
 }
 function vyslechDal(){ if(S.vera<=0) return finale("zatcen","vera"); if(S.spis>=PRAH_SPIS) return finale("zatcen","spis");
   S.i++; if(S.i<S.karty.length){S.faze="vyslech"; return render();} return vyslechSouhrn(); }
+// Pravidlo 5: žádná čísla na obrazovce. Souhrn týdne je jediné místo, kde se počítá, a psal
+// to číslicí („Chytil tě 2x"). Slovem to sedí i do sazby roku 1952. Index je počet otázek
+// v týdnu, těch je nejvýš dvanáct, ale radši o jednu víc než spadnout na undefined.
+const KRAT=["","once","twice","three times","four times","five times","six times","seven times","eight times","nine times","ten times","eleven times","twelve times","thirteen times"];
+const VECI=["","one thing","two things","three things","four things","five things","six things","seven things","eight things","nine things","ten things","eleven things","twelve things","thirteen things"];
 function vyslechSouhrn(){ stopCas(); S.faze="vyslech-souhrn"; document.body.classList.add("noc"); document.body.classList.remove("tik","prechod");
   const raz=S.razitkaTyden||0, spisNew=S.spis-(S.spisPred||0);
   obraz("dokumenty.png"); $("mery").style.display=""; merky(); $("scena").textContent=`end of interrogation, week ${S.t}`;
   let t;
   if(raz===0&&spisNew===0) t="The interrogator snapped the folder shut. “Go. For now.”\n\nAll the way to the door you wait for him to call you back. He does not.";
   else{ const c=[];
-    if(raz>0) c.push(raz===1?"He caught you lying once":"He caught you lying "+raz+"x");
-    if(spisNew>0) c.push((raz>0?"and ":"")+(spisNew===1?"one thing is now written into your file":spisNew+" things are now written into your file"));
+    if(raz>0) c.push(raz===1?"He caught you lying once":"He caught you lying "+KRAT[raz]+"");
+    if(spisNew>0) c.push((raz>0?"and ":"")+(spisNew===1?"one thing is now written into your file":VECI[spisNew]+" are now written into your file"));
     t=c.join(" ")+".\n\n"+(S.vera<=40?"They believe you less and less. Next week will be worse.":"You held up. But they know more about you than they did this morning.");
   }
   textCross(t,true); volbyRe(S.t===1?"One week left":"Sunday night");
@@ -1873,7 +1883,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111043";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111055";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
