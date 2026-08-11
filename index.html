@@ -1,4 +1,4 @@
-<!-- pasmo build 202608111157 -->
+<!-- pasmo build 202608111201 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -910,7 +910,7 @@ function razitko(){ const r=$("razitko"); r.classList.remove("vid"); void r.offs
 function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.add("noc"); document.body.classList.remove("tik","prechod");
   Z.atmosfera(false); Z.tepat(0);
   if(druh!=="prechod") Z.chvej(120);   // ZVUK VYPNUT: Z.volno() / Z.dvere() / Z.pes() podle konce
-  zaloguj({ev:"konec", vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t, vera:S.vera, spis:S.spis});
+  zaloguj({ev:"konec", vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t, vera:S.vera, spis:S.spis, spisOd:Object.assign({},S.spisOd)});
   obraz(druh==="prechod"?"nocni_ulice.png":"checkpoint.png"); $("mery").style.display="none";
   const zap=[...new Set(S.stopy.filter(x=>x.kdo).map(x=>x.kdo))];
   // Kdo promluvil, ne jestli někdo. Množné číslo („ti, cos je zatáhl") stálo v rozsudku
@@ -1765,7 +1765,7 @@ function razitko(){ const r=$("razitko"); r.classList.remove("vid"); void r.offs
 function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.add("noc"); document.body.classList.remove("tik","prechod");
   Z.atmosfera(false); Z.tepat(0);
   if(druh!=="prechod") Z.chvej(120);   // ZVUK VYPNUT: Z.volno() / Z.dvere() / Z.pes() podle konce
-  zaloguj({ev:"konec", vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t, vera:S.vera, spis:S.spis});
+  zaloguj({ev:"konec", vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t, vera:S.vera, spis:S.spis, spisOd:Object.assign({},S.spisOd)});
   obraz(druh==="prechod"?"nocni_ulice.png":"checkpoint.png"); $("mery").style.display="none";
   const zap=[...new Set(S.stopy.filter(x=>x.kdo).map(x=>x.kdo))];
   // Kdo promluvil, ne jestli někdo. Množné číslo („ti, cos je zatáhl") stálo v rozsudku
@@ -1929,7 +1929,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111157";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608111201";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
