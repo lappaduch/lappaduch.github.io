@@ -1,4 +1,4 @@
-<!-- pasmo build 202608110951 -->
+<!-- pasmo build 202608110952 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -1283,7 +1283,7 @@ const NEED=[
   uvod:"The road to the border: a barrier, a guardhouse, a soldier with a rifle. The only permitted way into the strip. You stand by the milestone and watch who gets through. All of them with paper.",
   lPool:[
    {kdo:"urednik",jm:"the clerk",rod:"m",typ:"papir",pitch:"The clerk at the district office issues permits through window three. He takes the application and whatever is tucked inside it, presses the stamp, files the form into the drawer and calls the next in line: one motion, practised for twenty years.",re:"He pressed the stamp and held out his palm.",ot:"“Did you apply for a permit into the strip?”",otO:"“Were you at the district office last week?”",ch:"“Your application is on file.”"},
-   {kdo:"hajkova",jm:"typist Hájková",rod:"z",typ:"papir",pitch:"Typist Hájková stays at the office after hours. She types up the permit, stamp and all, pulls the carbon copy off the platen and sets it on the pile with the others. And what people leave on her counter feeds two children.",re:"She passed it across the counter, eyes down.",ot:"“Did typist Hájková arrange a permit for you?”",otO:"“Did you arrange anything at the office after hours?”",ch:"“The carbon copy is in the file.”"}],
+   {kdo:"hajkova",jm:"typist Hájková",rod:"z",typ:"papir",pitch:"Typist Hájková stays at the office after hours. She types up the permit, stamp and all, pulls the carbon copy off the platen and sets it on the pile with the others. And what people leave on her counter feeds two children.",re:"She passed it across the counter, eyes down.",ot:"“Did typist Hájková arrange a permit for you?”",otO:"“Did you arrange anything at the office after hours?”",ch:"“The carbon copy is in the folder.”"}],
   pPool:[
    {kdo:null,jm:"go around by night",rod:"m",typ:"cisty",pitch:"Or you skip the barrier: at night, through the fields, off every road. Along the railway ditch and in a wide arc around the guardhouse, where nobody goes who does not have to.",re:"You plan your detour.",ot:"“Did you arrange entry into the border strip?”",ch:""},
    {kdo:null,jm:"slip through with the herd",rod:"m",typ:"cisty",pitch:"Or at dawn with the herdsman driving the cattle to the meadows by the line. There are always a few of them: one more man beside the cows, in overalls, switch in hand.",re:"You walk beside the cattle like a farmhand.",ot:"“Were you near the border with the cattle?”",ch:""}]},
@@ -1292,7 +1292,7 @@ const NEED=[
   uvod:"It is a full day’s walk to the woods by the border, on roads where a man can be seen a kilometre off. A day on your feet, in plain sight, with a bundle. And by evening you must be in place, not half-dead in a ditch.",
   lPool:[
    {kdo:"rudolf",jm:"Rudolf the driver",rod:"m",typ:"svedek",talk:.8,pitch:"Rudolf would take you under the tarp in his van. He hauls wood from that forest and everyone knows him, the patrols included. Just say which evening and where exactly; he says he can tell when someone is holding back.",re:"He lifted the tarp and asked which night.",ot:"“Did someone drive you toward the border?”",otO:"“Did anyone give you a lift last week?”",ch:"“Rudolf drove you.”"},
-   {kdo:"masa",jm:"trucker Máša",rod:"m",typ:"svedek",talk:.8,pitch:"Trucker Máša runs to the sawmill twice a week and would take you in among the crates without asking what for. In the pub he stands at the tap telling everyone who he drove that week and where; he is never short of an audience.",re:"He jerked a thumb at the truck bed.",ot:"“Did a truck give you a lift toward the border?”",otO:"“Have you been out by the sawmill lately?”",ch:"“The driver told people where he drove you.”"}],
+   {kdo:"masa",jm:"trucker Máša",rod:"m",typ:"svedek",talk:.8,pitch:"Trucker Máša runs to the sawmill twice a week and would take you in among the crates without asking what for. In the pub he stands at the tap telling everyone who he drove that week and where; he is never short of an audience.",re:"He jerked a thumb at the truck bed.",ot:"“Did a truck give you a lift toward the border?”",otO:"“Have you been out by the sawmill lately?”",ch:"“The driver told people where he dropped you.”"}],
   pPool:[
    {kdo:null,jm:"on foot, alone",rod:"m",typ:"cisty",pitch:"Or on foot, before first light, alone. To the mill, along the brook, between the field banks. By dusk you can be within sight of the woods, if your legs hold.",re:"You set out before dawn.",ot:"“How did you mean to reach the woods?”",ch:""},
    {kdo:null,jm:"by bike, the long way",rod:"m",typ:"cisty",pitch:"Or by bike through Doubravka, where nothing passes but a tractor. You leave the bike in a thicket by the last farmhouse and go the rest on foot.",re:"You get on in the dark and pedal.",ot:"“Did you ride out somewhere by bike?”",ch:""}]},
@@ -1873,7 +1873,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608110951";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608110952";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
