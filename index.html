@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121617 -->
+<!-- pasmo build 202608121631 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -900,7 +900,9 @@ const KRIT=[
   bl:{text:"Závora a budka, ve které se svítí. Příkop podél silnice tě vede rovnou pod osvětlené okno budky. Přes pole je to holá pláň, zato dál od světla.", l:"Příkopem", p:"Přes pole", spravna:"p"}},
  {need:"úkryt", scena:"poslední noc", img:"kostel.png",
   utek:"Někdo zvenku zabral za dveře. Ne zvědavě, ale naplno. Vyrazil jsi druhou stranou, přes zeď a dolů do trávy, a utíkal, dokud stačil dech.\n\nZa tebou hlasy, které na sebe volají čísla. Ležíš v příkopu a počítáš do sta. Nikdo nepřišel. Ale tvůj úkryt už úkryt není a oni vědí, že tudy někdo šel.",
-  zach:{need:"proviant", ok:"Venku hlasy: někdo obchází stavení. Zalezeš hlouběji a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den, ale zásoby došly do rána. Vylezl jsi moc brzy."},
+  // „obchází stavení" tu bylo, jenže úkryt je ve dvou případech ze čtyř kůlna nebo výklenek
+  // v peci staré cihelny, a to stavení není. Věta platí pro DRUH úkrytu, ne pro jeden z nich.
+  zach:{need:"proviant", ok:"Venku hlasy a kroky: někdo to tu obchází dokola. Zalezeš hlouběji a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den, ale zásoby došly do rána. Vylezl jsi moc brzy."},
   inf:{text:"Máš domluvený nocleh: dovnitř se dostaneš a nikdo se ptát nebude. Uvnitř přečkáš v teple do hluboké noci. Vyjít teď, za šera, by tě vydalo prvnímu, kdo půjde kolem.", l:"Dovnitř, počkat na noc", p:"Jít radši hned", spravna:"l"},
   bl:{text:"Studená díra za městem, kam roky nikdo nevkročil. Že to tak zůstane i dnes, nevíš. Venku je bílý den a pláň bez jediného stromu.", l:"Jít hned", p:"Zůstat, kde jsi", spravna:"p"}},
  {need:"mapa", scena:"hlídka", img:"mapa.png",
@@ -939,6 +941,25 @@ const KRIT=[
 
    Obrázek je zatím vypůjčený checkpoint, protože drát mezi dvanácti ilustracemi není.
    Zadání na vlastní je v OBRAZKY.md.                                                     */
+/* ---------- DOZVUK PO ZVLÁDNUTÉM BEATU -------------------------------------------------
+   Jedna věta na beat, index sedí na beat. Bývalo to pole schované uvnitř prechodVyber a bralo
+   se modulo čtyři, takže pátý beat opakoval větu prvního; teď je pojmenované, aby se dalo
+   tvrdit, že jich je tolik co beatů a že se každá ukáže u té své.
+
+   Projít se dá jen správnou stranou, takže tři z nich smí být konkrétní: u závory jsi vždy
+   za ní, u úkrytu jsi vždy zůstal, na silnici jsi vždy nešel do běhu. U hlídky a na druhé
+   straně se správná strana mezi variantami liší, tam musí věta zůstat obecná.
+
+   U závory stálo „Nikdo nevyšel." Jenže se solidní propustkou tě stráž mávnutím pustí, tedy
+   někdo velmi dobře vyšel a podíval se ti do papírů. Platilo to jen pro tu druhou variantu,
+   kde jdeš polem potmě. Místo tvrzení o lidech je tam obraz, který platí v obou: světlo z budky
+   je v obou textech beatu.                                                                  */
+const PROSEL=[
+  "Závora zůstala za tebou. Světlo z budky končí kus za polem a dál je černo.",
+  "Přečkal jsi. Venku je černo.",
+  "Ticho. Prošel jsi.",
+  "Silnice je za tebou. Nikdo nekřičel.",
+  "Srdce až v krku, ale kolem klid."];
 /* ---------- PŘÍCHOD K HRANICI ----------------------------------------------------------
    Devět potřeb z deseti má v přechodu roli: pět jich má vlastní beat, čtyři zachraňují.
    Svoz neměl žádnou. Jeho jediný mechanický účinek byl záporný (přiznat ho u výslechu
@@ -997,13 +1018,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
-  // Beaty jsou POŘÁD čtyři plus jeden a tenhle výběr bral modulo čtyři, takže pátý beat
-  // vždycky zopakoval větu prvního. Pět slotů, pět vět, index sedí na beat.
-  // Projít se dá jen správnou stranou, takže tři z nich smí být konkrétní: u závory jsi vždy
-  // za ní, u úkrytu jsi vždy zůstal, na silnici jsi vždy nešel do běhu. U hlídky a na druhé
-  // straně se správná strana mezi variantami liší, tam musí věta zůstat obecná.
-  const fl=["Závora zůstala za tebou. Nikdo nevyšel.","Přečkal jsi. Venku je černo.","Ticho. Prošel jsi.","Silnice je za tebou. Nikdo nekřičel.","Srdce až v krku, ale kolem klid."][S.i%5];
-  pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
+  pripis(PROSEL[S.i]); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
@@ -1951,7 +1966,9 @@ const KRIT=[
   bl:{text:"A barrier, and a guardhouse with the light on. The ditch along the road leads right under the lit window. The field is open ground, but far from the light.", l:"Through the ditch", p:"Across the field", spravna:"p"}},
  {need:"úkryt", scena:"the last night", img:"kostel.png",
   utek:"Somebody pulled at the door from outside. Not out of curiosity, but hard. You went out the other way, over the wall and down into the grass, and ran while your breath held.\n\nBehind you, voices calling numbers to each other. You lie in a ditch and count to a hundred. Nobody came. But your hiding place is not a hiding place any more, and they know somebody came through here.",
-  zach:{need:"proviant", ok:"Voices outside: someone is walking around the building. You burrow deeper and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day, but your stores ran out by morning. You came out too early."},
+  // „obchází stavení" tu bylo, jenže úkryt je ve dvou případech ze čtyř kůlna nebo výklenek
+  // v peci staré cihelny, a to stavení není. Věta platí pro DRUH úkrytu, ne pro jeden z nich.
+  zach:{need:"proviant", ok:"Voices and steps outside: somebody is going round and round out there. You burrow deeper and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day, but your stores ran out by morning. You came out too early."},
   inf:{text:"Your shelter is arranged: you can get inside and nobody will ask. Inside, you can wait in the warm until deep night. Stepping out now, at dusk, would hand you to the first passer-by.", l:"Inside, wait for night", p:"Better go now", spravna:"l"},
   bl:{text:"A cold hole outside town that nobody has set foot in for years. Whether that holds today, you do not know. Outside it is broad daylight and the plain has not one tree on it.", l:"Go now", p:"Stay where you are", spravna:"p"}},
  {need:"mapa", scena:"the patrol", img:"mapa.png",
@@ -1990,6 +2007,25 @@ const KRIT=[
 
    Obrázek je zatím vypůjčený checkpoint, protože drát mezi dvanácti ilustracemi není.
    Zadání na vlastní je v OBRAZKY.md.                                                     */
+/* ---------- DOZVUK PO ZVLÁDNUTÉM BEATU -------------------------------------------------
+   Jedna věta na beat, index sedí na beat. Bývalo to pole schované uvnitř prechodVyber a bralo
+   se modulo čtyři, takže pátý beat opakoval větu prvního; teď je pojmenované, aby se dalo
+   tvrdit, že jich je tolik co beatů a že se každá ukáže u té své.
+
+   Projít se dá jen správnou stranou, takže tři z nich smí být konkrétní: u závory jsi vždy
+   za ní, u úkrytu jsi vždy zůstal, na silnici jsi vždy nešel do běhu. U hlídky a na druhé
+   straně se správná strana mezi variantami liší, tam musí věta zůstat obecná.
+
+   U závory stálo „Nikdo nevyšel." Jenže se solidní propustkou tě stráž mávnutím pustí, tedy
+   někdo velmi dobře vyšel a podíval se ti do papírů. Platilo to jen pro tu druhou variantu,
+   kde jdeš polem potmě. Místo tvrzení o lidech je tam obraz, který platí v obou: světlo z budky
+   je v obou textech beatu.                                                                  */
+const PROSEL=[
+  "The barrier is behind you. The light from the hut stops a way out into the field and past that it is black.",
+  "You waited it out. Outside it is black.",
+  "Silence. You are through.",
+  "The road is behind you. Nobody shouted.",
+  "Heart in your throat, but all quiet."];
 /* ---------- PŘÍCHOD K HRANICI ----------------------------------------------------------
    Devět potřeb z deseti má v přechodu roli: pět jich má vlastní beat, čtyři zachraňují.
    Svoz neměl žádnou. Jeho jediný mechanický účinek byl záporný (přiznat ho u výslechu
@@ -2048,13 +2084,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
-  // Beaty jsou POŘÁD čtyři plus jeden a tenhle výběr bral modulo čtyři, takže pátý beat
-  // vždycky zopakoval větu prvního. Pět slotů, pět vět, index sedí na beat.
-  // Projít se dá jen správnou stranou, takže tři z nich smí být konkrétní: u závory jsi vždy
-  // za ní, u úkrytu jsi vždy zůstal, na silnici jsi vždy nešel do běhu. U hlídky a na druhé
-  // straně se správná strana mezi variantami liší, tam musí věta zůstat obecná.
-  const fl=["The barrier is behind you. Nobody came out.","You waited it out. Outside it is black.","Silence. You are through.","The road is behind you. Nobody shouted.","Heart in your throat, but all quiet."][S.i%5];
-  pripis(fl); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
+  pripis(PROSEL[S.i]); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
@@ -2332,7 +2362,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121617";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121631";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
