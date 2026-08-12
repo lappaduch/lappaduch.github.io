@@ -1,4 +1,4 @@
-<!-- pasmo build 202608120828 -->
+<!-- pasmo build 202608121423 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -90,8 +90,14 @@
   /* Vzpomínka na člověka z minulého běhu. Je to jediná věta na kartě, která nepochází
      z tohohle běhu, a v souvislé próze splývala s okolím. Kurzíva a slabší inkoust, tedy
      přesně to, čím rozsudek odlišuje svůj dodatek. Žádná barva navíc, žádné zvýraznění. */
-  .vzpom{ font-style:italic; color:#6b6152 }
-  body.noc .vzpom{ color:#a2967d }
+  /* Vzpomínka je nejcennější řádek na kartě (osa „mesto" zvedne nováčkovi osmý běh v témže
+     městě z 3,8 na 9,0 %, víc než kterákoli jiná) a slabší inkoust ji srazil na 3,85:1
+     proti papíru, kdežto próza kolem má 10,5:1. Odlišit se musí, potopit ne: vlastní blok
+     s linkou na kraji říká „tohle je z jiného běhu" beze slova a bez ztráty čitelnosti.
+     Hlídá to test/vstup.js, pravidlo kontrast. */
+  .vzpom{ display:block; margin:11px 0 0; padding-left:11px; border-left:2px solid #a89e8a;
+    font-style:italic; color:#4a4234 }
+  body.noc .vzpom{ color:#a2967d; border-left-color:#4a4136 }
   body.noc #text.re{ color:#cdbf9f }
   body.noc #text{ font-size:20px }
   /* náklonové štítky */
@@ -673,7 +679,9 @@ function vzpominka(s){
   // Obal patří k větě, ne ke kosmetice. Naměřeno: od čtvrtého běhu nese vzpomínku půlka
   // karet, a v souvislé próze je to jediná věta, která NEPOCHÁZÍ z tohohle běhu. Bez
   // odlišení se v ní ztratí a roguelite vrstva zůstane neviditelná i tam, kde je.
-  const A="\n\n<span class='vzpom'>", B="</span>";
+  // Odsazení dělá CSS, ne dva nové řádky v řetězci: .vzpom je blok a prázdný řádek před ním
+  // by se sečetl s jeho margin. Pásmo délky karty na to pamatuje (viz vzpominkaDelkaZe).
+  const A="<span class='vzpom'>", B="</span>";
   return ZNAM[s.kdo]==="mluvil"
     ? (z ? A+"Už jednou o tobě mluvila. Pamatuješ si to až moc dobře."+B
          : A+"Už jednou o tobě mluvil. Pamatuješ si to až moc dobře."+B)
@@ -1638,7 +1646,9 @@ function vzpominka(s){
   // Obal patří k větě, ne ke kosmetice. Naměřeno: od čtvrtého běhu nese vzpomínku půlka
   // karet, a v souvislé próze je to jediná věta, která NEPOCHÁZÍ z tohohle běhu. Bez
   // odlišení se v ní ztratí a roguelite vrstva zůstane neviditelná i tam, kde je.
-  const A="\n\n<span class='vzpom'>", B="</span>";
+  // Odsazení dělá CSS, ne dva nové řádky v řetězci: .vzpom je blok a prázdný řádek před ním
+  // by se sečetl s jeho margin. Pásmo délky karty na to pamatuje (viz vzpominkaDelkaZe).
+  const A="<span class='vzpom'>", B="</span>";
   return ZNAM[s.kdo]==="mluvil"
     ? (z ? A+"She talked about you once already. You remember that all too well."+B
          : A+"He talked about you once already. You remember that all too well."+B)
@@ -2154,7 +2164,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608120828";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121423";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
