@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121436 -->
+<!-- pasmo build 202608121439 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -1033,8 +1033,14 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   $("scena").textContent=nadpis; $("text").className="";
   $("text").innerHTML=`<div id="rozsudek"><div id="stampKonec">${stamp}</div><div class="ja">Ty: ${ja}</div>${radky}</div>`
     +`<div style="margin-top:12px;font-style:italic;color:#b7ad97;font-size:14px">${dodatek}</div>`;
-  volbyRe("Znovu");
-  if(LOG_JE) $("napoveda").innerHTML='<b>Znovu</b>: táhni kterýmkoli směrem. <b>L</b> = zkopírovat záznam pro autora';
+  // Dvě strany, dva významy, tak jak je to na každé jiné kartě. Vynulovat město šlo do teď
+  // JEDINĚ klávesou N, kterou telefon nemá, takže na mobilu platilo první město navždycky
+  // a celá roguelite vrstva tam po pátém běhu skončila. Tlačítko to řešit nesmí (pravidlo 2)
+  // a nové gesto by sahalo na vybojovaný dotykový vstup, takže se to řekne kartou.
+  // Vpravo, protože vpravo je v téhle hře odjakživa cesta, o které nikdo nic neví.
+  hintTxt={l:"Znovu",p:"Jiné město"};
+  $("napoveda").textContent="vlevo znovu, vpravo jiné město";
+  if(LOG_JE) $("napoveda").innerHTML='vlevo <b>znovu</b>, vpravo <b>jiné město</b>. <b>L</b> = zkopírovat záznam pro autora';
 }
 function velke(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 
@@ -1127,7 +1133,7 @@ function act(side){
   if(S.faze==="vyslech-souhrn") return swipe(side, vyslechSouhrnDal);
   if(S.faze==="prechod-intro") return swipe(side, ()=>{ S.faze="prechod"; render(); });
   if(S.faze==="prechod-re") return swipe(side, prechodDal);
-  if(S.faze==="konec") return swipe(side, nova);
+  if(S.faze==="konec") return swipe(side, side==="p"?noveMesto:nova);
 }
 document.addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")act("l"); else if(["ArrowRight","Enter"," "].includes(e.key))act("p");
   else if(e.key==="m"||e.key==="M"){ Z.start(); toast(Z.prepni()?"zvuk zapnutý":"zvuk vypnutý"); }
@@ -2000,8 +2006,14 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   $("scena").textContent=nadpis; $("text").className="";
   $("text").innerHTML=`<div id="rozsudek"><div id="stampKonec">${stamp}</div><div class="ja">You: ${ja}</div>${radky}</div>`
     +`<div style="margin-top:12px;font-style:italic;color:#b7ad97;font-size:14px">${dodatek}</div>`;
-  volbyRe("Again");
-  if(LOG_JE) $("napoveda").innerHTML='<b>Again</b>: swipe either way. <b>L</b> = copy the play log for the author';
+  // Dvě strany, dva významy, tak jak je to na každé jiné kartě. Vynulovat město šlo do teď
+  // JEDINĚ klávesou N, kterou telefon nemá, takže na mobilu platilo první město navždycky
+  // a celá roguelite vrstva tam po pátém běhu skončila. Tlačítko to řešit nesmí (pravidlo 2)
+  // a nové gesto by sahalo na vybojovaný dotykový vstup, takže se to řekne kartou.
+  // Vpravo, protože vpravo je v téhle hře odjakživa cesta, o které nikdo nic neví.
+  hintTxt={l:"Again",p:"Another town"};
+  $("napoveda").textContent="left again, right another town";
+  if(LOG_JE) $("napoveda").innerHTML='left <b>again</b>, right <b>another town</b>. <b>L</b> = copy the record for the author';
 }
 function velke(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 
@@ -2094,7 +2106,7 @@ function act(side){
   if(S.faze==="vyslech-souhrn") return swipe(side, vyslechSouhrnDal);
   if(S.faze==="prechod-intro") return swipe(side, ()=>{ S.faze="prechod"; render(); });
   if(S.faze==="prechod-re") return swipe(side, prechodDal);
-  if(S.faze==="konec") return swipe(side, nova);
+  if(S.faze==="konec") return swipe(side, side==="p"?noveMesto:nova);
 }
 document.addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")act("l"); else if(["ArrowRight","Enter"," "].includes(e.key))act("p");
   else if(e.key==="m"||e.key==="M"){ Z.start(); toast(Z.prepni()?"sound on":"sound off"); }
@@ -2164,7 +2176,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121436";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121439";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
