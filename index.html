@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121834 -->
+<!-- pasmo build 202608121840 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -518,6 +518,9 @@ if(LOG_JE){ try{ LOG=JSON.parse(localStorage.getItem("pasmo-log")||"[]"); }catch
 
    A strop, protože jinak by log rostl donekonečna. Prvních třicet běhů se nezahazuje NIKDY:
    hráč je nováčkem jenom jednou a právě ta data se nedají získat znovu.                    */
+// LOG_VERZE je verze schématu: zvedni ji, kdykoli přibude nebo zmizí druh události v logu.
+// Dnešní jednička znamená: start, prep, vyslech, prechod, utek, zachrana, drat, konec.
+const LOG_VERZE=1;
 const LOG_STROP=200, LOG_PRVNI=30, LOG_POJISTKA=200;
 let LOG_NEULOZENO=0;
 function orizniLog(){
@@ -574,7 +577,13 @@ function nova(){
   // prah a ver jdou do logu proto, aby se z došlého záznamu poznalo, jak byla hra naladěná.
   // Bez nich se dva logy z různě nastavených buildů nedají odlišit a míchaly by se do jedné
   // tabulky, což je nejtišší způsob, jak si měřením ublížit.
-  LOG_BEH++; zaloguj({ev:"start", prah:PRAH_SPIS, ver:VER_ZTRATA,
+  //
+  // v je verze SCHÉMATU logu, ne hry. Zvedni ji vždycky, když přibude nebo zmizí druh
+  // události. Bez ní se v došlém logu nepozná nula od nezaznamenaného: čtečka by u staršího
+  // buildu napsala „došlo k drátu 0", což se čte jako „nikdo tam nedošel", a přitom ten build
+  // drát jenom nelogoval. Až se hra rozejde k lidem, přijdou záznamy z různě starých verzí
+  // a tohle je jediné, co je od sebe odliší.
+  LOG_BEH++; zaloguj({ev:"start", v:LOG_VERZE, prah:PRAH_SPIS, ver:VER_ZTRATA,
     cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
   document.body.className="";
   render();
@@ -1673,6 +1682,9 @@ if(LOG_JE){ try{ LOG=JSON.parse(localStorage.getItem("pasmo-log")||"[]"); }catch
 
    A strop, protože jinak by log rostl donekonečna. Prvních třicet běhů se nezahazuje NIKDY:
    hráč je nováčkem jenom jednou a právě ta data se nedají získat znovu.                    */
+// LOG_VERZE je verze schématu: zvedni ji, kdykoli přibude nebo zmizí druh události v logu.
+// Dnešní jednička znamená: start, prep, vyslech, prechod, utek, zachrana, drat, konec.
+const LOG_VERZE=1;
 const LOG_STROP=200, LOG_PRVNI=30, LOG_POJISTKA=200;
 let LOG_NEULOZENO=0;
 function orizniLog(){
@@ -1729,7 +1741,13 @@ function nova(){
   // prah a ver jdou do logu proto, aby se z došlého záznamu poznalo, jak byla hra naladěná.
   // Bez nich se dva logy z různě nastavených buildů nedají odlišit a míchaly by se do jedné
   // tabulky, což je nejtišší způsob, jak si měřením ublížit.
-  LOG_BEH++; zaloguj({ev:"start", prah:PRAH_SPIS, ver:VER_ZTRATA,
+  //
+  // v je verze SCHÉMATU logu, ne hry. Zvedni ji vždycky, když přibude nebo zmizí druh
+  // události. Bez ní se v došlém logu nepozná nula od nezaznamenaného: čtečka by u staršího
+  // buildu napsala „došlo k drátu 0", což se čte jako „nikdo tam nedošel", a přitom ten build
+  // drát jenom nelogoval. Až se hra rozejde k lidem, přijdou záznamy z různě starých verzí
+  // a tohle je jediné, co je od sebe odliší.
+  LOG_BEH++; zaloguj({ev:"start", v:LOG_VERZE, prah:PRAH_SPIS, ver:VER_ZTRATA,
     cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
   document.body.className="";
   render();
@@ -2540,7 +2558,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121834";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121840";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
