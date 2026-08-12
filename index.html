@@ -1939,9 +1939,9 @@ const KRIT=[
 
    Obrázek je zatím vypůjčený checkpoint, protože drát mezi dvanácti ilustracemi není.
    Zadání na vlastní je v OBRAZKY.md.                                                     */
-const DRAT={ scena:"drát", img:"checkpoint.png",
-  klid:"Pruh hlíny urovnaný hráběmi, široký jako silnice. Za ním tři řady ostnatého drátu na betonových sloupcích. Tohle je to pásmo.\n\nPřejdeš ho po špičkách a víš, že je to k ničemu: stopy tam zůstanou tak jako tak. U spodního drátu si lehneš a vytáhneš štípačky.\n\nPrvní střih je slyšet až do lesa. Počkáš. Nic. Druhý, třetí, a drát se svine sám do stran. Protáhneš se po břiše.",
-  poplach:"Pruh hlíny urovnaný hráběmi, široký jako silnice. Za ním tři řady ostnatého drátu na betonových sloupcích. Tohle je to pásmo.\n\nNěkde vzadu tě pořád hledají, takže se nepřechází po špičkách, ale během. Stopy za tebou zůstanou jako podpis. U spodního drátu padneš na břicho a vytáhneš štípačky.\n\nStřihat rychle znamená střihat nahlas. Jeden. Druhý. Třetí, a drát se svine sám do stran."};
+const DRAT={ scena:"the wire", img:"checkpoint.png",
+  klid:"A band of soil raked smooth, as wide as a road. Beyond it three lines of barbed wire on concrete posts. This is the strip.\n\nYou cross it on tiptoe and you know it is pointless: the prints will be there either way. At the bottom wire you lie down and take out the cutters.\n\nThe first snip carries as far as the forest. You wait. Nothing. The second, the third, and the wire coils away by itself. You squeeze through on your belly.",
+  poplach:"A band of soil raked smooth, as wide as a road. Beyond it three lines of barbed wire on concrete posts. This is the strip.\n\nSomewhere behind you they are still looking, so you do not cross it on tiptoe, you cross it at a run. The prints will stay there like a signature. At the bottom wire you drop on your belly and take out the cutters.\n\nCutting fast means cutting loud. One. Two. Three, and the wire coils away by itself."};
 function spustPrechod(){
   S.prechodKarty = KRIT.map(b=>{
     const amb=(b.need==="mapa"&&S.prozrazenaTrasa);
@@ -2012,10 +2012,10 @@ function prechodDal(){ S.i++;
   if(S.prechodKarty[S.i].zaDratem && !S.dratViden){ S.dratViden=true; S.faze="prechod-drat"; return render(); }
   S.faze="prechod"; return render(); }
 function renderDrat(){ stopCas(); document.body.classList.add("noc","prechod");
-  obraz(DRAT.img); $("scena").textContent=`přechod, ${DRAT.scena}`;
+  obraz(DRAT.img); $("scena").textContent=`the crossing, ${DRAT.scena}`;
   zaloguj({ev:"drat", poplach:!!S.utekl});
   textCross(S.utekl?DRAT.poplach:DRAT.klid,false);
-  volbyRe("Na druhou stranu"); }
+  volbyRe("To the other side"); }
 
 /* časovač */
 function spustCas(){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)"; $("oharek").style.left="calc(100% - 5px)";
