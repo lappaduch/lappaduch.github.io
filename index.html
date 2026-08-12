@@ -1614,7 +1614,7 @@ function renderPrep(){ const k=S.prep[S.i];
   hintTxt={l:stitek(k.l),p:stitek(k.p)};
   // Prvni karta prvniho behu v prazdnem meste = nekdo, kdo hru vidi poprve.
   const poprve = S.t===1 && S.i===0 && !Object.keys(ZNAM||{}).length;
-  volbyDve(poprve ? "táhni doleva, nebo doprava: každá strana je jiná cesta"
+  volbyDve(poprve ? "swipe left or right: each side is a different way"
                   : "swipe left or right");
   if(poprve) ukazTah();
 }
