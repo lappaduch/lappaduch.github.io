@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121723 -->
+<!-- pasmo build 202608121733 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -1026,6 +1026,12 @@ function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.a
 // U drátů se text nepíše, jen naskočí, tak se odklad počítá z délky. Odpočet se po tu dobu
 // nehýbe, takže je i vidět, že se zatím nic neděje.
 function spustCasPrechod(delka){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)";
+  // S.pomaly znamená „TENHLE beat jsi nestihl", ne „někdy během přechodu jsi nestihl". Bez
+  // téhle nuly zůstal příznak viset od prvního vypršení až do konce, a rozsudek pak obviňoval
+  // ze zaváhání i toho, kdo o tři beaty dál umřel na špatnou volbu. Naměřeno: ze 452 zadržení
+  // s tímhle příznakem jich 257 (57 %) umřelo na volbu, ne na čas. Táž rodina jako verdikt,
+  // který pojmenoval příčinu, o které nemohl vědět.
+  S.pomaly=false;
   let cekej=Math.min(70, Math.round((delka||0)/2.5));   // ~25 znaků za vteřinu, strop 7 s
   cas=setInterval(()=>{ if(cekej>0){ cekej--; return; }
     w-=1.1; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")";   // ~9 s na rozhodnutí u drátů
@@ -2131,6 +2137,12 @@ function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.a
 // U drátů se text nepíše, jen naskočí, tak se odklad počítá z délky. Odpočet se po tu dobu
 // nehýbe, takže je i vidět, že se zatím nic neděje.
 function spustCasPrechod(delka){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)";
+  // S.pomaly znamená „TENHLE beat jsi nestihl", ne „někdy během přechodu jsi nestihl". Bez
+  // téhle nuly zůstal příznak viset od prvního vypršení až do konce, a rozsudek pak obviňoval
+  // ze zaváhání i toho, kdo o tři beaty dál umřel na špatnou volbu. Naměřeno: ze 452 zadržení
+  // s tímhle příznakem jich 257 (57 %) umřelo na volbu, ne na čas. Táž rodina jako verdikt,
+  // který pojmenoval příčinu, o které nemohl vědět.
+  S.pomaly=false;
   let cekej=Math.min(70, Math.round((delka||0)/2.5));   // ~25 znaků za vteřinu, strop 7 s
   cas=setInterval(()=>{ if(cekej>0){ cekej--; return; }
     w-=1.1; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")";   // ~9 s na rozhodnutí u drátů
@@ -2440,7 +2452,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121723";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121733";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
