@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121708 -->
+<!-- pasmo build 202608121716 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -890,7 +890,7 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
    od boudy). Pokaždé to vypadá jako dobrá konkrétní věta a je špatně v půlce běhů. ---------- */
 const KRIT=[
  {need:"propustka", scena:"závora", img:"checkpoint.png",
-  utek:"Ve dveřích budky se objevil stín a šel rovnou k tobě. Ruka ti sjela po rukávu a povolila. Běžíš do pole, kde není za co se schovat, a padneš do brázdy.\n\nKužel přejede nad tebou, jednou, dvakrát. Pak zpátky k závoře, protože závora je důležitější než tma za ní. Ležíš v hlíně. Teď o tobě vědí.",
+  utek:"Někdo tam stál a ty jsi ho uviděl pozdě. Ruka ti sjela po rukávu a povolila. Běžíš do pole, kde není za co se schovat, a padneš do brázdy.\n\nKužel přejede nad tebou, jednou, dvakrát. Pak zpátky k závoře, protože závora je důležitější než tma za ní. Ležíš v hlíně. Teď o tobě vědí.",
   // ZÁVORA NEMÁ ZÁCHRANU, A NEJDE JI SEM DÁT. Beaty jdou v pevném pořadí a první průšvih je
   // vždycky zdarma (útěk), takže druhý, na kterém záchrana visí, na první beat padnout nemůže.
   // Ležel tu proto úplatek pohraničníkovi, který za celou existenci hry nikdo neviděl: dvě věty
@@ -899,14 +899,14 @@ const KRIT=[
   inf:{text:"Závora a osvětlená budka. Máš razítkovanou propustku: stráž tě mávnutím pustí, sotva ji ukážeš. Kolem budky je pole bez jediného keře a světlo z okna dosahuje daleko.", l:"Ukázat propustku", p:"Obejít potmě", spravna:"l"},
   bl:{text:"Závora a budka, ve které se svítí. Příkop podél silnice tě vede rovnou pod osvětlené okno budky. Přes pole je to holá pláň, zato dál od světla.", l:"Příkopem", p:"Přes pole", spravna:"p"}},
  {need:"úkryt", scena:"poslední noc", img:"kostel.png", zaSvetla:true,   // hraje se za dne, viz KONEC_NOCI
-  utek:"Někdo zvenku zabral za dveře. Ne zvědavě, ale naplno. Vyrazil jsi druhou stranou, přes zeď a dolů do trávy, a utíkal, dokud stačil dech.\n\nZa tebou hlasy, které na sebe volají čísla. Ležíš v příkopu a počítáš do sta. Nikdo nepřišel. Ale tvůj úkryt už úkryt není a oni vědí, že tudy někdo šel.",
+  utek:"Byli u tebe dřív, než jsi je uslyšel. Ven a pryč, přes trávu a strouhu, dokud stačil dech.\n\nZa tebou hlasy, které na sebe volají čísla. Ležíš v příkopu a počítáš do sta. Nikdo nepřišel. Ale tvůj úkryt už úkryt není a oni vědí, že tudy někdo šel.",
   // „obchází stavení" tu bylo, jenže úkryt je ve dvou případech ze čtyř kůlna nebo výklenek
   // v peci staré cihelny, a to stavení není. Věta platí pro DRUH úkrytu, ne pro jeden z nich.
   zach:{need:"proviant", ok:"Venku hlasy a kroky: někdo to tu obchází dokola. Zalezeš hlouběji a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den, ale zásoby došly do rána. Vylezl jsi moc brzy."},
   inf:{text:"Máš domluvený nocleh: dovnitř se dostaneš a nikdo se ptát nebude. Uvnitř přečkáš v teple do hluboké noci. Vyjít teď, za šera, by tě vydalo prvnímu, kdo půjde kolem.", l:"Dovnitř, počkat na noc", p:"Jít radši hned", spravna:"l"},
   bl:{text:"Studená díra za městem, kam roky nikdo nevkročil. Že to tak zůstane i dnes, nevíš. Venku je bílý den a pláň bez jediného stromu.", l:"Jít hned", p:"Zůstat, kde jsi", spravna:"p"}},
  {need:"mapa", scena:"hlídka", img:"mapa.png",
-  utek:"Baterka se rozsvítila metr od tebe a někdo zařval, ať stojíš. Otočil ses a běžel zpátky po cestě, pak z cesty pryč, do oraniště, kde se běží špatně oběma.\n\nKroky se zastavily dřív než ty. Ležíš v hlíně, dokud nezmlkne i pes. Cestu, kterou sis vybral, teď zná ještě někdo.",
+  utek:"Baterka se rozsvítila metr od tebe a někdo zařval, ať stojíš. Vyrazil jsi pryč z cesty, do oraniště, kde se běží špatně oběma.\n\nKroky se zastavily dřív než ty. Ležíš v hlíně, dokud nezmlkne i pes. Cestu, kterou sis vybral, teď zná ještě někdo.",
   // „Hlídka se vrací dřív, než měla" tu bylo, jenže tenhle beat se v 59 % běhů u drátů
   // vůbec nehraje: prozrazená trasa ho vymění za PŘEPADENÍ, kde nikdo nikam nejde zpátky,
   // tam na tebe rovnou čekají. Naměřeno: 60 % záchran kleštěmi padne na přepadenou variantu,
@@ -1038,6 +1038,14 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
+  // ÚTĚK MUSÍ PLATIT PRO OBĚ ODPOVĚDI, ne jen pro tu špatnou. Spouští se totiž i po správné
+  // volbě, kterou sebralo zbytkové riziko (4 až 6 % u dobré nápovědy, víc po poplachu). Dva
+  // z pěti to porušovaly: u úkrytu „někdo zvenku zabral za dveře" předpokládalo, že jsi uvnitř,
+  // jenže dvě ze čtyř odpovědí tam jsou „jít hned"; u hlídky „otočil ses a běžel zpátky po
+  // cestě" předpokládalo, že jsi šel, jenže dvě ze šesti jsou „zalehnout a čekat". A u závory
+  // „ve dveřích budky se objevil stín" nesedělo na odpověď, která tě posílá přes holé pole.
+  // Strojově se to tvrdit nedá, tak to stojí tady, u dat, jako invariant o kusu výš.
+  //
   // ÚTĚK MÁ KAŽDÝ BEAT VLASTNÍ. Do teď byl jeden pro všech pět, a přitom je to nejčastěji
   // viděná pasáž celého finále: naměřeno, že 78 % běhů u drátů si prvním průšvihem projde.
   // Ten jeden text navíc na třech beatech nesouhlasil s tím, co stálo na kartě o řádek výš.
@@ -1984,7 +1992,7 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
    od boudy). Pokaždé to vypadá jako dobrá konkrétní věta a je špatně v půlce běhů. ---------- */
 const KRIT=[
  {need:"propustka", scena:"the barrier", img:"checkpoint.png",
-  utek:"A shape came out of the doorway of the hut and walked straight at you. A hand slid down your sleeve and lost it. You run into the field, where there is nothing to get behind, and drop into a furrow.\n\nThe beam passes over you, once, twice. Then back to the barrier, because the barrier matters more than the dark behind it. You lie in the soil. Now they know about you.",
+  utek:"Somebody was standing there and you saw him too late. A hand slid down your sleeve and lost it. You run into the field, where there is nothing to get behind, and drop into a furrow.\n\nThe beam passes over you, once, twice. Then back to the barrier, because the barrier matters more than the dark behind it. You lie in the soil. Now they know about you.",
   // ZÁVORA NEMÁ ZÁCHRANU, A NEJDE JI SEM DÁT. Beaty jdou v pevném pořadí a první průšvih je
   // vždycky zdarma (útěk), takže druhý, na kterém záchrana visí, na první beat padnout nemůže.
   // Ležel tu proto úplatek pohraničníkovi, který za celou existenci hry nikdo neviděl: dvě věty
@@ -1993,14 +2001,14 @@ const KRIT=[
   inf:{text:"A barrier and a lit guardhouse. You have a stamped permit: the guard will wave you through the moment you show it. The field around the guardhouse has not a single bush on it, and the light from the window carries a long way.", l:"Show the permit", p:"Slip around in the dark", spravna:"l"},
   bl:{text:"A barrier, and a guardhouse with the light on. The ditch along the road leads right under the lit window. The field is open ground, but far from the light.", l:"Through the ditch", p:"Across the field", spravna:"p"}},
  {need:"úkryt", scena:"the last night", img:"kostel.png", zaSvetla:true,   // hraje se za dne, viz KONEC_NOCI
-  utek:"Somebody pulled at the door from outside. Not out of curiosity, but hard. You went out the other way, over the wall and down into the grass, and ran while your breath held.\n\nBehind you, voices calling numbers to each other. You lie in a ditch and count to a hundred. Nobody came. But your hiding place is not a hiding place any more, and they know somebody came through here.",
+  utek:"They were on you before you heard them. Out and away, over grass and a gully, while your breath held.\n\nBehind you, voices calling numbers to each other. You lie in a ditch and count to a hundred. Nobody came. But your hiding place is not a hiding place any more, and they know somebody came through here.",
   // „obchází stavení" tu bylo, jenže úkryt je ve dvou případech ze čtyř kůlna nebo výklenek
   // v peci staré cihelny, a to stavení není. Věta platí pro DRUH úkrytu, ne pro jeden z nich.
   zach:{need:"proviant", ok:"Voices and steps outside: somebody is going round and round out there. You burrow deeper and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day, but your stores ran out by morning. You came out too early."},
   inf:{text:"Your shelter is arranged: you can get inside and nobody will ask. Inside, you can wait in the warm until deep night. Stepping out now, at dusk, would hand you to the first passer-by.", l:"Inside, wait for night", p:"Better go now", spravna:"l"},
   bl:{text:"A cold hole outside town that nobody has set foot in for years. Whether that holds today, you do not know. Outside it is broad daylight and the plain has not one tree on it.", l:"Go now", p:"Stay where you are", spravna:"p"}},
  {need:"mapa", scena:"the patrol", img:"mapa.png",
-  utek:"A torch came on a metre from you and somebody shouted at you to stand still. You turned and ran back along the path, then off the path, into ploughed ground, where running is bad for both of you.\n\nThe steps stopped before you did. You lie in the soil until even the dog goes quiet. The way you picked is known to somebody else now.",
+  utek:"A torch came on a metre from you and somebody shouted at you to stand still. You broke away off the path, into ploughed ground, where running is bad for both of you.\n\nThe steps stopped before you did. You lie in the soil until even the dog goes quiet. The way you picked is known to somebody else now.",
   // „Hlídka se vrací dřív, než měla" tu bylo, jenže tenhle beat se v 59 % běhů u drátů
   // vůbec nehraje: prozrazená trasa ho vymění za PŘEPADENÍ, kde nikdo nikam nejde zpátky,
   // tam na tebe rovnou čekají. Naměřeno: 60 % záchran kleštěmi padne na přepadenou variantu,
@@ -2132,6 +2140,14 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
+  // ÚTĚK MUSÍ PLATIT PRO OBĚ ODPOVĚDI, ne jen pro tu špatnou. Spouští se totiž i po správné
+  // volbě, kterou sebralo zbytkové riziko (4 až 6 % u dobré nápovědy, víc po poplachu). Dva
+  // z pěti to porušovaly: u úkrytu „někdo zvenku zabral za dveře" předpokládalo, že jsi uvnitř,
+  // jenže dvě ze čtyř odpovědí tam jsou „jít hned"; u hlídky „otočil ses a běžel zpátky po
+  // cestě" předpokládalo, že jsi šel, jenže dvě ze šesti jsou „zalehnout a čekat". A u závory
+  // „ve dveřích budky se objevil stín" nesedělo na odpověď, která tě posílá přes holé pole.
+  // Strojově se to tvrdit nedá, tak to stojí tady, u dat, jako invariant o kusu výš.
+  //
   // ÚTĚK MÁ KAŽDÝ BEAT VLASTNÍ. Do teď byl jeden pro všech pět, a přitom je to nejčastěji
   // viděná pasáž celého finále: naměřeno, že 78 % běhů u drátů si prvním průšvihem projde.
   // Ten jeden text navíc na třech beatech nesouhlasil s tím, co stálo na kartě o řádek výš.
@@ -2418,7 +2434,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121708";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121716";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
