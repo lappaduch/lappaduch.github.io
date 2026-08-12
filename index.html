@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121638 -->
+<!-- pasmo build 202608121644 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -1083,8 +1083,16 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   // je tam teď to, co platí vždycky a co ten člověk v tu chvíli opravdu vidí.
   if(druh==="prechod"){ nadpis="na druhé straně";
     ja="Chlap v uniformě, kterou neznáš, si tě prohlédl a beze slova podal cigaretu.";
-    dodatek=mluvili.length===1?"Místo tebe teď sedí "+JMENA[mluvili[0]].jm+"."
-      :udal?"Ale ti, cos je zatáhl, teď sedí místo tebe.":"Nikdo tě neudal. Nikdo za tebe nesedí.";
+    // KDO SEDÍ, KDYŽ TY JSI VENKU. Dodatek jmenoval toho, kdo PROMLUVIL, a soupis o řádek výš
+    // o témž člověku psal „vypovídal, propuštěn". Dvě věty na jedné obrazovce, které si
+    // odporují, a navíc obráceně: kdo pro úřad vypovídal, ten spolupracoval a šel domů. Sedět
+    // zůstane ten, kterého jsi u výslechu jmenoval a on jim neřekl nic; soupis o něm říká
+    // „vyslýchán". Naměřeno na 1217 výhrách, že jsou všechny tři větve běžné: jeden takový
+    // člověk v 65 % výher, víc jich je v 31 %, žádný ve 4 %.
+    const zustali=zap.filter(k=>S.zataženi[k]&&!S.talked[k]);
+    dodatek=zustali.length===1?"Místo tebe teď sedí "+JMENA[zustali[0]].jm+"."
+      :zustali.length>1?"Místo tebe teď sedí ti, cos jmenoval a oni mlčeli."
+      :udal?"Kdo promluvil, šel domů. Za tebe nesedí nikdo.":"Nikdo tě neudal. Nikdo za tebe nesedí.";
   } else if(druh==="draty"){
     // ČTVRTINA ZADRŽENÍ SE STANE AŽ ZA DRÁTEM. Naměřeno: poslední silnice 29 %, druhá strana
     // 25 %, hlídka 24 %, poslední noc 17 %, závora 4 %. Rozsudek přesto všem hlásil „chycen
@@ -2153,8 +2161,16 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   // je tam teď to, co platí vždycky a co ten člověk v tu chvíli opravdu vidí.
   if(druh==="prechod"){ nadpis="on the other side";
     ja="A man in a uniform you do not know looked you over and handed you a cigarette without a word.";
-    dodatek=mluvili.length===1?"In your place now, "+JMENA[mluvili[0]].jm+"."
-      :udal?"But the ones you dragged in are sitting there now, in your place.":"Nobody informed on you. Nobody is sitting in your place.";
+    // KDO SEDÍ, KDYŽ TY JSI VENKU. Dodatek jmenoval toho, kdo PROMLUVIL, a soupis o řádek výš
+    // o témž člověku psal „vypovídal, propuštěn". Dvě věty na jedné obrazovce, které si
+    // odporují, a navíc obráceně: kdo pro úřad vypovídal, ten spolupracoval a šel domů. Sedět
+    // zůstane ten, kterého jsi u výslechu jmenoval a on jim neřekl nic; soupis o něm říká
+    // „vyslýchán". Naměřeno na 1217 výhrách, že jsou všechny tři větve běžné: jeden takový
+    // člověk v 65 % výher, víc jich je v 31 %, žádný ve 4 %.
+    const zustali=zap.filter(k=>S.zataženi[k]&&!S.talked[k]);
+    dodatek=zustali.length===1?"In your place now, "+JMENA[zustali[0]].jm+"."
+      :zustali.length>1?"In your place now are the ones you named, who told them nothing."
+      :udal?"Whoever talked went home. Nobody is sitting for you.":"Nobody informed on you. Nobody is sitting in your place.";
   } else if(druh==="draty"){
     // ČTVRTINA ZADRŽENÍ SE STANE AŽ ZA DRÁTEM. Naměřeno: poslední silnice 29 %, druhá strana
     // 25 %, hlídka 24 %, poslední noc 17 %, závora 4 %. Rozsudek přesto všem hlásil „chycen
@@ -2370,7 +2386,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121638";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121644";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
