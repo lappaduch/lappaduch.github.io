@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121631 -->
+<!-- pasmo build 202608121638 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -907,7 +907,11 @@ const KRIT=[
   bl:{text:"Studená díra za městem, kam roky nikdo nevkročil. Že to tak zůstane i dnes, nevíš. Venku je bílý den a pláň bez jediného stromu.", l:"Jít hned", p:"Zůstat, kde jsi", spravna:"p"}},
  {need:"mapa", scena:"hlídka", img:"mapa.png",
   utek:"Baterka se rozsvítila metr od tebe a někdo zařval, ať stojíš. Otočil ses a běžel zpátky po cestě, pak z cesty pryč, do oraniště, kde se běží špatně oběma.\n\nKroky se zastavily dřív než ty. Ležíš v hlíně, dokud nezmlkne i pes. Cestu, kterou sis vybral, teď zná ještě někdo.",
-  zach:{need:"kleště", ok:"Hlídka se vrací dřív, než měla. U cesty ostnatý plot. Štípačky. Dva rychlé střihy, ostny povolí, protáhneš se dírou a tma tě spolkne.", fail:"Kleště sklouzly a drát zazvonil o sloupek. To stačilo."},
+  // „Hlídka se vrací dřív, než měla" tu bylo, jenže tenhle beat se v 59 % běhů u drátů
+  // vůbec nehraje: prozrazená trasa ho vymění za PŘEPADENÍ, kde nikdo nikam nejde zpátky,
+  // tam na tebe rovnou čekají. Naměřeno: 60 % záchran kleštěmi padne na přepadenou variantu,
+  // takže ta věta byla nepravdivá častěji, než platila. Platí pro všechny tři varianty beatu.
+  zach:{need:"kleště", ok:"Jdou po tobě a není kam. U cesty ostnatý plot. Štípačky. Dva rychlé střihy, ostny povolí, protáhneš se dírou a tma tě spolkne.", fail:"Kleště sklouzly a drát zazvonil o sloupek. To stačilo."},
   inf:{text:"Víš to přesně: po cestě chodí hlídka ve dvě a pak je hodina klid. Prošli před chvílí, kroky se ztrácejí k městu. Čas máš, ale ne nadlouho.", l:"Počkat, až přejdou", p:"Jít teď, v tom klidu", spravna:"p"},
   bl:{text:"Ve tmě před tebou se něco pohnulo. A po chvíli zas, o kus blíž. Hlídka, nebo jen vítr v drátech?", l:"Zalehnout a čekat", p:"Proklouznout hned", spravna:"l"},
   amb:{text:"U cesty, přesně tam, kudy jsi měl přejít, se rýsují dvě postavy s baterkami. Věděli to. Čekají na tebe.", l:"Zpátky a jinudy", p:"Risknout to tady", spravna:"l"}},
@@ -1973,7 +1977,11 @@ const KRIT=[
   bl:{text:"A cold hole outside town that nobody has set foot in for years. Whether that holds today, you do not know. Outside it is broad daylight and the plain has not one tree on it.", l:"Go now", p:"Stay where you are", spravna:"p"}},
  {need:"mapa", scena:"the patrol", img:"mapa.png",
   utek:"A torch came on a metre from you and somebody shouted at you to stand still. You turned and ran back along the path, then off the path, into ploughed ground, where running is bad for both of you.\n\nThe steps stopped before you did. You lie in the soil until even the dog goes quiet. The way you picked is known to somebody else now.",
-  zach:{need:"kleště", ok:"The patrol coming back early. A barbed fence along the track. The cutters. Two quick snips, the barbs give way, you squeeze through the gap and the dark swallows you.", fail:"The cutters slipped and the wire rang against the post. That was enough."},
+  // „Hlídka se vrací dřív, než měla" tu bylo, jenže tenhle beat se v 59 % běhů u drátů
+  // vůbec nehraje: prozrazená trasa ho vymění za PŘEPADENÍ, kde nikdo nikam nejde zpátky,
+  // tam na tebe rovnou čekají. Naměřeno: 60 % záchran kleštěmi padne na přepadenou variantu,
+  // takže ta věta byla nepravdivá častěji, než platila. Platí pro všechny tři varianty beatu.
+  zach:{need:"kleště", ok:"They are coming for you and there is nowhere to go. A barbed fence along the track. The cutters. Two quick snips, the barbs give way, you squeeze through the gap and the dark swallows you.", fail:"The cutters slipped and the wire rang against the post. That was enough."},
   inf:{text:"You know it exactly: the patrol walks the path at two, then an hour of quiet. They went by a moment ago, their steps fading toward town. You have time, but not much.", l:"Wait till they pass", p:"Go now, in the lull", spravna:"p"},
   bl:{text:"Something moved in the dark ahead. And again, a little closer. A patrol, or just wind in the wire?", l:"Drop and wait", p:"Slip through now", spravna:"l"},
   amb:{text:"By the path, exactly where you meant to cross, two figures with torches take shape. They knew. They are waiting for you.", l:"Back, another way", p:"Risk it here", spravna:"l"}},
@@ -2362,7 +2370,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121631";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121638";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
