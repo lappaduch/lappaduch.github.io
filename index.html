@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121733 -->
+<!-- pasmo build 202608121758 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -1144,10 +1144,18 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
     // Spis se plní třemi cestami a rozsudek říkal jen jednu z nich. Naměřeno na čtyřech
     // tisících běhů: u zatčení převažuje UDÁNÍ (2088), ne přiznání (608) ani razítka (107),
     // takže ta jediná věta vinila hráče z toho, co ve většině běhů udělalo město.
-    const odkud=Object.keys(S.spisOd||{}).sort((x,y)=>S.spisOd[y]-S.spisOd[x])[0];
+    // JENŽE PŘEVAHA VĚTŠINOU ŽÁDNÁ NENÍ. Naměřeno na 10750 zatčeních kvůli plnému spisu:
+    // rozdíl mezi první a druhou cestou je aspoň dva jen ve 21 %. Ve zbylých 79 % je to těsné
+    // a nejčastější složení vůbec je PŘESNÁ REMÍZA (udání 2, razítko 2, v 35 % případů).
+    // Vítěze v ní rozhodovalo pořadí klíčů v objektu, tedy která cesta přidala list první,
+    // takže rozsudek jmenoval jednu příčinu tam, kde byly dvě stejné, a jmenoval ji podle
+    // něčeho, co s během nesouvisí. Jasnou příčinu proto pojmenuje jen tehdy, když jasná je.
+    const par=Object.entries(S.spisOd||{}).sort((a,b)=>b[1]-a[1]);
+    const odkud=(par.length && par[0][1]-(par[1]?par[1][1]:0)>=2) ? par[0][0] : null;
     ja=(proc==="spis")?(odkud==="udani"?"Neřekl jsi skoro nic. Za tebe mluvili jiní. § 95/2: čtyři roky, Jáchymov."
       :odkud==="razitko"?"Zapíral jsi a oni to psali dál. Každá lež jim přidala list. § 95/2: čtyři roky, Jáchymov."
-      :"Nemuseli tě lámat. Stačilo počkat, až to řekneš sám. § 95/2: čtyři roky, Jáchymov.")
+      :odkud==="rekl"?"Nemuseli tě lámat. Stačilo počkat, až to řekneš sám. § 95/2: čtyři roky, Jáchymov."
+      :"Nesešlo se to na jedné věci. Sešlo se to na několika a žádná nebyla ta hlavní. § 95/2: čtyři roky, Jáchymov.")
       :"Zapíral jsi i to, co leželo na stole. Nezlomili tě, ale nepustili. § 95/2: dva roky, Pankrác.";
     // Kdo mluvil, říká soupis nad tím, a to jménem. Dodatek proto nesmí jmenovat: nesl by
     // potřetí totéž, co už řekl řádek „Ty:" („za tebe mluvili jiní") a po něm soupis.
@@ -2255,10 +2263,18 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
     // Spis se plní třemi cestami a rozsudek říkal jen jednu z nich. Naměřeno na čtyřech
     // tisících běhů: u zatčení převažuje UDÁNÍ (2088), ne přiznání (608) ani razítka (107),
     // takže ta jediná věta vinila hráče z toho, co ve většině běhů udělalo město.
-    const odkud=Object.keys(S.spisOd||{}).sort((x,y)=>S.spisOd[y]-S.spisOd[x])[0];
+    // JENŽE PŘEVAHA VĚTŠINOU ŽÁDNÁ NENÍ. Naměřeno na 10750 zatčeních kvůli plnému spisu:
+    // rozdíl mezi první a druhou cestou je aspoň dva jen ve 21 %. Ve zbylých 79 % je to těsné
+    // a nejčastější složení vůbec je PŘESNÁ REMÍZA (udání 2, razítko 2, v 35 % případů).
+    // Vítěze v ní rozhodovalo pořadí klíčů v objektu, tedy která cesta přidala list první,
+    // takže rozsudek jmenoval jednu příčinu tam, kde byly dvě stejné, a jmenoval ji podle
+    // něčeho, co s během nesouvisí. Jasnou příčinu proto pojmenuje jen tehdy, když jasná je.
+    const par=Object.entries(S.spisOd||{}).sort((a,b)=>b[1]-a[1]);
+    const odkud=(par.length && par[0][1]-(par[1]?par[1][1]:0)>=2) ? par[0][0] : null;
     ja=(proc==="spis")?(odkud==="udani"?"You said almost nothing. Others said it for you. §95/2: four years, Jáchymov."
       :odkud==="razitko"?"You denied it and they wrote on. Every lie added a page. §95/2: four years, Jáchymov."
-      :"They never had to break you. They only had to wait until you said it yourself. §95/2: four years, Jáchymov.")
+      :odkud==="rekl"?"They never had to break you. They only had to wait until you said it yourself. §95/2: four years, Jáchymov."
+      :"It did not come down to one thing. It came down to several, and none of them was the main one. §95/2: four years, Jáchymov.")
       :"You denied even what was lying on the table. They did not break you. They did not let you go either. §95/2: two years, Pankrác prison.";
     // Kdo mluvil, říká soupis nad tím, a to jménem. Dodatek proto nesmí jmenovat: nesl by
     // potřetí totéž, co už řekl řádek „Ty:" („za tebe mluvili jiní") a po něm soupis.
@@ -2452,7 +2468,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121733";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121758";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
