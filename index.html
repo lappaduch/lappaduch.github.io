@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121825 -->
+<!-- pasmo build 202608121834 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -608,6 +608,13 @@ function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{
 
 /* psací stroj: otázky a reakce u výslechu se vypisují znak po znaku; tap nebo tah dopíše hned */
 const MENE_POHYBU = typeof matchMedia!=="undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* Má tenhle přístroj klávesnici? Playtest log se kopíruje klávesou L, a rozsudek to nabízel
+   všem, tedy i na telefonu, kde se ta klávesa zmáčknout nedá. Nabídnout nemožnou akci je horší
+   než nenabídnout nic: hráč vidí, že po něm někdo něco chce, a nemá jak. Hrubý dotaz na hrubý
+   ukazatel bez hoveru je standardní signál dotykového přístroje; když se odpovědět nedá,
+   předpokládá se klávesnice, protože nabídnout ji zbytečně stojí jeden řádek textu, kdežto
+   zamlčet ji tomu, kdo ji má, stojí ten log. */
+const MA_KLAVESNICI = typeof matchMedia==="undefined" || !matchMedia("(hover: none) and (pointer: coarse)").matches;
 let psani=null;
 function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(fn){fn();}}; }
   let i=0; psani={el,t,done:null,tik:setInterval(()=>{ i++; el.textContent=t.slice(0,i);
@@ -1214,7 +1221,7 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   // Vpravo, protože vpravo je v téhle hře odjakživa cesta, o které nikdo nic neví.
   hintTxt={l:"Znovu",p:"Jiné město"};
   $("napoveda").textContent="vlevo znovu, vpravo jiné město";
-  if(LOG_JE) $("napoveda").innerHTML='vlevo <b>znovu</b>, vpravo <b>jiné město</b>. <b>L</b> = zkopírovat záznam pro autora';
+  if(LOG_JE && MA_KLAVESNICI) $("napoveda").innerHTML='vlevo <b>znovu</b>, vpravo <b>jiné město</b>. <b>L</b> = zkopírovat záznam pro autora';
 }
 function velke(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 
@@ -1756,6 +1763,13 @@ function textCross(t,re){ const e=$("text"); e.style.opacity=0; setTimeout(()=>{
 
 /* psací stroj: otázky a reakce u výslechu se vypisují znak po znaku; tap nebo tah dopíše hned */
 const MENE_POHYBU = typeof matchMedia!=="undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* Má tenhle přístroj klávesnici? Playtest log se kopíruje klávesou L, a rozsudek to nabízel
+   všem, tedy i na telefonu, kde se ta klávesa zmáčknout nedá. Nabídnout nemožnou akci je horší
+   než nenabídnout nic: hráč vidí, že po něm někdo něco chce, a nemá jak. Hrubý dotaz na hrubý
+   ukazatel bez hoveru je standardní signál dotykového přístroje; když se odpovědět nedá,
+   předpokládá se klávesnice, protože nabídnout ji zbytečně stojí jeden řádek textu, kdežto
+   zamlčet ji tomu, kdo ji má, stojí ten log. */
+const MA_KLAVESNICI = typeof matchMedia==="undefined" || !matchMedia("(hover: none) and (pointer: coarse)").matches;
 let psani=null;
 function pis(el,t){ dopisHned(); if(MENE_POHYBU){ el.textContent=t; return {pak(fn){fn();}}; }
   let i=0; psani={el,t,done:null,tik:setInterval(()=>{ i++; el.textContent=t.slice(0,i);
@@ -2362,7 +2376,7 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   // Vpravo, protože vpravo je v téhle hře odjakživa cesta, o které nikdo nic neví.
   hintTxt={l:"Again",p:"Another town"};
   $("napoveda").textContent="left again, right another town";
-  if(LOG_JE) $("napoveda").innerHTML='left <b>again</b>, right <b>another town</b>. <b>L</b> = copy the record for the author';
+  if(LOG_JE && MA_KLAVESNICI) $("napoveda").innerHTML='left <b>again</b>, right <b>another town</b>. <b>L</b> = copy the record for the author';
 }
 function velke(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 
@@ -2526,7 +2540,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121825";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121834";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
