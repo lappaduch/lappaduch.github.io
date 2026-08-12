@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121611 -->
+<!-- pasmo build 202608121617 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -939,6 +939,20 @@ const KRIT=[
 
    Obrázek je zatím vypůjčený checkpoint, protože drát mezi dvanácti ilustracemi není.
    Zadání na vlastní je v OBRAZKY.md.                                                     */
+/* ---------- PŘÍCHOD K HRANICI ----------------------------------------------------------
+   Devět potřeb z deseti má v přechodu roli: pět jich má vlastní beat, čtyři zachraňují.
+   Svoz neměl žádnou. Jeho jediný mechanický účinek byl záporný (přiznat ho u výslechu
+   prozradí trasu), takže to byl celý den shánění, který se dal jen prohrát.
+
+   Výplata je tady, na kartě, kterou přechod otevírá. Ne v obtížnosti: úvod nic nehází ani
+   nemění, jen konečně řekne, jak ses k lesu dostal. A říká přesně to, co ta volba znamená.
+   Solidní strana je dodávka pod plachtou nebo korba mezi bednami, tedy někdo ví, kde jsi
+   vystoupil. Čistá strana je pěšky od potoka nebo na kole přes Doubravku, tedy nikdo.
+   Obě věty musí platit pro OBA lidi na své straně, proto se nemluví o kole ani o plachtě.  */
+const PRICHOD={ need:"svoz",
+  l:"Je po půlnoci. Večer tě vysadili kus před lesem a motor se ztratil ve tmě. Někdo tedy ví, kde jsi vystoupil, a bude to vědět i zítra.",
+  p:"Je po půlnoci. Do lesa ses dostal sám a trvalo to celý den. Vědí to nohy, nikdo jiný.",
+  spolecne:"Bereš, cos sehnal, a jdeš k hranici. Dva týdny shánění máš v ranci a dvě soboty v jejich spisu."};
 const DRAT={ scena:"drát", img:"checkpoint.png",
   klid:"Pruh hlíny urovnaný hráběmi, široký jako silnice. Za ním tři řady ostnatého drátu na betonových sloupcích. Tohle je to pásmo.\n\nPřejdeš ho po špičkách a víš, že je to k ničemu: stopy tam zůstanou tak jako tak. U spodního drátu si lehneš a vytáhneš štípačky.\n\nPrvní střih je slyšet až do lesa. Počkáš. Nic. Druhý, třetí, a drát se svine sám do stran. Protáhneš se po břiše.",
   poplach:"Pruh hlíny urovnaný hráběmi, široký jako silnice. Za ním tři řady ostnatého drátu na betonových sloupcích. Tohle je to pásmo.\n\nNěkde vzadu tě pořád hledají, takže se nepřechází po špičkách, ale během. Stopy za tebou zůstanou jako podpis. U spodního drátu padneš na břicho a vytáhneš štípačky.\n\nStřihat rychle znamená střihat nahlas. Jeden. Druhý. Třetí, a drát se svine sám do stran."};
@@ -956,7 +970,7 @@ function spustPrechod(){
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
   obraz("nocni_ulice.png"); $("mery").style.display="none"; $("scena").textContent="neděle v noci";
-  textCross("Je po půlnoci. Bereš, cos sehnal, a jdeš k hranici. Dva týdny shánění máš v ranci a dvě soboty v jejich spisu.",true);
+  textCross(PRICHOD[S.mam[PRICHOD.need]==="l"?"l":"p"]+"\n\n"+PRICHOD.spolecne,true);
   volbyRe("Vyrazit");
 }
 function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.add("noc","prechod");
@@ -1976,6 +1990,20 @@ const KRIT=[
 
    Obrázek je zatím vypůjčený checkpoint, protože drát mezi dvanácti ilustracemi není.
    Zadání na vlastní je v OBRAZKY.md.                                                     */
+/* ---------- PŘÍCHOD K HRANICI ----------------------------------------------------------
+   Devět potřeb z deseti má v přechodu roli: pět jich má vlastní beat, čtyři zachraňují.
+   Svoz neměl žádnou. Jeho jediný mechanický účinek byl záporný (přiznat ho u výslechu
+   prozradí trasu), takže to byl celý den shánění, který se dal jen prohrát.
+
+   Výplata je tady, na kartě, kterou přechod otevírá. Ne v obtížnosti: úvod nic nehází ani
+   nemění, jen konečně řekne, jak ses k lesu dostal. A říká přesně to, co ta volba znamená.
+   Solidní strana je dodávka pod plachtou nebo korba mezi bednami, tedy někdo ví, kde jsi
+   vystoupil. Čistá strana je pěšky od potoka nebo na kole přes Doubravku, tedy nikdo.
+   Obě věty musí platit pro OBA lidi na své straně, proto se nemluví o kole ani o plachtě.  */
+const PRICHOD={ need:"svoz",
+  l:"It is past midnight. They dropped you a way short of the forest in the evening and the engine faded into the dark. So somebody knows where you got out, and will still know tomorrow.",
+  p:"It is past midnight. You got to the forest under your own power and it took the whole day. Your legs know it and nobody else does.",
+  spolecne:"You take what you gathered and start for the border. Two weeks of scrounging in your pack, two Saturdays in their file."};
 const DRAT={ scena:"the wire", img:"checkpoint.png",
   klid:"A band of soil raked smooth, as wide as a road. Beyond it three lines of barbed wire on concrete posts. This is the strip.\n\nYou cross it on tiptoe and you know it is pointless: the prints will be there either way. At the bottom wire you lie down and take out the cutters.\n\nThe first snip carries as far as the forest. You wait. Nothing. The second, the third, and the wire coils away by itself. You squeeze through on your belly.",
   poplach:"A band of soil raked smooth, as wide as a road. Beyond it three lines of barbed wire on concrete posts. This is the strip.\n\nSomewhere behind you they are still looking, so you do not cross it on tiptoe, you cross it at a run. The prints will stay there like a signature. At the bottom wire you drop on your belly and take out the cutters.\n\nCutting fast means cutting loud. One. Two. Three, and the wire coils away by itself."};
@@ -1993,7 +2021,7 @@ function spustPrechod(){
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
   obraz("nocni_ulice.png"); $("mery").style.display="none"; $("scena").textContent="Sunday at night";
-  textCross("It is past midnight. You take what you gathered and start for the border. Two weeks of scrounging in your pack, two Saturdays in their file.",true);
+  textCross(PRICHOD[S.mam[PRICHOD.need]==="l"?"l":"p"]+"\n\n"+PRICHOD.spolecne,true);
   volbyRe("Set out");
 }
 function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.add("noc","prechod");
@@ -2304,7 +2332,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121611";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121617";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
