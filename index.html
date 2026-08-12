@@ -1,4 +1,4 @@
-<!-- pasmo build 202608120759 -->
+<!-- pasmo build 202608120806 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -909,9 +909,20 @@ function spustPrechod(){
 }
 function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.add("noc","prechod");
   obraz(b.img); $("scena").textContent=`přechod, ${b.scena}, ${S.i+1} z ${S.prechodKarty.length}`;
-  textCross(b.text,false); hintTxt={l:b.l,p:b.p}; volbyDve("táhni do stran, nemeškej"); spustCasPrechod(); }
-function spustCasPrechod(){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)";
-  cas=setInterval(()=>{ w-=1.1; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")";   // ~9 s na rozhodnutí u drátů
+  textCross(b.text,false); hintTxt={l:b.l,p:b.p}; volbyDve("táhni do stran, nemeškej"); spustCasPrechod(b.text.length); }
+// ČTECÍ ODKLAD. Devět vteřin tu vždycky bylo míněno „na rozhodnutí", jenže se počítaly od
+// vykreslení, takže do nich patřilo i čtení. Naměřeno: pět beatů z deseti se v tom okně nedá
+// ani přečíst (166 znaků při patnácti za vteřinu je jedenáct vteřin), takže hráči zbývalo na
+// rozhodnutí záporně mnoho času. Tím padal slib o dvě věty níž, že správná strana jde vždycky
+// vyčíst z textu a nehádá se naslepo.
+//
+// Výslech to má správně už dávno: tam se časovač pouští AŽ po dopsání otázky (pis().pak).
+// U drátů se text nepíše, jen naskočí, tak se odklad počítá z délky. Odpočet se po tu dobu
+// nehýbe, takže je i vidět, že se zatím nic neděje.
+function spustCasPrechod(delka){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)";
+  let cekej=Math.min(70, Math.round((delka||0)/2.5));   // ~25 znaků za vteřinu, strop 7 s
+  cas=setInterval(()=>{ if(cekej>0){ cekej--; return; }
+    w-=1.1; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")";   // ~9 s na rozhodnutí u drátů
     if(w<=0){ stopCas(); S.pomaly=true; return pruser(S.prechodKarty[S.i]); } },100); }
 function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   // špatná volba = průšvih; správná má zbytkové riziko (žádný přechod není jistý). Solidní výbava napoví jasně,
@@ -1859,9 +1870,20 @@ function spustPrechod(){
 }
 function renderPrechod(){ const b=S.prechodKarty[S.i]; document.body.classList.add("noc","prechod");
   obraz(b.img); $("scena").textContent=`the crossing, ${b.scena}, ${S.i+1} of ${S.prechodKarty.length}`;
-  textCross(b.text,false); hintTxt={l:b.l,p:b.p}; volbyDve("swipe either way, do not linger"); spustCasPrechod(); }
-function spustCasPrechod(){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)";
-  cas=setInterval(()=>{ w-=1.1; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")";   // ~9 s na rozhodnutí u drátů
+  textCross(b.text,false); hintTxt={l:b.l,p:b.p}; volbyDve("swipe either way, do not linger"); spustCasPrechod(b.text.length); }
+// ČTECÍ ODKLAD. Devět vteřin tu vždycky bylo míněno „na rozhodnutí", jenže se počítaly od
+// vykreslení, takže do nich patřilo i čtení. Naměřeno: pět beatů z deseti se v tom okně nedá
+// ani přečíst (166 znaků při patnácti za vteřinu je jedenáct vteřin), takže hráči zbývalo na
+// rozhodnutí záporně mnoho času. Tím padal slib o dvě věty níž, že správná strana jde vždycky
+// vyčíst z textu a nehádá se naslepo.
+//
+// Výslech to má správně už dávno: tam se časovač pouští AŽ po dopsání otázky (pis().pak).
+// U drátů se text nepíše, jen naskočí, tak se odklad počítá z délky. Odpočet se po tu dobu
+// nehýbe, takže je i vidět, že se zatím nic neděje.
+function spustCasPrechod(delka){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)";
+  let cekej=Math.min(70, Math.round((delka||0)/2.5));   // ~25 znaků za vteřinu, strop 7 s
+  cas=setInterval(()=>{ if(cekej>0){ cekej--; return; }
+    w-=1.1; $("odpocet").style.transform="scaleX("+Math.max(0,w)/100+")";   // ~9 s na rozhodnutí u drátů
     if(w<=0){ stopCas(); S.pomaly=true; return pruser(S.prechodKarty[S.i]); } },100); }
 function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   // špatná volba = průšvih; správná má zbytkové riziko (žádný přechod není jistý). Solidní výbava napoví jasně,
@@ -2119,7 +2141,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608120759";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608120806";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
