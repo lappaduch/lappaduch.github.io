@@ -1,4 +1,4 @@
-<!-- pasmo build 202608120728 -->
+<!-- pasmo build 202608120730 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -1040,17 +1040,22 @@ function hint(side){ const L=$("hintL"),P=$("hintP"); L.textContent=hintTxt.l; P
    ruku neplete. A první dotyk to ruší okamžitě, i uprostřed pohybu: ukázka nesmí zdržet
    nikoho, kdo ví, co dělá. Proto se taky NENASTAVUJE anim, jinak by ukázka na dvě vteřiny
    zamkla ovládání a byla by z ní překážka místo pozvánky.                                  */
-let ukazka=null;
-function zrusUkazku(){ if(ukazka===null) return; clearTimeout(ukazka); ukazka=null;
+// POZOR: bezi to na PRIZNAKU, ne na id casovace. Nahradni DOM v test/persony.js pousti
+// setTimeout SYNCHRONNE, takze se callback provede driv, nez se navratova hodnota priradi,
+// a pojistka na id (ukazka===null) by celou ukazku zabila. V prohlizeci by to proslo a
+// zustala by z toho funkce, kterou zadny test nikdy nevidel.
+let ukazka=null, ukazkaBezi=false;
+function zrusUkazku(){ if(!ukazkaBezi) return; ukazkaBezi=false; clearTimeout(ukazka); ukazka=null;
   const k=$("karta"); if(k&&k.style){ k.style.transition="none"; k.style.transform="translateX(0)"; }
   hint(null); }
 function ukazTah(){
   const k=$("karta"); if(!k||!k.style||typeof setTimeout!=="function") return;
-  const krok=(fn,ms)=>{ ukazka=setTimeout(()=>{ if(ukazka===null) return; fn(); },ms); };
+  ukazkaBezi=true;
+  const krok=(fn,ms)=>{ ukazka=setTimeout(()=>{ if(ukazkaBezi) fn(); },ms); };
   krok(()=>{ hint("l");
     k.style.transition="transform .55s ease-out"; k.style.transform="translateX(-9%) rotate(-2.5deg)";
     krok(()=>{ k.style.transition="transform .45s ease-in"; k.style.transform="translateX(0)";
-      krok(()=>{ hint(null); ukazka=null; },460); },820); },700);
+      krok(()=>{ hint(null); ukazka=null; ukazkaBezi=false; },460); },820); },700);
 }
 
 // co udělá tažení podle fáze
@@ -1973,17 +1978,22 @@ function hint(side){ const L=$("hintL"),P=$("hintP"); L.textContent=hintTxt.l; P
    ruku neplete. A první dotyk to ruší okamžitě, i uprostřed pohybu: ukázka nesmí zdržet
    nikoho, kdo ví, co dělá. Proto se taky NENASTAVUJE anim, jinak by ukázka na dvě vteřiny
    zamkla ovládání a byla by z ní překážka místo pozvánky.                                  */
-let ukazka=null;
-function zrusUkazku(){ if(ukazka===null) return; clearTimeout(ukazka); ukazka=null;
+// POZOR: bezi to na PRIZNAKU, ne na id casovace. Nahradni DOM v test/persony.js pousti
+// setTimeout SYNCHRONNE, takze se callback provede driv, nez se navratova hodnota priradi,
+// a pojistka na id (ukazka===null) by celou ukazku zabila. V prohlizeci by to proslo a
+// zustala by z toho funkce, kterou zadny test nikdy nevidel.
+let ukazka=null, ukazkaBezi=false;
+function zrusUkazku(){ if(!ukazkaBezi) return; ukazkaBezi=false; clearTimeout(ukazka); ukazka=null;
   const k=$("karta"); if(k&&k.style){ k.style.transition="none"; k.style.transform="translateX(0)"; }
   hint(null); }
 function ukazTah(){
   const k=$("karta"); if(!k||!k.style||typeof setTimeout!=="function") return;
-  const krok=(fn,ms)=>{ ukazka=setTimeout(()=>{ if(ukazka===null) return; fn(); },ms); };
+  ukazkaBezi=true;
+  const krok=(fn,ms)=>{ ukazka=setTimeout(()=>{ if(ukazkaBezi) fn(); },ms); };
   krok(()=>{ hint("l");
     k.style.transition="transform .55s ease-out"; k.style.transform="translateX(-9%) rotate(-2.5deg)";
     krok(()=>{ k.style.transition="transform .45s ease-in"; k.style.transform="translateX(0)";
-      krok(()=>{ hint(null); ukazka=null; },460); },820); },700);
+      krok(()=>{ hint(null); ukazka=null; ukazkaBezi=false; },460); },820); },700);
 }
 
 // co udělá tažení podle fáze
@@ -2085,7 +2095,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608120728";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608120730";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
