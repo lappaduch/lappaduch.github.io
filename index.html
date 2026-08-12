@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121653 -->
+<!-- pasmo build 202608121703 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -959,7 +959,12 @@ const KRIT=[
    kde jdeš polem potmě. Místo tvrzení o lidech je tam obraz, který platí v obou: světlo z budky
    je v obou textech beatu.                                                                  */
 const PROSEL=[
-  "Závora zůstala za tebou. Světlo z budky končí kus za polem a dál je černo.",
+  // Druhý beat je za světla („Venku je bílý den", u solidní varianty „Vyjít teď, za šera"),
+  // a to je nosné: obě nápovědy stojí na tom, že by tě venku bylo vidět. Jenže tenhle beat
+  // končí ve tmě, takže hráč četl noc, pak bílý den a pak zase noc, a mezi tím se nestalo nic.
+  // Přechod trvá dýl než jednu noc; říká to i záchrana u úkrytu („Druhou noc vyrážíš znovu").
+  // Nikde to ale nezaznělo dřív, než se to začalo předpokládat.
+  "Závora zůstala za tebou. Světlo z budky končí kus za polem a dál je černo. Do rána zbývá kus noci a pak celý den, který musíš někde přečkat.",
   "Přečkal jsi. Venku je černo.",
   "Ticho. Prošel jsi.",
   "Silnice je za tebou. Nikdo nekřičel.",
@@ -2037,7 +2042,12 @@ const KRIT=[
    kde jdeš polem potmě. Místo tvrzení o lidech je tam obraz, který platí v obou: světlo z budky
    je v obou textech beatu.                                                                  */
 const PROSEL=[
-  "The barrier is behind you. The light from the hut stops a way out into the field and past that it is black.",
+  // Druhý beat je za světla („Venku je bílý den", u solidní varianty „Vyjít teď, za šera"),
+  // a to je nosné: obě nápovědy stojí na tom, že by tě venku bylo vidět. Jenže tenhle beat
+  // končí ve tmě, takže hráč četl noc, pak bílý den a pak zase noc, a mezi tím se nestalo nic.
+  // Přechod trvá dýl než jednu noc; říká to i záchrana u úkrytu („Druhou noc vyrážíš znovu").
+  // Nikde to ale nezaznělo dřív, než se to začalo předpokládat.
+  "The barrier is behind you. The light from the hut stops a way out into the field and past that it is black. There is a piece of night left before morning, and then a whole day you have to sit out somewhere.",
   "You waited it out. Outside it is black.",
   "Silence. You are through.",
   "The road is behind you. Nobody shouted.",
@@ -2386,7 +2396,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121653";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121703";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
