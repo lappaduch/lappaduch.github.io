@@ -1640,10 +1640,10 @@ function vzpominka(s){
   // odlišení se v ní ztratí a roguelite vrstva zůstane neviditelná i tam, kde je.
   const A="\n\n<span class='vzpom'>", B="</span>";
   return ZNAM[s.kdo]==="mluvil"
-    ? (z ? A+"Už jednou o tobě mluvila. Pamatuješ si to až moc dobře."+B
-         : A+"Už jednou o tobě mluvil. Pamatuješ si to až moc dobře."+B)
-    : (z ? A+"Jednou už tě v rukou měli a od ní se nedozvěděli nic."+B
-         : A+"Jednou už tě v rukou měli a od něj se nedozvěděli nic."+B);
+    ? (z ? A+"She talked about you once already. You remember that all too well."+B
+         : A+"He talked about you once already. You remember that all too well."+B)
+    : (z ? A+"They had you once before, and from her they learned nothing."+B
+         : A+"They had you once before, and from him they learned nothing."+B);
 }
 function renderPrep(){ const k=S.prep[S.i];
   obraz(k.img); hlava(); $("scena").textContent=`${DNY[S.i]}, ${k.scena}`;
