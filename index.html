@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121722 -->
+<!-- pasmo build 202608121723 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -2010,7 +2010,7 @@ const KRIT=[
   // Táž potíž jako u útěku o řádek výš, jen dvakrát: „Venku hlasy", „Zalezeš hlouběji"
   // i „Vylezl jsi moc brzy" předpokládají, že jsi uvnitř. Dvě ze čtyř odpovědí na tomhle
   // beatu jsou ale odejít, a záchrana se spouští i po nich.
-  zach:{need:"proviant", ok:"Voices and steps: somebody is going round and round out there. You go to ground where you cannot be seen and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day, but your stores ran out by morning. You moved half a day sooner than you should have."},
+  zach:{need:"proviant", ok:"Voices and steps: somebody is going round and round out there. You go to ground where you cannot be seen and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day, but your stores ran out by morning. You moved half a day too soon."},
   inf:{text:"Your shelter is arranged: you can get inside and nobody will ask. Inside, you can wait in the warm until deep night. Stepping out now, at dusk, would hand you to the first passer-by.", l:"Inside, wait for night", p:"Better go now", spravna:"l"},
   bl:{text:"A cold hole outside town that nobody has set foot in for years. Whether that holds today, you do not know. Outside it is broad daylight and the plain has not one tree on it.", l:"Go now", p:"Stay where you are", spravna:"p"}},
  {need:"mapa", scena:"the patrol", img:"mapa.png",
@@ -2440,7 +2440,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121722";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121723";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
