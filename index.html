@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121529 -->
+<!-- pasmo build 202608121543 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -539,7 +539,7 @@ function noveMesto(){ MESTO=null; ZNAM={}; try{ localStorage.removeItem("pasmo-m
   nactiMesto(); toast("nové město, lidi neznáš"); nova(); }
 
 function nova(){
-  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false};
+  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false,dratViden:false};
   if(!MESTO) nactiMesto();
   // vylosuj obsazení pro tenhle běh: každou potřebu nabízí jiný člověk z poolu
   S.needy = NEED.map(n=>({ t:n.t, need:n.need, usv:n.usv, img:n.img, scena:n.scena, uvod:n.uvod, l:vyber(n.lPool), p:vyber(n.pPool) }));
@@ -657,6 +657,7 @@ function render(){ stopCas();
   if(S.faze==="prep") return renderPrep();
   if(S.faze==="vyslech") return renderVyslech();
   if(S.faze==="prechod") return renderPrechod();
+  if(S.faze==="prechod-drat") return renderDrat();
 }
 function renderIntro(){ const k=INTRO[S.introI]; document.body.classList.remove("tik");
   document.body.classList.toggle("noc", !!k.noc);   // intro se odehrává po tmě, den začne až prvním sháněním
@@ -908,8 +909,30 @@ const KRIT=[
  {need:"spojka", scena:"druhá strana", img:"nocni_ulice.png",
   zach:{need:"peníze", ok:"Chlap v montérkách si tě dlouho měří. Pak beze slova natáhne dlaň. Dáš mu, co zbylo. Kývne směrem k seníku.", fail:"Na dlani jsi měl, co zbylo. Podíval se na to a šel k telefonu."},
   inf:{text:"Jsi za drátem. Podle domluvy tě u kříže na kraji lesa čeká člověk, co tě schová. Jdeš k němu opatrně, ať je to opravdu on.", l:"Schovat se a čekat", p:"Ke kříži, tiše", spravna:"p"},
-  bl:{text:"Jsi za drátem, ve tmě, v cizí zemi. A nikdo o tobě neví. Ve vesnici nalevo blikají světla a lidi tady znají hlídku jménem. Les napravo mlčí a je prázdný.", l:"Do vesnice, hledat pomoc", p:"Do lesa, dál od lidí", spravna:"p"}},
+  bl:{text:"Jsi za drátem, ve tmě, v cizí zemi. A nikdo o tobě neví. Ve vesnici nalevo blikají světla a lidi tady znají hlídku jménem. Les napravo mlčí a je prázdný.", l:"Do vesnice, hledat pomoc", p:"Do lesa, dál od lidí", spravna:"p"},
+  zaDratem:true},
 ];
+/* ---------- DRÁT ----------------------------------------------------------------------
+   Hra se jmenuje Pásmo a drát se v ní do teď nikdy nepřestřihl. Beat „poslední silnice"
+   je PŘED pásmem, beat „druhá strana" začíná slovy „Jsi za drátem", a mezi nimi se
+   nestalo nic, co by hráč viděl. Titulní událost se odehrávala v mezeře. Kleště, celý den
+   shánění a jediná potřeba, kde ani pravá strana není čistá, přitom neměly ve hře jedinou
+   scénu: objevovaly se jen jako záchrana u hlídky.
+
+   Je to karta bez volby, jako úvod přechodu nebo dozvuk. Šestý beat s vlastním selháním
+   by změnil obtížnost i délku hry, a to jsou věci, na které se bez majitele nesahá. Tady
+   se nedá prohrát, protože tady se neháže: kdo došel až sem, ty štípačky má.
+
+   Text se liší podle POPLACHU, ne podle výbavy, a je to schválně. Obě strany kleští dávají
+   tytéž štípačky z téže police; liší se jen tím, jestli po nich zůstal podpis. Věta „tvoje
+   nářadí je horší" by proto byla v půlce běhů lež. Poplach je naopak stav, který hra
+   opravdu vede (S.utekl).
+
+   Obrázek je zatím vypůjčený checkpoint, protože drát mezi dvanácti ilustracemi není.
+   Zadání na vlastní je v OBRAZKY.md.                                                     */
+const DRAT={ scena:"drát", img:"checkpoint.png",
+  klid:"Pruh hlíny urovnaný hráběmi, široký jako silnice. Za ním tři řady ostnatého drátu na betonových sloupcích. Tohle je to pásmo.\n\nPřejdeš ho po špičkách a víš, že je to k ničemu: stopy tam zůstanou tak jako tak. U spodního drátu si lehneš a vytáhneš štípačky.\n\nPrvní střih je slyšet až do lesa. Počkáš. Nic. Druhý, třetí, a drát se svine sám do stran. Protáhneš se po břiše.",
+  poplach:"Pruh hlíny urovnaný hráběmi, široký jako silnice. Za ním tři řady ostnatého drátu na betonových sloupcích. Tohle je to pásmo.\n\nNěkde vzadu tě pořád hledají, takže se nepřechází po špičkách, ale během. Stopy za tebou zůstanou jako podpis. U spodního drátu padneš na břicho a vytáhneš štípačky.\n\nStřihat rychle znamená střihat nahlas. Jeden. Druhý. Třetí, a drát se svine sám do stran."};
 function spustPrechod(){
   S.prechodKarty = KRIT.map(b=>{
     const amb=(b.need==="mapa"&&S.prozrazenaTrasa);
@@ -918,7 +941,8 @@ function spustPrechod(){
     const silny=solid||amb;                 // solidní výbava / ambush = jasná nápověda; slabá výbava = mlhavá
     // need patří dovnitř: finale() z něj bere důvod do playtest logu (proc.need). Bez něj se
     // do záznamu uložil celý objekt beatu a příčina smrti u drátů se z logu nedala přečíst.
-    return {need:b.need,scena:b.scena,img:b.img,text:v.text,l:v.l,p:v.p,spravna:v.spravna,jisty:silny,slaby:!silny,zach:b.zach};
+    return {need:b.need,scena:b.scena,img:b.img,text:v.text,l:v.l,p:v.p,spravna:v.spravna,jisty:silny,slaby:!silny,zach:b.zach,
+            zaDratem:!!b.zaDratem};   // před tímhle beatem se přestřihne drát
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
   obraz("nocni_ulice.png"); $("mery").style.display="none"; $("scena").textContent="neděle v noci";
@@ -972,7 +996,17 @@ function pruser(b){
   if(!ok){ S.zrada=z.fail; return finale("draty",b); }
   // ZVUK VYPNUT: Z.drat() u záchrany kleštěmi
   textCross(z.ok,true); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
-function prechodDal(){ S.i++; if(S.i<S.prechodKarty.length){S.faze="prechod"; return render();} return finale("prechod",null); }
+function prechodDal(){ S.i++;
+  if(S.i>=S.prechodKarty.length) return finale("prechod",null);
+  // Drát leží mezi poslední silnicí a druhou stranou, tedy těsně před beatem, který je za ním.
+  // dratViden hlídá, ať se to stane jednou: beaty se neopakují, ale stav je levnější než víra.
+  if(S.prechodKarty[S.i].zaDratem && !S.dratViden){ S.dratViden=true; S.faze="prechod-drat"; return render(); }
+  S.faze="prechod"; return render(); }
+function renderDrat(){ stopCas(); document.body.classList.add("noc","prechod");
+  obraz(DRAT.img); $("scena").textContent=`přechod, ${DRAT.scena}`;
+  zaloguj({ev:"drat", poplach:!!S.utekl});
+  textCross(S.utekl?DRAT.poplach:DRAT.klid,false);
+  volbyRe("Na druhou stranu"); }
 
 /* časovač */
 function spustCas(){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)"; $("oharek").style.left="calc(100% - 5px)";
@@ -1133,6 +1167,7 @@ function act(side){
   if(S.faze==="vyslech-re") return swipe(side, vyslechDal);
   if(S.faze==="vyslech-souhrn") return swipe(side, vyslechSouhrnDal);
   if(S.faze==="prechod-intro") return swipe(side, ()=>{ S.faze="prechod"; render(); });
+  if(S.faze==="prechod-drat") return swipe(side, ()=>{ S.faze="prechod"; render(); });
   if(S.faze==="prechod-re") return swipe(side, prechodDal);
   if(S.faze==="konec") return swipe(side, side==="p"?noveMesto:nova);
 }
@@ -1513,7 +1548,7 @@ function noveMesto(){ MESTO=null; ZNAM={}; try{ localStorage.removeItem("pasmo-m
   nactiMesto(); toast("a new town, you know nobody here"); nova(); }
 
 function nova(){
-  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false};
+  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false,dratViden:false};
   if(!MESTO) nactiMesto();
   // vylosuj obsazení pro tenhle běh: každou potřebu nabízí jiný člověk z poolu
   S.needy = NEED.map(n=>({ t:n.t, need:n.need, usv:n.usv, img:n.img, scena:n.scena, uvod:n.uvod, l:vyber(n.lPool), p:vyber(n.pPool) }));
@@ -1631,6 +1666,7 @@ function render(){ stopCas();
   if(S.faze==="prep") return renderPrep();
   if(S.faze==="vyslech") return renderVyslech();
   if(S.faze==="prechod") return renderPrechod();
+  if(S.faze==="prechod-drat") return renderDrat();
 }
 function renderIntro(){ const k=INTRO[S.introI]; document.body.classList.remove("tik");
   document.body.classList.toggle("noc", !!k.noc);   // intro se odehrává po tmě, den začne až prvním sháněním
@@ -1882,8 +1918,30 @@ const KRIT=[
  {need:"spojka", scena:"the other side", img:"nocni_ulice.png",
   zach:{need:"peníze", ok:"A man in overalls looks you over for a long time. Then he wordlessly holds out his palm. You give him what is left. He nods toward the hayloft.", fail:"On your palm was what you had left. He looked at it and went to the telephone."},
   inf:{text:"You are past the wire. As agreed, a man waits by the cross at the forest’s edge to hide you. You go to him carefully, making sure it is really him.", l:"Hide and wait", p:"To the cross, quietly", spravna:"p"},
-  bl:{text:"You are past the wire, in the dark, in a foreign country. And nobody knows you exist. Village lights blink to the left, and the people there know the patrol by name. The forest to the right is silent and empty.", l:"To the village, find help", p:"Into the forest, away from people", spravna:"p"}},
+  bl:{text:"You are past the wire, in the dark, in a foreign country. And nobody knows you exist. Village lights blink to the left, and the people there know the patrol by name. The forest to the right is silent and empty.", l:"To the village, find help", p:"Into the forest, away from people", spravna:"p"},
+  zaDratem:true},
 ];
+/* ---------- DRÁT ----------------------------------------------------------------------
+   Hra se jmenuje Pásmo a drát se v ní do teď nikdy nepřestřihl. Beat „poslední silnice"
+   je PŘED pásmem, beat „druhá strana" začíná slovy „Jsi za drátem", a mezi nimi se
+   nestalo nic, co by hráč viděl. Titulní událost se odehrávala v mezeře. Kleště, celý den
+   shánění a jediná potřeba, kde ani pravá strana není čistá, přitom neměly ve hře jedinou
+   scénu: objevovaly se jen jako záchrana u hlídky.
+
+   Je to karta bez volby, jako úvod přechodu nebo dozvuk. Šestý beat s vlastním selháním
+   by změnil obtížnost i délku hry, a to jsou věci, na které se bez majitele nesahá. Tady
+   se nedá prohrát, protože tady se neháže: kdo došel až sem, ty štípačky má.
+
+   Text se liší podle POPLACHU, ne podle výbavy, a je to schválně. Obě strany kleští dávají
+   tytéž štípačky z téže police; liší se jen tím, jestli po nich zůstal podpis. Věta „tvoje
+   nářadí je horší" by proto byla v půlce běhů lež. Poplach je naopak stav, který hra
+   opravdu vede (S.utekl).
+
+   Obrázek je zatím vypůjčený checkpoint, protože drát mezi dvanácti ilustracemi není.
+   Zadání na vlastní je v OBRAZKY.md.                                                     */
+const DRAT={ scena:"drát", img:"checkpoint.png",
+  klid:"Pruh hlíny urovnaný hráběmi, široký jako silnice. Za ním tři řady ostnatého drátu na betonových sloupcích. Tohle je to pásmo.\n\nPřejdeš ho po špičkách a víš, že je to k ničemu: stopy tam zůstanou tak jako tak. U spodního drátu si lehneš a vytáhneš štípačky.\n\nPrvní střih je slyšet až do lesa. Počkáš. Nic. Druhý, třetí, a drát se svine sám do stran. Protáhneš se po břiše.",
+  poplach:"Pruh hlíny urovnaný hráběmi, široký jako silnice. Za ním tři řady ostnatého drátu na betonových sloupcích. Tohle je to pásmo.\n\nNěkde vzadu tě pořád hledají, takže se nepřechází po špičkách, ale během. Stopy za tebou zůstanou jako podpis. U spodního drátu padneš na břicho a vytáhneš štípačky.\n\nStřihat rychle znamená střihat nahlas. Jeden. Druhý. Třetí, a drát se svine sám do stran."};
 function spustPrechod(){
   S.prechodKarty = KRIT.map(b=>{
     const amb=(b.need==="mapa"&&S.prozrazenaTrasa);
@@ -1892,7 +1950,8 @@ function spustPrechod(){
     const silny=solid||amb;                 // solidní výbava / ambush = jasná nápověda; slabá výbava = mlhavá
     // need patří dovnitř: finale() z něj bere důvod do playtest logu (proc.need). Bez něj se
     // do záznamu uložil celý objekt beatu a příčina smrti u drátů se z logu nedala přečíst.
-    return {need:b.need,scena:b.scena,img:b.img,text:v.text,l:v.l,p:v.p,spravna:v.spravna,jisty:silny,slaby:!silny,zach:b.zach};
+    return {need:b.need,scena:b.scena,img:b.img,text:v.text,l:v.l,p:v.p,spravna:v.spravna,jisty:silny,slaby:!silny,zach:b.zach,
+            zaDratem:!!b.zaDratem};   // před tímhle beatem se přestřihne drát
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
   obraz("nocni_ulice.png"); $("mery").style.display="none"; $("scena").textContent="Sunday at night";
@@ -1946,7 +2005,17 @@ function pruser(b){
   if(!ok){ S.zrada=z.fail; return finale("draty",b); }
   // ZVUK VYPNUT: Z.drat() u záchrany kleštěmi
   textCross(z.ok,true); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
-function prechodDal(){ S.i++; if(S.i<S.prechodKarty.length){S.faze="prechod"; return render();} return finale("prechod",null); }
+function prechodDal(){ S.i++;
+  if(S.i>=S.prechodKarty.length) return finale("prechod",null);
+  // Drát leží mezi poslední silnicí a druhou stranou, tedy těsně před beatem, který je za ním.
+  // dratViden hlídá, ať se to stane jednou: beaty se neopakují, ale stav je levnější než víra.
+  if(S.prechodKarty[S.i].zaDratem && !S.dratViden){ S.dratViden=true; S.faze="prechod-drat"; return render(); }
+  S.faze="prechod"; return render(); }
+function renderDrat(){ stopCas(); document.body.classList.add("noc","prechod");
+  obraz(DRAT.img); $("scena").textContent=`přechod, ${DRAT.scena}`;
+  zaloguj({ev:"drat", poplach:!!S.utekl});
+  textCross(S.utekl?DRAT.poplach:DRAT.klid,false);
+  volbyRe("Na druhou stranu"); }
 
 /* časovač */
 function spustCas(){ stopCas(); document.body.classList.add("tik"); let w=100; $("odpocet").style.transform="scaleX(1)"; $("oharek").style.left="calc(100% - 5px)";
@@ -2107,6 +2176,7 @@ function act(side){
   if(S.faze==="vyslech-re") return swipe(side, vyslechDal);
   if(S.faze==="vyslech-souhrn") return swipe(side, vyslechSouhrnDal);
   if(S.faze==="prechod-intro") return swipe(side, ()=>{ S.faze="prechod"; render(); });
+  if(S.faze==="prechod-drat") return swipe(side, ()=>{ S.faze="prechod"; render(); });
   if(S.faze==="prechod-re") return swipe(side, prechodDal);
   if(S.faze==="konec") return swipe(side, side==="p"?noveMesto:nova);
 }
@@ -2178,7 +2248,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121529";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121543";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
