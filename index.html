@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121758 -->
+<!-- pasmo build 202608121825 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -503,7 +503,32 @@ const LOG_JE = (typeof localStorage!=="undefined");
 let LOG=[], LOG_BEH=0;
 if(LOG_JE){ try{ LOG=JSON.parse(localStorage.getItem("pasmo-log")||"[]"); }catch(e){ LOG=[]; }
   LOG_BEH = LOG.reduce((m,z)=>Math.max(m,z.beh||0),0); }
+/* ---------- ÚKLID LOGU ------------------------------------------------------------------
+   Log je jediné tvrdé měřidlo o skutečných hráčích, a přitom byl napsaný tak, že nejvíc
+   škodil tomu, kdo hraje nejvíc, tedy přesně tomu, o čí data jde.
+
+   Zapisoval se PO KAŽDÉ UDÁLOSTI a pokaždé serializoval CELÝ log. Jeden běh je zhruba
+   28 událostí a 5,9 kB, takže při padesáti odehraných bězích psal každý tah 288 kB a za ten
+   padesátý běh se do localStorage zapsalo 7,9 MB. Roste to s druhou mocninou: sto běhů je
+   796 MB celkem, čtyři sta je 12 GB. Na telefonu je to škubnutí na každé kartě.
+
+   Zapisuje se proto na KONCI běhu. Rozehraný běh se do paměti prohlížeče nedostane, což
+   nevadí: klávesa L kopíruje LOG z paměti, tedy i rozehraný běh, a čtečka stejně seskupuje
+   po bězích. Pojistka na dlouhé sezení bez konce je počítadlo.
+
+   A strop, protože jinak by log rostl donekonečna. Prvních třicet běhů se nezahazuje NIKDY:
+   hráč je nováčkem jenom jednou a právě ta data se nedají získat znovu.                    */
+const LOG_STROP=200, LOG_PRVNI=30, LOG_POJISTKA=200;
+let LOG_NEULOZENO=0;
+function orizniLog(){
+  const behy=[...new Set(LOG.map(z=>z.beh))];
+  if(behy.length<=LOG_STROP) return;
+  const drz=new Set(behy.slice(0,LOG_PRVNI).concat(behy.slice(-(LOG_STROP-LOG_PRVNI))));
+  LOG=LOG.filter(z=>drz.has(z.beh));
+}
 function zaloguj(z){ if(!LOG_JE) return; LOG.push(Object.assign({beh:LOG_BEH,ms:Date.now()},z));
+  if(z.ev!=="konec" && ++LOG_NEULOZENO<LOG_POJISTKA) return;
+  LOG_NEULOZENO=0; orizniLog();
   try{ localStorage.setItem("pasmo-log",JSON.stringify(LOG)); }catch(e){} }
 function kopirujLog(){ if(!LOG_JE) return; const s=JSON.stringify(LOG);
   const ta=document.createElement("textarea"); ta.value=s; ta.style.position="fixed"; ta.style.opacity="0";
@@ -546,7 +571,11 @@ function nova(){
   // povaha je pevná, ne losovaná na běh: co jsi o člověku jednou zjistil, platí i příště
   S.needy.forEach(n=>[n.l,n.p].forEach(s=>{ if(s.kdo && s.typ==="svedek" && !(s.kdo in S.talked))
     S.talked[s.kdo] = (s.kdo in MESTO) ? MESTO[s.kdo] : (MESTO[s.kdo]=Math.random()<(s.talk??.5)); }));
-  LOG_BEH++; zaloguj({ev:"start", cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
+  // prah a ver jdou do logu proto, aby se z došlého záznamu poznalo, jak byla hra naladěná.
+  // Bez nich se dva logy z různě nastavených buildů nedají odlišit a míchaly by se do jedné
+  // tabulky, což je nejtišší způsob, jak si měřením ublížit.
+  LOG_BEH++; zaloguj({ev:"start", prah:PRAH_SPIS, ver:VER_ZTRATA,
+    cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
   document.body.className="";
   render();
 }
@@ -1622,7 +1651,32 @@ const LOG_JE = (typeof localStorage!=="undefined");
 let LOG=[], LOG_BEH=0;
 if(LOG_JE){ try{ LOG=JSON.parse(localStorage.getItem("pasmo-log")||"[]"); }catch(e){ LOG=[]; }
   LOG_BEH = LOG.reduce((m,z)=>Math.max(m,z.beh||0),0); }
+/* ---------- ÚKLID LOGU ------------------------------------------------------------------
+   Log je jediné tvrdé měřidlo o skutečných hráčích, a přitom byl napsaný tak, že nejvíc
+   škodil tomu, kdo hraje nejvíc, tedy přesně tomu, o čí data jde.
+
+   Zapisoval se PO KAŽDÉ UDÁLOSTI a pokaždé serializoval CELÝ log. Jeden běh je zhruba
+   28 událostí a 5,9 kB, takže při padesáti odehraných bězích psal každý tah 288 kB a za ten
+   padesátý běh se do localStorage zapsalo 7,9 MB. Roste to s druhou mocninou: sto běhů je
+   796 MB celkem, čtyři sta je 12 GB. Na telefonu je to škubnutí na každé kartě.
+
+   Zapisuje se proto na KONCI běhu. Rozehraný běh se do paměti prohlížeče nedostane, což
+   nevadí: klávesa L kopíruje LOG z paměti, tedy i rozehraný běh, a čtečka stejně seskupuje
+   po bězích. Pojistka na dlouhé sezení bez konce je počítadlo.
+
+   A strop, protože jinak by log rostl donekonečna. Prvních třicet běhů se nezahazuje NIKDY:
+   hráč je nováčkem jenom jednou a právě ta data se nedají získat znovu.                    */
+const LOG_STROP=200, LOG_PRVNI=30, LOG_POJISTKA=200;
+let LOG_NEULOZENO=0;
+function orizniLog(){
+  const behy=[...new Set(LOG.map(z=>z.beh))];
+  if(behy.length<=LOG_STROP) return;
+  const drz=new Set(behy.slice(0,LOG_PRVNI).concat(behy.slice(-(LOG_STROP-LOG_PRVNI))));
+  LOG=LOG.filter(z=>drz.has(z.beh));
+}
 function zaloguj(z){ if(!LOG_JE) return; LOG.push(Object.assign({beh:LOG_BEH,ms:Date.now()},z));
+  if(z.ev!=="konec" && ++LOG_NEULOZENO<LOG_POJISTKA) return;
+  LOG_NEULOZENO=0; orizniLog();
   try{ localStorage.setItem("pasmo-log",JSON.stringify(LOG)); }catch(e){} }
 function kopirujLog(){ if(!LOG_JE) return; const s=JSON.stringify(LOG);
   const ta=document.createElement("textarea"); ta.value=s; ta.style.position="fixed"; ta.style.opacity="0";
@@ -1665,7 +1719,11 @@ function nova(){
   // povaha je pevná, ne losovaná na běh: co jsi o člověku jednou zjistil, platí i příště
   S.needy.forEach(n=>[n.l,n.p].forEach(s=>{ if(s.kdo && s.typ==="svedek" && !(s.kdo in S.talked))
     S.talked[s.kdo] = (s.kdo in MESTO) ? MESTO[s.kdo] : (MESTO[s.kdo]=Math.random()<(s.talk??.5)); }));
-  LOG_BEH++; zaloguj({ev:"start", cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
+  // prah a ver jdou do logu proto, aby se z došlého záznamu poznalo, jak byla hra naladěná.
+  // Bez nich se dva logy z různě nastavených buildů nedají odlišit a míchaly by se do jedné
+  // tabulky, což je nejtišší způsob, jak si měřením ublížit.
+  LOG_BEH++; zaloguj({ev:"start", prah:PRAH_SPIS, ver:VER_ZTRATA,
+    cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
   document.body.className="";
   render();
 }
@@ -2468,7 +2526,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121758";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121825";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
