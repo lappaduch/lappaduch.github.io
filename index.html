@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121716 -->
+<!-- pasmo build 202608121722 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -902,7 +902,10 @@ const KRIT=[
   utek:"Byli u tebe dřív, než jsi je uslyšel. Ven a pryč, přes trávu a strouhu, dokud stačil dech.\n\nZa tebou hlasy, které na sebe volají čísla. Ležíš v příkopu a počítáš do sta. Nikdo nepřišel. Ale tvůj úkryt už úkryt není a oni vědí, že tudy někdo šel.",
   // „obchází stavení" tu bylo, jenže úkryt je ve dvou případech ze čtyř kůlna nebo výklenek
   // v peci staré cihelny, a to stavení není. Věta platí pro DRUH úkrytu, ne pro jeden z nich.
-  zach:{need:"proviant", ok:"Venku hlasy a kroky: někdo to tu obchází dokola. Zalezeš hlouběji a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den, ale zásoby došly do rána. Vylezl jsi moc brzy."},
+  // Táž potíž jako u útěku o řádek výš, jen dvakrát: „Venku hlasy", „Zalezeš hlouběji"
+  // i „Vylezl jsi moc brzy" předpokládají, že jsi uvnitř. Dvě ze čtyř odpovědí na tomhle
+  // beatu jsou ale odejít, a záchrana se spouští i po nich.
+  zach:{need:"proviant", ok:"Hlasy a kroky: někdo to tu obchází dokola. Zalehneš tam, kde tě není vidět, a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den, ale zásoby došly do rána. Hnul ses o půl dne dřív, než jsi měl."},
   inf:{text:"Máš domluvený nocleh: dovnitř se dostaneš a nikdo se ptát nebude. Uvnitř přečkáš v teple do hluboké noci. Vyjít teď, za šera, by tě vydalo prvnímu, kdo půjde kolem.", l:"Dovnitř, počkat na noc", p:"Jít radši hned", spravna:"l"},
   bl:{text:"Studená díra za městem, kam roky nikdo nevkročil. Že to tak zůstane i dnes, nevíš. Venku je bílý den a pláň bez jediného stromu.", l:"Jít hned", p:"Zůstat, kde jsi", spravna:"p"}},
  {need:"mapa", scena:"hlídka", img:"mapa.png",
@@ -2004,7 +2007,10 @@ const KRIT=[
   utek:"They were on you before you heard them. Out and away, over grass and a gully, while your breath held.\n\nBehind you, voices calling numbers to each other. You lie in a ditch and count to a hundred. Nobody came. But your hiding place is not a hiding place any more, and they know somebody came through here.",
   // „obchází stavení" tu bylo, jenže úkryt je ve dvou případech ze čtyř kůlna nebo výklenek
   // v peci staré cihelny, a to stavení není. Věta platí pro DRUH úkrytu, ne pro jeden z nich.
-  zach:{need:"proviant", ok:"Voices and steps outside: somebody is going round and round out there. You burrow deeper and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day, but your stores ran out by morning. You came out too early."},
+  // Táž potíž jako u útěku o řádek výš, jen dvakrát: „Venku hlasy", „Zalezeš hlouběji"
+  // i „Vylezl jsi moc brzy" předpokládají, že jsi uvnitř. Dvě ze čtyř odpovědí na tomhle
+  // beatu jsou ale odejít, a záchrana se spouští i po nich.
+  zach:{need:"proviant", ok:"Voices and steps: somebody is going round and round out there. You go to ground where you cannot be seen and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day, but your stores ran out by morning. You moved half a day sooner than you should have."},
   inf:{text:"Your shelter is arranged: you can get inside and nobody will ask. Inside, you can wait in the warm until deep night. Stepping out now, at dusk, would hand you to the first passer-by.", l:"Inside, wait for night", p:"Better go now", spravna:"l"},
   bl:{text:"A cold hole outside town that nobody has set foot in for years. Whether that holds today, you do not know. Outside it is broad daylight and the plain has not one tree on it.", l:"Go now", p:"Stay where you are", spravna:"p"}},
  {need:"mapa", scena:"the patrol", img:"mapa.png",
@@ -2434,7 +2440,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121716";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121722";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
