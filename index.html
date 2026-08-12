@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121703 -->
+<!-- pasmo build 202608121708 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -898,7 +898,7 @@ const KRIT=[
   // takový tu být nemůže. Hlídá to scénář „první beat nesmí mít záchranu".
   inf:{text:"Závora a osvětlená budka. Máš razítkovanou propustku: stráž tě mávnutím pustí, sotva ji ukážeš. Kolem budky je pole bez jediného keře a světlo z okna dosahuje daleko.", l:"Ukázat propustku", p:"Obejít potmě", spravna:"l"},
   bl:{text:"Závora a budka, ve které se svítí. Příkop podél silnice tě vede rovnou pod osvětlené okno budky. Přes pole je to holá pláň, zato dál od světla.", l:"Příkopem", p:"Přes pole", spravna:"p"}},
- {need:"úkryt", scena:"poslední noc", img:"kostel.png",
+ {need:"úkryt", scena:"poslední noc", img:"kostel.png", zaSvetla:true,   // hraje se za dne, viz KONEC_NOCI
   utek:"Někdo zvenku zabral za dveře. Ne zvědavě, ale naplno. Vyrazil jsi druhou stranou, přes zeď a dolů do trávy, a utíkal, dokud stačil dech.\n\nZa tebou hlasy, které na sebe volají čísla. Ležíš v příkopu a počítáš do sta. Nikdo nepřišel. Ale tvůj úkryt už úkryt není a oni vědí, že tudy někdo šel.",
   // „obchází stavení" tu bylo, jenže úkryt je ve dvou případech ze čtyř kůlna nebo výklenek
   // v peci staré cihelny, a to stavení není. Věta platí pro DRUH úkrytu, ne pro jeden z nich.
@@ -959,16 +959,22 @@ const KRIT=[
    kde jdeš polem potmě. Místo tvrzení o lidech je tam obraz, který platí v obou: světlo z budky
    je v obou textech beatu.                                                                  */
 const PROSEL=[
-  // Druhý beat je za světla („Venku je bílý den", u solidní varianty „Vyjít teď, za šera"),
-  // a to je nosné: obě nápovědy stojí na tom, že by tě venku bylo vidět. Jenže tenhle beat
-  // končí ve tmě, takže hráč četl noc, pak bílý den a pak zase noc, a mezi tím se nestalo nic.
-  // Přechod trvá dýl než jednu noc; říká to i záchrana u úkrytu („Druhou noc vyrážíš znovu").
-  // Nikde to ale nezaznělo dřív, než se to začalo předpokládat.
-  "Závora zůstala za tebou. Světlo z budky končí kus za polem a dál je černo. Do rána zbývá kus noci a pak celý den, který musíš někde přečkat.",
+  "Závora zůstala za tebou. Světlo z budky končí kus za polem a dál je černo.",
   "Přečkal jsi. Venku je černo.",
   "Ticho. Prošel jsi.",
   "Silnice je za tebou. Nikdo nekřičel.",
   "Srdce až v krku, ale kolem klid."];
+/* ---------- konec noci ------------------------------------------------------------------
+   Beat s úkrytem se hraje ZA SVĚTLA v obou variantách („Venku je bílý den", u solidní
+   „Vyjít teď, za šera") a je to nosné: obě nápovědy stojí na tom, že by tě venku bylo vidět.
+   Beat před ním ale končí ve tmě a ten další zase začíná v noci, takže hráč četl noc, bílý
+   den a zase noc, a mezi tím se nestalo nic. Přechod trvá dýl než jednu noc; předpokládá to
+   i záchrana u úkrytu („Druhou noc vyrážíš znovu"). Nikde to jen nezaznělo.
+
+   Věta visí na ODCHODU z předchozího beatu, ne na jeho zvládnutí. Napoprvé jsem ji dal jen
+   do dozvuku po úspěchu, jenže tam se závora nezvládne ve třiceti procentech běhů, a ti
+   hráči skákali ze tmy do dne dál. Vidí ji tedy i ten, kdo odtamtud utekl.                 */
+const KONEC_NOCI="Do rána zbývá kus noci a pak celý den, který musíš někde přečkat.";
 /* ---------- PŘÍCHOD K HRANICI ----------------------------------------------------------
    Devět potřeb z deseti má v přechodu roli: pět jich má vlastní beat, čtyři zachraňují.
    Svoz neměl žádnou. Jeho jediný mechanický účinek byl záporný (přiznat ho u výslechu
@@ -996,6 +1002,7 @@ function spustPrechod(){
     // do záznamu uložil celý objekt beatu a příčina smrti u drátů se z logu nedala přečíst.
     return {need:b.need,scena:b.scena,img:b.img,text:v.text,l:v.l,p:v.p,spravna:v.spravna,jisty:silny,slaby:!silny,zach:b.zach,
             utek:b.utek,               // útěk po prvním průšvihu, per beat: viz komentář u pruser()
+            zaSvetla:!!b.zaSvetla,     // tenhle beat se hraje za dne, takže noc musí předtím skončit
             zaDratem:!!b.zaDratem};   // před tímhle beatem se přestřihne drát
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
@@ -1027,7 +1034,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
-  pripis(PROSEL[S.i]); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
+  pripis(PROSEL[S.i]+dosvitalo()); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
@@ -1039,7 +1046,7 @@ function pruser(b){
   // straně, kde už hráč v pásmu dávno není. Tatáž past jako u beatů: věta pravdivá na jednom
   // místě a nepravdivá o dvě karty dál. Sesbírané v datech, ne v kódu, aby ji viděla pravidla textů.
   if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena}); Z.chvej([60,40,60]);   // ZVUK VYPNUT: Z.poplach(), Z.pes()
-    textCross(b.utek,true);
+    textCross(b.utek+dosvitalo(),true);
     volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; return; }
   // druhá záchrana: výbava: ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
   const z=b.zach;
@@ -1051,6 +1058,10 @@ function pruser(b){
   if(!ok){ S.zrada=z.fail; return finale("draty",b); }
   // ZVUK VYPNUT: Z.drat() u záchrany kleštěmi
   textCross(z.ok,true); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
+// Konec noci se přilepí na odchod z beatu, po kterém přijde ten za světla, ať se odchází
+// jakkoli: projít i utéct. Prázdný řetězec jinde, aby se dal beze všeho lepit za každý dozvuk.
+function dosvitalo(){ const dalsi=S.prechodKarty[S.i+1];
+  return (dalsi && dalsi.zaSvetla) ? " "+KONEC_NOCI : ""; }
 function prechodDal(){ S.i++;
   if(S.i>=S.prechodKarty.length) return finale("prechod",null);
   // Drát leží mezi poslední silnicí a druhou stranou, tedy těsně před beatem, který je za ním.
@@ -1981,7 +1992,7 @@ const KRIT=[
   // takový tu být nemůže. Hlídá to scénář „první beat nesmí mít záchranu".
   inf:{text:"A barrier and a lit guardhouse. You have a stamped permit: the guard will wave you through the moment you show it. The field around the guardhouse has not a single bush on it, and the light from the window carries a long way.", l:"Show the permit", p:"Slip around in the dark", spravna:"l"},
   bl:{text:"A barrier, and a guardhouse with the light on. The ditch along the road leads right under the lit window. The field is open ground, but far from the light.", l:"Through the ditch", p:"Across the field", spravna:"p"}},
- {need:"úkryt", scena:"the last night", img:"kostel.png",
+ {need:"úkryt", scena:"the last night", img:"kostel.png", zaSvetla:true,   // hraje se za dne, viz KONEC_NOCI
   utek:"Somebody pulled at the door from outside. Not out of curiosity, but hard. You went out the other way, over the wall and down into the grass, and ran while your breath held.\n\nBehind you, voices calling numbers to each other. You lie in a ditch and count to a hundred. Nobody came. But your hiding place is not a hiding place any more, and they know somebody came through here.",
   // „obchází stavení" tu bylo, jenže úkryt je ve dvou případech ze čtyř kůlna nebo výklenek
   // v peci staré cihelny, a to stavení není. Věta platí pro DRUH úkrytu, ne pro jeden z nich.
@@ -2042,16 +2053,22 @@ const KRIT=[
    kde jdeš polem potmě. Místo tvrzení o lidech je tam obraz, který platí v obou: světlo z budky
    je v obou textech beatu.                                                                  */
 const PROSEL=[
-  // Druhý beat je za světla („Venku je bílý den", u solidní varianty „Vyjít teď, za šera"),
-  // a to je nosné: obě nápovědy stojí na tom, že by tě venku bylo vidět. Jenže tenhle beat
-  // končí ve tmě, takže hráč četl noc, pak bílý den a pak zase noc, a mezi tím se nestalo nic.
-  // Přechod trvá dýl než jednu noc; říká to i záchrana u úkrytu („Druhou noc vyrážíš znovu").
-  // Nikde to ale nezaznělo dřív, než se to začalo předpokládat.
-  "The barrier is behind you. The light from the hut stops a way out into the field and past that it is black. There is a piece of night left before morning, and then a whole day you have to sit out somewhere.",
+  "The barrier is behind you. The light from the hut stops a way out into the field and past that it is black.",
   "You waited it out. Outside it is black.",
   "Silence. You are through.",
   "The road is behind you. Nobody shouted.",
   "Heart in your throat, but all quiet."];
+/* ---------- konec noci ------------------------------------------------------------------
+   Beat s úkrytem se hraje ZA SVĚTLA v obou variantách („Venku je bílý den", u solidní
+   „Vyjít teď, za šera") a je to nosné: obě nápovědy stojí na tom, že by tě venku bylo vidět.
+   Beat před ním ale končí ve tmě a ten další zase začíná v noci, takže hráč četl noc, bílý
+   den a zase noc, a mezi tím se nestalo nic. Přechod trvá dýl než jednu noc; předpokládá to
+   i záchrana u úkrytu („Druhou noc vyrážíš znovu"). Nikde to jen nezaznělo.
+
+   Věta visí na ODCHODU z předchozího beatu, ne na jeho zvládnutí. Napoprvé jsem ji dal jen
+   do dozvuku po úspěchu, jenže tam se závora nezvládne ve třiceti procentech běhů, a ti
+   hráči skákali ze tmy do dne dál. Vidí ji tedy i ten, kdo odtamtud utekl.                 */
+const KONEC_NOCI="There is a piece of night left before morning, and then a whole day you have to sit out somewhere.";
 /* ---------- PŘÍCHOD K HRANICI ----------------------------------------------------------
    Devět potřeb z deseti má v přechodu roli: pět jich má vlastní beat, čtyři zachraňují.
    Svoz neměl žádnou. Jeho jediný mechanický účinek byl záporný (přiznat ho u výslechu
@@ -2079,6 +2096,7 @@ function spustPrechod(){
     // do záznamu uložil celý objekt beatu a příčina smrti u drátů se z logu nedala přečíst.
     return {need:b.need,scena:b.scena,img:b.img,text:v.text,l:v.l,p:v.p,spravna:v.spravna,jisty:silny,slaby:!silny,zach:b.zach,
             utek:b.utek,               // útěk po prvním průšvihu, per beat: viz komentář u pruser()
+            zaSvetla:!!b.zaSvetla,     // tenhle beat se hraje za dne, takže noc musí předtím skončit
             zaDratem:!!b.zaDratem};   // před tímhle beatem se přestřihne drát
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
@@ -2110,7 +2128,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
   zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
-  pripis(PROSEL[S.i]); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
+  pripis(PROSEL[S.i]+dosvitalo()); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
@@ -2122,7 +2140,7 @@ function pruser(b){
   // straně, kde už hráč v pásmu dávno není. Tatáž past jako u beatů: věta pravdivá na jednom
   // místě a nepravdivá o dvě karty dál. Sesbírané v datech, ne v kódu, aby ji viděla pravidla textů.
   if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena}); Z.chvej([60,40,60]);   // ZVUK VYPNUT: Z.poplach(), Z.pes()
-    textCross(b.utek,true);
+    textCross(b.utek+dosvitalo(),true);
     volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; return; }
   // druhá záchrana: výbava: ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
   const z=b.zach;
@@ -2134,6 +2152,10 @@ function pruser(b){
   if(!ok){ S.zrada=z.fail; return finale("draty",b); }
   // ZVUK VYPNUT: Z.drat() u záchrany kleštěmi
   textCross(z.ok,true); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
+// Konec noci se přilepí na odchod z beatu, po kterém přijde ten za světla, ať se odchází
+// jakkoli: projít i utéct. Prázdný řetězec jinde, aby se dal beze všeho lepit za každý dozvuk.
+function dosvitalo(){ const dalsi=S.prechodKarty[S.i+1];
+  return (dalsi && dalsi.zaSvetla) ? " "+KONEC_NOCI : ""; }
 function prechodDal(){ S.i++;
   if(S.i>=S.prechodKarty.length) return finale("prechod",null);
   // Drát leží mezi poslední silnicí a druhou stranou, tedy těsně před beatem, který je za ním.
@@ -2396,7 +2418,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121703";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121708";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
