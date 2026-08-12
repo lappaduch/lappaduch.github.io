@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121840 -->
+<!-- pasmo build 202608121851 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -519,8 +519,20 @@ if(LOG_JE){ try{ LOG=JSON.parse(localStorage.getItem("pasmo-log")||"[]"); }catch
    A strop, protože jinak by log rostl donekonečna. Prvních třicet běhů se nezahazuje NIKDY:
    hráč je nováčkem jenom jednou a právě ta data se nedají získat znovu.                    */
 // LOG_VERZE je verze schématu: zvedni ji, kdykoli přibude nebo zmizí druh události v logu.
-// Dnešní jednička znamená: start, prep, vyslech, prechod, utek, zachrana, drat, konec.
-const LOG_VERZE=1;
+// 1: start, prep, vyslech, prechod, utek, zachrana, drat, konec.
+// 2: k tomu přístroj a jazyk ve startu a příznak přetečení karty u každého rozhodnutí.
+const LOG_VERZE=2;
+/* PŘETEKLA KARTA? Pravidlo 3 říká, že se karta musí vejít bez scrollování, a je to jediné
+   ze sedmi, které se strojově ověřit NEDÁ: náhradní DOM v testech nemá layout, takže se
+   dnes jen přibližuje pásmem délky textu. Na skutečném přístroji se to změřit dá přesně,
+   a je to přesně ta věc, kvůli které se log od lidí sbírá.
+
+   Vrací undefined tam, kde se to zjistit nedá; JSON.stringify takové pole vynechá, takže
+   „nezměřeno" se v logu nepozná od „nepřeteklo" jen tehdy, když se na to čtečka zeptá
+   správně, a ta se ptá přes verzi schématu. */
+function preteklo(){ const t=$("telo");
+  return (t && typeof t.scrollHeight==="number" && typeof t.clientHeight==="number")
+    ? (t.scrollHeight > t.clientHeight+2) : undefined; }
 const LOG_STROP=200, LOG_PRVNI=30, LOG_POJISTKA=200;
 let LOG_NEULOZENO=0;
 function orizniLog(){
@@ -583,7 +595,12 @@ function nova(){
   // buildu napsala „došlo k drátu 0", což se čte jako „nikdo tam nedošel", a přitom ten build
   // drát jenom nelogoval. Až se hra rozejde k lidem, přijdou záznamy z různě starých verzí
   // a tohle je jediné, co je od sebe odliší.
+  // Přístroj a jazyk: bez nich se v došlém logu nepozná telefon od počítače ani česká větev
+  // od anglické, a přitom obojí mění délku textu i to, jak dlouho se čte. Míchat je do jedné
+  // tabulky by znamenalo měřit dvě různé hry naráz.
   LOG_BEH++; zaloguj({ev:"start", v:LOG_VERZE, prah:PRAH_SPIS, ver:VER_ZTRATA,
+    jazyk:"cs", dotyk:!MA_KLAVESNICI,
+    sirka:(typeof innerWidth==="number"?innerWidth:0), vyska:(typeof innerHeight==="number"?innerHeight:0),
     cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
   document.body.className="";
   render();
@@ -765,7 +782,7 @@ function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc
 function prepVyber(strana){ const k=S.prep[S.i], s=(strana==="l"?k.l:k.p);
   S.mam[k.need]=strana;
   S.stopy.push({need:k.need,kdo:s.kdo,typ:s.typ,usv:k.usv,ot:s.ot,ch:s.ch,strana,t:S.t});
-  zaloguj({ev:"prep", tyden:S.t, potreba:k.need, volba:s.jm, kdo:s.kdo, typ:s.typ, usv:k.usv, solid:strana==="l"});
+  zaloguj({ev:"prep", prel:preteklo(), tyden:S.t, potreba:k.need, volba:s.jm, kdo:s.kdo, typ:s.typ, usv:k.usv, solid:strana==="l"});
   pripis(s.re); skrtniDnes();   // jen neutrální reakce: jestli po tobě zůstala stopa, zjistíš až u výslechu
   volbyRe(S.i>=S.prep.length-1?"Přijde sobota":"Další den");
   S.faze="prep-re";
@@ -884,7 +901,7 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
     if(q.usv&&q.pouzito){doSpisu("rekl");vysl="Psací stroj klapl. Zapsáno. Tenhle list si podtrhl.";} else vysl="Psací stroj klapl. Zapsáno."; }
-  zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
+  zaloguj({ev:"vyslech", prel:preteklo(), tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[kl],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
   merky();
@@ -1086,7 +1103,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   // slabá jen mlhavě: ale správná strana jde vždy vyčíst z textu, nehádá se naslepo.
   // po prvním útěku je vyhlášen poplach: hlídky zhoustnou a každý další krok je o dost riskantnější
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
-  zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
+  zaloguj({ev:"prechod", prel:preteklo(), beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
   pripis(PROSEL[S.i]+dosvitalo()); volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
@@ -1683,8 +1700,20 @@ if(LOG_JE){ try{ LOG=JSON.parse(localStorage.getItem("pasmo-log")||"[]"); }catch
    A strop, protože jinak by log rostl donekonečna. Prvních třicet běhů se nezahazuje NIKDY:
    hráč je nováčkem jenom jednou a právě ta data se nedají získat znovu.                    */
 // LOG_VERZE je verze schématu: zvedni ji, kdykoli přibude nebo zmizí druh události v logu.
-// Dnešní jednička znamená: start, prep, vyslech, prechod, utek, zachrana, drat, konec.
-const LOG_VERZE=1;
+// 1: start, prep, vyslech, prechod, utek, zachrana, drat, konec.
+// 2: k tomu přístroj a jazyk ve startu a příznak přetečení karty u každého rozhodnutí.
+const LOG_VERZE=2;
+/* PŘETEKLA KARTA? Pravidlo 3 říká, že se karta musí vejít bez scrollování, a je to jediné
+   ze sedmi, které se strojově ověřit NEDÁ: náhradní DOM v testech nemá layout, takže se
+   dnes jen přibližuje pásmem délky textu. Na skutečném přístroji se to změřit dá přesně,
+   a je to přesně ta věc, kvůli které se log od lidí sbírá.
+
+   Vrací undefined tam, kde se to zjistit nedá; JSON.stringify takové pole vynechá, takže
+   „nezměřeno" se v logu nepozná od „nepřeteklo" jen tehdy, když se na to čtečka zeptá
+   správně, a ta se ptá přes verzi schématu. */
+function preteklo(){ const t=$("telo");
+  return (t && typeof t.scrollHeight==="number" && typeof t.clientHeight==="number")
+    ? (t.scrollHeight > t.clientHeight+2) : undefined; }
 const LOG_STROP=200, LOG_PRVNI=30, LOG_POJISTKA=200;
 let LOG_NEULOZENO=0;
 function orizniLog(){
@@ -1747,7 +1776,12 @@ function nova(){
   // buildu napsala „došlo k drátu 0", což se čte jako „nikdo tam nedošel", a přitom ten build
   // drát jenom nelogoval. Až se hra rozejde k lidem, přijdou záznamy z různě starých verzí
   // a tohle je jediné, co je od sebe odliší.
+  // Přístroj a jazyk: bez nich se v došlém logu nepozná telefon od počítače ani česká větev
+  // od anglické, a přitom obojí mění délku textu i to, jak dlouho se čte. Míchat je do jedné
+  // tabulky by znamenalo měřit dvě různé hry naráz.
   LOG_BEH++; zaloguj({ev:"start", v:LOG_VERZE, prah:PRAH_SPIS, ver:VER_ZTRATA,
+    jazyk:"en", dotyk:!MA_KLAVESNICI,
+    sirka:(typeof innerWidth==="number"?innerWidth:0), vyska:(typeof innerHeight==="number"?innerHeight:0),
     cast:S.needy.map(n=>({need:n.need,l:n.l.jm,p:n.p.jm})), talked:Object.assign({},S.talked)});
   document.body.className="";
   render();
@@ -1929,7 +1963,7 @@ function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc
 function prepVyber(strana){ const k=S.prep[S.i], s=(strana==="l"?k.l:k.p);
   S.mam[k.need]=strana;
   S.stopy.push({need:k.need,kdo:s.kdo,typ:s.typ,usv:k.usv,ot:s.ot,ch:s.ch,strana,t:S.t});
-  zaloguj({ev:"prep", tyden:S.t, potreba:k.need, volba:s.jm, kdo:s.kdo, typ:s.typ, usv:k.usv, solid:strana==="l"});
+  zaloguj({ev:"prep", prel:preteklo(), tyden:S.t, potreba:k.need, volba:s.jm, kdo:s.kdo, typ:s.typ, usv:k.usv, solid:strana==="l"});
   pripis(s.re); skrtniDnes();   // jen neutrální reakce: jestli po tobě zůstala stopa, zjistíš až u výslechu
   volbyRe(S.i>=S.prep.length-1?"Saturday comes":"Next day");
   S.faze="prep-re";
@@ -2048,7 +2082,7 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
     if(q.usv&&q.pouzito){doSpisu("rekl");vysl="The typewriter clacks. On the record. That page he underlined.";} else vysl="The typewriter clacks. On the record."; }
-  zaloguj({ev:"vyslech", tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
+  zaloguj({ev:"vyslech", prel:preteklo(), tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[kl],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
   merky();
@@ -2250,7 +2284,7 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
   // slabá jen mlhavě: ale správná strana jde vždy vyčíst z textu, nehádá se naslepo.
   // po prvním útěku je vyhlášen poplach: hlídky zhoustnou a každý další krok je o dost riskantnější
   const prosel = (strana===b.spravna) && (Math.random()<(b.jisty?(S.utekl?0.72:0.96):(S.utekl?0.60:0.94)));
-  zaloguj({ev:"prechod", beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
+  zaloguj({ev:"prechod", prel:preteklo(), beat:b.scena, vyzbroj:b.jisty?"solidní":"slabá", trefil:strana===b.spravna, prosel});
   if(!prosel) return pruser(b);
   pripis(PROSEL[S.i]+dosvitalo()); volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; }
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
@@ -2558,7 +2592,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121840";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121851";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
