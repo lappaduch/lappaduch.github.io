@@ -1,4 +1,4 @@
-<!-- pasmo build 202608120814 -->
+<!-- pasmo build 202608120828 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -1371,7 +1371,7 @@ const NEED=[
  {t:1,need:"kleště",usv:true,img:"dvere.png",scena:"the workshop",
   uvod:"The shop floor has been buzzing all morning about who got picked up where. You pretend to listen to the drill and think of one thing: cutters for barbed wire. There is a whole shelf of them in the storeroom; you will not buy those in a shop.",
   lPool:[
-   {kdo:"dolezal",jm:"foreman Doležal",rod:"m",typ:"papir",pitch:"At the break, foreman Doležal ambles across the yard, keys on his belt, toothpick in his teeth. Nothing moves in that storeroom without him. You would only have to ask: he would grumble, slide the issue ledger across, lick his pencil, sign here, and go about his business.",re:"He locked up without a word.",ot:"“Were you in the storeroom with foreman Doležal?”",otO:"“Did you stay at the factory after your shift?”",ch:"“Here is your signature.”"},
+   {kdo:"dolezal",jm:"foreman Doležal",rod:"m",typ:"papir",pitch:"At the break, foreman Doležal ambles across the yard, keys on his belt, toothpick in his teeth. Nothing leaves that storeroom without him. You would only have to ask: he would grumble, push the issue ledger across, lick his pencil, sign here, and be on his way.",re:"He locked up without a word.",ot:"“Were you in the storeroom with foreman Doležal?”",otO:"“Did you stay at the factory after your shift?”",ch:"“Here is your signature.”"},
    {kdo:"kriz",jm:"locksmith Kříž",rod:"m",typ:"papir",pitch:"Locksmith Kříž on the square would have them too. A tidy old spider: every job gets its slip, filed into his book each evening; but his work is good, and half the town trusts him with their keys.",re:"He wrapped them in oiled paper.",ot:"“Did you order something from locksmith Kříž?”",otO:"“Have you ordered any work done since Easter? At the locksmith, say.”",ch:"“We have the slip for that order.”"}],
   pPool:[
    {kdo:"pepik",jm:"Pepík from the shop floor",rod:"m",typ:"svedek",talk:.7,pitch:"Or Pepík from the next bench. His cigarette trembles in his fingers. Since they took his brother, he flinches at every slammed door. He whispered he would carry them out in a rag between the sandwiches. Then he kept his eyes down all day.",re:"He handed them over in a rag, hands shaking.",ot:"“Did you take tools from Pepík?”",otO:"“Were you in the workshop after hours?”",ch:"“In a rag, among the sandwiches.”"},
@@ -2154,7 +2154,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608120814";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608120828";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
