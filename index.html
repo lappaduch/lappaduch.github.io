@@ -790,18 +790,11 @@ function spustVyslech(){
   // stojí.
   //
   // Otevírák se proto v PRVNÍM výslechu vybírá: první karta je otázka o něčem, cos udělal.
-  // Nejdřív se hledá OBECNÁ (bez důkazu), aby eskalace držela celá a jen se přerovnalo uvnitř
-  // skupiny sond. To pokryje 68 % výslechů.
-  //
-  // Ve zbylých 32 % žádná obecná otázka o tobě NEEXISTUJE, protože na všechno, cos udělal,
-  // mají důkaz (typicky po papírových cestách). Dřív se tam pořadí nechávalo být, jenže to
-  // znamená, že první karta je slepá sonda na věc, kterou jsi neudělal, a hráč se o mechanice
-  // poprvé dozví přesně tu nepravdu, kvůli které se tenhle výběr zaváděl. Bere se tedy
-  // konkrétní otázka o tobě. Pravidlo „obecné napřed" se tím neruší: platí, kdykoli je co
-  // řadit, a tady není. A ten případ nastane právě tehdy, když na tebe mají všechno, takže
-  // otevřít rovnou tvrdě je i dramaticky správně.
-  if(S.t===1){ let i=S.karty.findIndex(q=>!q.konkretni&&q.pouzito);
-    if(i<0) i=S.karty.findIndex(q=>q.pouzito);
+  // Zůstává OBECNÁ (bez důkazu), takže eskalace drží celá, jen se přerovná uvnitř skupiny
+  // sond. Když taková není (všechny tvoje stopy už mají důkaz, typicky po papírových
+  // cestách), nechává se pořadí být: prolomit „obecné napřed" kvůli jedné kartě by byl
+  // zásah do rytmu sezení, a ten je autorův.
+  if(S.t===1){ const i=S.karty.findIndex(q=>!q.konkretni&&q.pouzito);
     if(i>0) S.karty.unshift(S.karty.splice(i,1)[0]); }
   S.razitkaTyden=0; S.spisPred=S.spis; S.i=0; S.faze="vyslech-intro"; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`sobota, výslech ${S.t}. týdne`; merky();
@@ -1771,18 +1764,11 @@ function spustVyslech(){
   // stojí.
   //
   // Otevírák se proto v PRVNÍM výslechu vybírá: první karta je otázka o něčem, cos udělal.
-  // Nejdřív se hledá OBECNÁ (bez důkazu), aby eskalace držela celá a jen se přerovnalo uvnitř
-  // skupiny sond. To pokryje 68 % výslechů.
-  //
-  // Ve zbylých 32 % žádná obecná otázka o tobě NEEXISTUJE, protože na všechno, cos udělal,
-  // mají důkaz (typicky po papírových cestách). Dřív se tam pořadí nechávalo být, jenže to
-  // znamená, že první karta je slepá sonda na věc, kterou jsi neudělal, a hráč se o mechanice
-  // poprvé dozví přesně tu nepravdu, kvůli které se tenhle výběr zaváděl. Bere se tedy
-  // konkrétní otázka o tobě. Pravidlo „obecné napřed" se tím neruší: platí, kdykoli je co
-  // řadit, a tady není. A ten případ nastane právě tehdy, když na tebe mají všechno, takže
-  // otevřít rovnou tvrdě je i dramaticky správně.
-  if(S.t===1){ let i=S.karty.findIndex(q=>!q.konkretni&&q.pouzito);
-    if(i<0) i=S.karty.findIndex(q=>q.pouzito);
+  // Zůstává OBECNÁ (bez důkazu), takže eskalace drží celá, jen se přerovná uvnitř skupiny
+  // sond. Když taková není (všechny tvoje stopy už mají důkaz, typicky po papírových
+  // cestách), nechává se pořadí být: prolomit „obecné napřed" kvůli jedné kartě by byl
+  // zásah do rytmu sezení, a ten je autorův.
+  if(S.t===1){ const i=S.karty.findIndex(q=>!q.konkretni&&q.pouzito);
     if(i>0) S.karty.unshift(S.karty.splice(i,1)[0]); }
   S.razitkaTyden=0; S.spisPred=S.spis; S.i=0; S.faze="vyslech-intro"; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`Saturday, interrogation, week ${S.t}`; merky();
