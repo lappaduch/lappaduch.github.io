@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121439 -->
+<!-- pasmo build 202608121443 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -512,7 +512,8 @@ function kopirujLog(){ if(!LOG_JE) return; const s=JSON.stringify(LOG);
   if(navigator.clipboard) navigator.clipboard.writeText(s).catch(()=>{});
   document.body.removeChild(ta); console.log("PÁSMO LOG ("+LOG.length+" záznamů):\n"+s); toast("záznam hry zkopírován");
 }
-function toast(t){ let d=document.createElement("div"); d.textContent=t;
+function toast(t){ if(!document.createElement) return;   // headless šim, stejně jako pripis() a titulek()
+  let d=document.createElement("div"); d.textContent=t;
   d.style.cssText="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99;background:#d8cdb4;color:#1a140c;padding:8px 14px;border-radius:2px;font:600 13px 'Courier New',monospace;box-shadow:0 6px 20px rgba(0,0,0,.5)";
   document.body.appendChild(d); setTimeout(()=>d.remove(),1400); }
 
@@ -1485,7 +1486,8 @@ function kopirujLog(){ if(!LOG_JE) return; const s=JSON.stringify(LOG);
   if(navigator.clipboard) navigator.clipboard.writeText(s).catch(()=>{});
   document.body.removeChild(ta); console.log("PÁSMO LOG ("+LOG.length+" záznamů):\n"+s); toast("play log copied");
 }
-function toast(t){ let d=document.createElement("div"); d.textContent=t;
+function toast(t){ if(!document.createElement) return;   // headless šim, stejně jako pripis() a titulek()
+  let d=document.createElement("div"); d.textContent=t;
   d.style.cssText="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99;background:#d8cdb4;color:#1a140c;padding:8px 14px;border-radius:2px;font:600 13px 'Courier New',monospace;box-shadow:0 6px 20px rgba(0,0,0,.5)";
   document.body.appendChild(d); setTimeout(()=>d.remove(),1400); }
 
@@ -2176,7 +2178,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121439";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121443";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
