@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121543 -->
+<!-- pasmo build 202608121557 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -890,23 +890,28 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
    od boudy). Pokaždé to vypadá jako dobrá konkrétní věta a je špatně v půlce běhů. ---------- */
 const KRIT=[
  {need:"propustka", scena:"závora", img:"checkpoint.png",
+  utek:"Ve dveřích budky se objevil stín a šel rovnou k tobě. Ruka ti sjela po rukávu a povolila. Běžíš do pole, kde není za co se schovat, a padneš do brázdy.\n\nKužel přejede nad tebou, jednou, dvakrát. Pak zpátky k závoře, protože závora je důležitější než tma za ní. Ležíš v hlíně. Teď o tobě vědí.",
   zach:{need:"peníze", ok:"Kužel baterky se zastavil na tobě a nehnul se. Jdeš pomalu blíž a do dlaně mu vtiskneš, co máš. Dlouhé ticho. Pak mávl rukou do tmy: jdi.", fail:"Nabídl jsi mu, co ti zbylo. Nestačilo to."},
   inf:{text:"Závora a osvětlená budka. Máš razítkovanou propustku: stráž tě mávnutím pustí, sotva ji ukážeš. Kolem budky je pole bez jediného keře a světlo z okna dosahuje daleko.", l:"Ukázat propustku", p:"Obejít potmě", spravna:"l"},
   bl:{text:"Závora a budka, ve které se svítí. Příkop podél silnice tě vede rovnou pod osvětlené okno budky. Přes pole je to holá pláň, zato dál od světla.", l:"Příkopem", p:"Přes pole", spravna:"p"}},
  {need:"úkryt", scena:"poslední noc", img:"kostel.png",
+  utek:"Někdo zvenku zabral za dveře. Ne zvědavě, ale naplno. Vyrazil jsi druhou stranou, přes zeď a dolů do trávy, a utíkal, dokud stačil dech.\n\nZa tebou hlasy, které na sebe volají čísla. Ležíš v příkopu a počítáš do sta. Nikdo nepřišel. Ale tvůj úkryt už úkryt není a oni vědí, že tudy někdo šel.",
   zach:{need:"proviant", ok:"Venku hlasy: někdo obchází stavení. Zalezeš hlouběji a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den, ale zásoby došly do rána. Vylezl jsi moc brzy."},
   inf:{text:"Máš domluvený nocleh: dovnitř se dostaneš a nikdo se ptát nebude. Uvnitř přečkáš v teple do hluboké noci. Vyjít teď, za šera, by tě vydalo prvnímu, kdo půjde kolem.", l:"Dovnitř, počkat na noc", p:"Jít radši hned", spravna:"l"},
   bl:{text:"Studená díra za městem, kam roky nikdo nevkročil. Že to tak zůstane i dnes, nevíš. Venku je bílý den a pláň bez jediného stromu.", l:"Jít hned", p:"Zůstat, kde jsi", spravna:"p"}},
  {need:"mapa", scena:"hlídka", img:"mapa.png",
+  utek:"Baterka se rozsvítila metr od tebe a někdo zařval, ať stojíš. Otočil ses a běžel zpátky po cestě, pak z cesty pryč, do oraniště, kde se běží špatně oběma.\n\nKroky se zastavily dřív než ty. Ležíš v hlíně, dokud nezmlkne i pes. Cestu, kterou sis vybral, teď zná ještě někdo.",
   zach:{need:"kleště", ok:"Hlídka se vrací dřív, než měla. U cesty ostnatý plot. Štípačky. Dva rychlé střihy, ostny povolí, protáhneš se dírou a tma tě spolkne.", fail:"Kleště sklouzly a drát zazvonil o sloupek. To stačilo."},
   inf:{text:"Víš to přesně: po cestě chodí hlídka ve dvě a pak je hodina klid. Prošli před chvílí, kroky se ztrácejí k městu. Čas máš, ale ne nadlouho.", l:"Počkat, až přejdou", p:"Jít teď, v tom klidu", spravna:"p"},
   bl:{text:"Ve tmě před tebou se něco pohnulo. A po chvíli zas, o kus blíž. Hlídka, nebo jen vítr v drátech?", l:"Zalehnout a čekat", p:"Proklouznout hned", spravna:"l"},
   amb:{text:"U cesty, přesně tam, kudy jsi měl přejít, se rýsují dvě postavy s baterkami. Věděli to. Čekají na tebe.", l:"Zpátky a jinudy", p:"Risknout to tady", spravna:"l"}},
  {need:"doklady", scena:"poslední silnice", img:"pas.png",
+  utek:"Kužel se zastavil na tvých botách a voják udělal krok. Uskočil jsi do příkopu a běžel po dně, ohnutý, štěrk pod nohama slyšelo celé pole.\n\nVylezl jsi až u můstku a dýchal do rukávu. Za tebou nic, ani křik. Ale silnici teď hlídají dva a jeden z nich tě viděl.",
   zach:{need:"boty", ok:"„Stůj!“ Běžíš. Přes příkop, přes pole, srdce až v krku. Podrážky drží. Křik za tebou slábne, pak nic. Jen tvůj dech.", fail:"Rozběhl ses. Po sto metrech povolila podrážka. Doběhli tě v poli."},
   inf:{text:"U poslední silnice před pásmem svítí voják baterkou po příkopech. Doklady máš v kapse. Nehledá člověka s papíry. Hledá toho, kdo se rozběhne.", l:"Jít klidně dál", p:"Otočit se a běžet", spravna:"l"},
   bl:{text:"Voják s baterkou u silnice, kužel klouže sem. Do příkopu je pět kroků a štěrk pod nohama je slyšet.", l:"Počkat na tmu", p:"Rychle přejít teď", spravna:"l"}},
  {need:"spojka", scena:"druhá strana", img:"nocni_ulice.png",
+  utek:"Z křoví u cesty se zvedly dvě postavy. Neřekly nic, a to bylo horší. Běžel jsi do lesa a les tě vzal, protože v lese se hledá špatně.\n\nSeděl jsi pod smrkem, dokud ti nepřestaly hučet uši. Nedošli. Ale i tady o tobě od téhle noci někdo ví, a je to cizí země.",
   zach:{need:"peníze", ok:"Chlap v montérkách si tě dlouho měří. Pak beze slova natáhne dlaň. Dáš mu, co zbylo. Kývne směrem k seníku.", fail:"Na dlani jsi měl, co zbylo. Podíval se na to a šel k telefonu."},
   inf:{text:"Jsi za drátem. Podle domluvy tě u kříže na kraji lesa čeká člověk, co tě schová. Jdeš k němu opatrně, ať je to opravdu on.", l:"Schovat se a čekat", p:"Ke kříži, tiše", spravna:"p"},
   bl:{text:"Jsi za drátem, ve tmě, v cizí zemi. A nikdo o tobě neví. Ve vesnici nalevo blikají světla a lidi tady znají hlídku jménem. Les napravo mlčí a je prázdný.", l:"Do vesnice, hledat pomoc", p:"Do lesa, dál od lidí", spravna:"p"},
@@ -942,6 +947,7 @@ function spustPrechod(){
     // need patří dovnitř: finale() z něj bere důvod do playtest logu (proc.need). Bez něj se
     // do záznamu uložil celý objekt beatu a příčina smrti u drátů se z logu nedala přečíst.
     return {need:b.need,scena:b.scena,img:b.img,text:v.text,l:v.l,p:v.p,spravna:v.spravna,jisty:silny,slaby:!silny,zach:b.zach,
+            utek:b.utek,               // útěk po prvním průšvihu, per beat: viz komentář u pruser()
             zaDratem:!!b.zaDratem};   // před tímhle beatem se přestřihne drát
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
@@ -983,8 +989,15 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
+  // ÚTĚK MÁ KAŽDÝ BEAT VLASTNÍ. Do teď byl jeden pro všech pět, a přitom je to nejčastěji
+  // viděná pasáž celého finále: naměřeno, že 78 % běhů u drátů si prvním průšvihem projde.
+  // Ten jeden text navíc na třech beatech nesouhlasil s tím, co stálo na kartě o řádek výš.
+  // Mluvil o větvích, které šlehají do tváře, u závory („pole bez jediného keře") i u úkrytu
+  // („pláň bez jediného stromu"), a končil větou „teď vědí, že v pásmu někdo je" i na druhé
+  // straně, kde už hráč v pásmu dávno není. Tatáž past jako u beatů: věta pravdivá na jednom
+  // místě a nepravdivá o dvě karty dál. Sesbírané v datech, ne v kódu, aby ji viděla pravidla textů.
   if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena}); Z.chvej([60,40,60]);   // ZVUK VYPNUT: Z.poplach(), Z.pes()
-    textCross("Ruka po tobě sáhla. Vytrhl ses. Běžíš tmou, větve tě šlehají do tváře, přeskočíš strouhu a padneš do brázdy. Kroky. Světlo přejede kolem. Ticho.\n\nLežíš v hlíně, dokud se dýchá potichu. Teď vědí, že v pásmu někdo je. A v dálce štěká pes.",true);
+    textCross(b.utek,true);
     volbyRe(S.i>=S.prechodKarty.length-1?"Poslední krok":"Dál, tišeji"); S.faze="prechod-re"; return; }
   // druhá záchrana: výbava: ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
   const z=b.zach;
@@ -1899,23 +1912,28 @@ function vyslechSouhrnDal(){ if(S.t===1){S.t=2; return spustTyden();} return spu
    od boudy). Pokaždé to vypadá jako dobrá konkrétní věta a je špatně v půlce běhů. ---------- */
 const KRIT=[
  {need:"propustka", scena:"the barrier", img:"checkpoint.png",
+  utek:"A shape came out of the doorway of the hut and walked straight at you. A hand slid down your sleeve and lost it. You run into the field, where there is nothing to get behind, and drop into a furrow.\n\nThe beam passes over you, once, twice. Then back to the barrier, because the barrier matters more than the dark behind it. You lie in the soil. Now they know about you.",
   zach:{need:"peníze", ok:"The torch beam stops on you and holds. You walk toward him slowly and press what you have into his palm. A long silence. Then he waves you into the dark: go.", fail:"You offered him what you had left. It was not enough."},
   inf:{text:"A barrier and a lit guardhouse. You have a stamped permit: the guard will wave you through the moment you show it. The field around the guardhouse has not a single bush on it, and the light from the window carries a long way.", l:"Show the permit", p:"Slip around in the dark", spravna:"l"},
   bl:{text:"A barrier, and a guardhouse with the light on. The ditch along the road leads right under the lit window. The field is open ground, but far from the light.", l:"Through the ditch", p:"Across the field", spravna:"p"}},
  {need:"úkryt", scena:"the last night", img:"kostel.png",
+  utek:"Somebody pulled at the door from outside. Not out of curiosity, but hard. You went out the other way, over the wall and down into the grass, and ran while your breath held.\n\nBehind you, voices calling numbers to each other. You lie in a ditch and count to a hundred. Nobody came. But your hiding place is not a hiding place any more, and they know somebody came through here.",
   zach:{need:"proviant", ok:"Voices outside: someone is walking around the building. You burrow deeper and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day, but your stores ran out by morning. You came out too early."},
   inf:{text:"Your shelter is arranged: you can get inside and nobody will ask. Inside, you can wait in the warm until deep night. Stepping out now, at dusk, would hand you to the first passer-by.", l:"Inside, wait for night", p:"Better go now", spravna:"l"},
   bl:{text:"A cold hole outside town that nobody has set foot in for years. Whether that holds today, you do not know. Outside it is broad daylight and the plain has not one tree on it.", l:"Go now", p:"Stay where you are", spravna:"p"}},
  {need:"mapa", scena:"the patrol", img:"mapa.png",
+  utek:"A torch came on a metre from you and somebody shouted at you to stand still. You turned and ran back along the path, then off the path, into ploughed ground, where running is bad for both of you.\n\nThe steps stopped before you did. You lie in the soil until even the dog goes quiet. The way you picked is known to somebody else now.",
   zach:{need:"kleště", ok:"The patrol coming back early. A barbed fence along the track. The cutters. Two quick snips, the barbs give way, you squeeze through the gap and the dark swallows you.", fail:"The cutters slipped and the wire rang against the post. That was enough."},
   inf:{text:"You know it exactly: the patrol walks the path at two, then an hour of quiet. They went by a moment ago, their steps fading toward town. You have time, but not much.", l:"Wait till they pass", p:"Go now, in the lull", spravna:"p"},
   bl:{text:"Something moved in the dark ahead. And again, a little closer. A patrol, or just wind in the wire?", l:"Drop and wait", p:"Slip through now", spravna:"l"},
   amb:{text:"By the path, exactly where you meant to cross, two figures with torches take shape. They knew. They are waiting for you.", l:"Back, another way", p:"Risk it here", spravna:"l"}},
  {need:"doklady", scena:"the last road", img:"pas.png",
+  utek:"The beam stopped on your boots and the soldier took a step. You jumped into the ditch and ran along the bottom of it, bent over, the gravel underfoot loud enough for the whole field.\n\nYou climbed out at a small bridge and breathed into your sleeve. Nothing behind you, not even a shout. But there are two of them on that road now and one of them saw you.",
   zach:{need:"boty", ok:"“Halt!” You run. Over the ditch, across the field, heart in your throat. The soles hold. The shouting fades behind you, then nothing. Only your breath.", fail:"You ran. A hundred metres on, the sole came off. They ran you down in the field."},
   inf:{text:"On the last road before the strip, a soldier sweeps the ditches with his torch. Your papers are in your pocket. He is not looking for a man with papers. He is looking for one who runs.", l:"Walk on calmly", p:"Turn and run", spravna:"l"},
   bl:{text:"A soldier with a torch by the road, the beam sliding your way. The ditch is five steps off and the gravel underfoot carries.", l:"Wait for dark", p:"Dash across now", spravna:"l"}},
  {need:"spojka", scena:"the other side", img:"nocni_ulice.png",
+  utek:"Two figures rose from the scrub by the path. They said nothing, which was worse. You ran for the forest and the forest took you, because a forest is a bad place to search in.\n\nYou sat under a spruce until your ears stopped ringing. They did not reach you. But from tonight somebody knows about you here as well, and this is a foreign country.",
   zach:{need:"peníze", ok:"A man in overalls looks you over for a long time. Then he wordlessly holds out his palm. You give him what is left. He nods toward the hayloft.", fail:"On your palm was what you had left. He looked at it and went to the telephone."},
   inf:{text:"You are past the wire. As agreed, a man waits by the cross at the forest’s edge to hide you. You go to him carefully, making sure it is really him.", l:"Hide and wait", p:"To the cross, quietly", spravna:"p"},
   bl:{text:"You are past the wire, in the dark, in a foreign country. And nobody knows you exist. Village lights blink to the left, and the people there know the patrol by name. The forest to the right is silent and empty.", l:"To the village, find help", p:"Into the forest, away from people", spravna:"p"},
@@ -1951,6 +1969,7 @@ function spustPrechod(){
     // need patří dovnitř: finale() z něj bere důvod do playtest logu (proc.need). Bez něj se
     // do záznamu uložil celý objekt beatu a příčina smrti u drátů se z logu nedala přečíst.
     return {need:b.need,scena:b.scena,img:b.img,text:v.text,l:v.l,p:v.p,spravna:v.spravna,jisty:silny,slaby:!silny,zach:b.zach,
+            utek:b.utek,               // útěk po prvním průšvihu, per beat: viz komentář u pruser()
             zaDratem:!!b.zaDratem};   // před tímhle beatem se přestřihne drát
   });
   S.i=0; S.faze="prechod-intro"; document.body.classList.add("noc","prechod"); document.body.classList.remove("tik");
@@ -1992,8 +2011,15 @@ function prechodVyber(strana){ stopCas(); const b=S.prechodKarty[S.i];
 // průšvih na beatu: první je zdarma (vytrhneš se a utečeš): pak už tě zachraňuje jen věc z přípravy,
 // každá jednou, a podle toho, jak dobrou sis sehnal
 function pruser(b){
+  // ÚTĚK MÁ KAŽDÝ BEAT VLASTNÍ. Do teď byl jeden pro všech pět, a přitom je to nejčastěji
+  // viděná pasáž celého finále: naměřeno, že 78 % běhů u drátů si prvním průšvihem projde.
+  // Ten jeden text navíc na třech beatech nesouhlasil s tím, co stálo na kartě o řádek výš.
+  // Mluvil o větvích, které šlehají do tváře, u závory („pole bez jediného keře") i u úkrytu
+  // („pláň bez jediného stromu"), a končil větou „teď vědí, že v pásmu někdo je" i na druhé
+  // straně, kde už hráč v pásmu dávno není. Tatáž past jako u beatů: věta pravdivá na jednom
+  // místě a nepravdivá o dvě karty dál. Sesbírané v datech, ne v kódu, aby ji viděla pravidla textů.
   if(!S.utekl){ S.utekl=true; zaloguj({ev:"utek", beat:b.scena}); Z.chvej([60,40,60]);   // ZVUK VYPNUT: Z.poplach(), Z.pes()
-    textCross("A hand grabbed at you. You tore free. You run through the dark, branches whipping your face, leap the ditch and drop into a furrow. Footsteps. A light sweeps past. Silence.\n\nYou lie in the dirt until you can breathe quietly again. Now they know someone is in the strip. And somewhere far off, a dog starts barking.",true);
+    textCross(b.utek,true);
     volbyRe(S.i>=S.prechodKarty.length-1?"The last step":"On, quieter"); S.faze="prechod-re"; return; }
   // druhá záchrana: výbava: ale jen jedna za celý přechod („jednou se utrhneš, jednou tě zachrání věc, potřetí ne“)
   const z=b.zach;
@@ -2248,7 +2274,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121543";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121557";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
