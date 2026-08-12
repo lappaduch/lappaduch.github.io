@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121423 -->
+<!-- pasmo build 202608121429 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -894,10 +894,10 @@ const KRIT=[
  {need:"úkryt", scena:"poslední noc", img:"kostel.png",
   zach:{need:"proviant", ok:"Venku hlasy: někdo obchází stavení. Zalezeš hlouběji a nehneš se do dalšího soumraku; hlad zaháníš chlebem ze zásob. Druhou noc vyrážíš znovu.", fail:"Přečkal bys i druhý den, ale zásoby došly do rána. Vylezl jsi moc brzy."},
   inf:{text:"Máš domluvený nocleh: dovnitř se dostaneš a nikdo se ptát nebude. Uvnitř přečkáš v teple do hluboké noci. Vyjít teď, za šera, by tě vydalo prvnímu, kdo půjde kolem.", l:"Dovnitř, počkat na noc", p:"Jít radši hned", spravna:"l"},
-  bl:{text:"Studená díra za městem, kam roky nikdo nevkročil. Že to tak zůstane i dnes, nevíš. Venku je bílý den a pláň bez jediného stromu.", l:"Zůstat, kde jsi", p:"Jít hned", spravna:"l"}},
+  bl:{text:"Studená díra za městem, kam roky nikdo nevkročil. Že to tak zůstane i dnes, nevíš. Venku je bílý den a pláň bez jediného stromu.", l:"Jít hned", p:"Zůstat, kde jsi", spravna:"p"}},
  {need:"mapa", scena:"hlídka", img:"mapa.png",
   zach:{need:"kleště", ok:"Hlídka se vrací dřív, než měla. U cesty ostnatý plot. Štípačky. Dva rychlé střihy, ostny povolí, protáhneš se dírou a tma tě spolkne.", fail:"Kleště sklouzly a drát zazvonil o sloupek. To stačilo."},
-  inf:{text:"Víš to přesně: hlídka projde po cestě ve dvě a pak je hodina klid. Věžní hodiny právě dozněly. Čas máš, ale ne nadlouho.", l:"Počkat, až přejdou", p:"Jít teď, v tom klidu", spravna:"p"},
+  inf:{text:"Víš to přesně: po cestě chodí hlídka ve dvě a pak je hodina klid. Prošli před chvílí, kroky se ztrácejí k městu. Čas máš, ale ne nadlouho.", l:"Počkat, až přejdou", p:"Jít teď, v tom klidu", spravna:"p"},
   bl:{text:"Ve tmě před tebou se něco pohnulo. A po chvíli zas, o kus blíž. Hlídka, nebo jen vítr v drátech?", l:"Zalehnout a čekat", p:"Proklouznout hned", spravna:"l"},
   amb:{text:"U cesty, přesně tam, kudy jsi měl přejít, se rýsují dvě postavy s baterkami. Věděli to. Čekají na tebe.", l:"Zpátky a jinudy", p:"Risknout to tady", spravna:"l"}},
  {need:"doklady", scena:"poslední silnice", img:"pas.png",
@@ -906,7 +906,7 @@ const KRIT=[
   bl:{text:"Voják s baterkou u silnice, kužel klouže sem. Do příkopu je pět kroků a štěrk pod nohama je slyšet.", l:"Počkat na tmu", p:"Rychle přejít teď", spravna:"l"}},
  {need:"spojka", scena:"druhá strana", img:"nocni_ulice.png",
   zach:{need:"peníze", ok:"Chlap v montérkách si tě dlouho měří. Pak beze slova natáhne dlaň. Dáš mu, co zbylo. Kývne směrem k seníku.", fail:"Na dlani jsi měl, co zbylo. Podíval se na to a šel k telefonu."},
-  inf:{text:"Jsi za drátem. Podle domluvy tě u kříže na kraji lesa čeká člověk, co tě schová. Jdeš k němu opatrně, ať je to opravdu on.", l:"Ke kříži, tiše", p:"Schovat se a čekat", spravna:"l"},
+  inf:{text:"Jsi za drátem. Podle domluvy tě u kříže na kraji lesa čeká člověk, co tě schová. Jdeš k němu opatrně, ať je to opravdu on.", l:"Schovat se a čekat", p:"Ke kříži, tiše", spravna:"p"},
   bl:{text:"Jsi za drátem, ve tmě, v cizí zemi. A nikdo o tobě neví. Ve vesnici nalevo blikají světla a lidi tady znají hlídku jménem. Les napravo mlčí a je prázdný.", l:"Do vesnice, hledat pomoc", p:"Do lesa, dál od lidí", spravna:"p"}},
 ];
 function spustPrechod(){
@@ -1861,10 +1861,10 @@ const KRIT=[
  {need:"úkryt", scena:"the last night", img:"kostel.png",
   zach:{need:"proviant", ok:"Voices outside: someone is walking around the building. You burrow deeper and do not move until the next dusk; bread from your supplies keeps the hunger down. The second night, you set out again.", fail:"You could have lasted another day, but your stores ran out by morning. You came out too early."},
   inf:{text:"Your shelter is arranged: you can get inside and nobody will ask. Inside, you can wait in the warm until deep night. Stepping out now, at dusk, would hand you to the first passer-by.", l:"Inside, wait for night", p:"Better go now", spravna:"l"},
-  bl:{text:"A cold hole outside town that nobody has set foot in for years. Whether that holds today, you do not know. Outside it is broad daylight and the plain has not one tree on it.", l:"Stay where you are", p:"Go now", spravna:"l"}},
+  bl:{text:"A cold hole outside town that nobody has set foot in for years. Whether that holds today, you do not know. Outside it is broad daylight and the plain has not one tree on it.", l:"Go now", p:"Stay where you are", spravna:"p"}},
  {need:"mapa", scena:"the patrol", img:"mapa.png",
   zach:{need:"kleště", ok:"The patrol coming back early. A barbed fence along the track. The cutters. Two quick snips, the barbs give way, you squeeze through the gap and the dark swallows you.", fail:"The cutters slipped and the wire rang against the post. That was enough."},
-  inf:{text:"You know it exactly: the patrol passes on the path at two, then an hour of quiet. The tower clock has just died away. You have time, but not much.", l:"Wait till they pass", p:"Go now, in the lull", spravna:"p"},
+  inf:{text:"You know it exactly: the patrol walks the path at two, then an hour of quiet. They went by a moment ago, their steps fading toward town. You have time, but not much.", l:"Wait till they pass", p:"Go now, in the lull", spravna:"p"},
   bl:{text:"Something moved in the dark ahead. And again, a little closer. A patrol, or just wind in the wire?", l:"Drop and wait", p:"Slip through now", spravna:"l"},
   amb:{text:"By the path, exactly where you meant to cross, two figures with torches take shape. They knew. They are waiting for you.", l:"Back, another way", p:"Risk it here", spravna:"l"}},
  {need:"doklady", scena:"the last road", img:"pas.png",
@@ -1873,7 +1873,7 @@ const KRIT=[
   bl:{text:"A soldier with a torch by the road, the beam sliding your way. The ditch is five steps off and the gravel underfoot carries.", l:"Wait for dark", p:"Dash across now", spravna:"l"}},
  {need:"spojka", scena:"the other side", img:"nocni_ulice.png",
   zach:{need:"peníze", ok:"A man in overalls looks you over for a long time. Then he wordlessly holds out his palm. You give him what is left. He nods toward the hayloft.", fail:"On your palm was what you had left. He looked at it and went to the telephone."},
-  inf:{text:"You are past the wire. As agreed, a man waits by the cross at the forest’s edge to hide you. You go to him carefully, making sure it is really him.", l:"To the cross, quietly", p:"Hide and wait", spravna:"l"},
+  inf:{text:"You are past the wire. As agreed, a man waits by the cross at the forest’s edge to hide you. You go to him carefully, making sure it is really him.", l:"Hide and wait", p:"To the cross, quietly", spravna:"p"},
   bl:{text:"You are past the wire, in the dark, in a foreign country. And nobody knows you exist. Village lights blink to the left, and the people there know the patrol by name. The forest to the right is silent and empty.", l:"To the village, find help", p:"Into the forest, away from people", spravna:"p"}},
 ];
 function spustPrechod(){
@@ -2164,7 +2164,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121423";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121429";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
