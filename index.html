@@ -1,4 +1,4 @@
-<!-- pasmo build 202608120714 -->
+<!-- pasmo build 202608120728 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -679,7 +679,11 @@ function renderPrep(){ const k=S.prep[S.i];
   // Kdo má kdo, toho jde poprosit; zbytek se pojmenuje sám, stejně jako štítky u drátů.
   const stitek=s=>s.kdo?"Poprosíš: "+velke(s.jm):velke(s.jm);
   hintTxt={l:stitek(k.l),p:stitek(k.p)};
-  volbyDve("táhni doleva, nebo doprava");
+  // Prvni karta prvniho behu v prazdnem meste = nekdo, kdo hru vidi poprve.
+  const poprve = S.t===1 && S.i===0 && !Object.keys(ZNAM||{}).length;
+  volbyDve(poprve ? "táhni doleva, nebo doprava: každá strana je jiná cesta"
+                  : "táhni doleva, nebo doprava");
+  if(poprve) ukazTah();
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`sobota, výslech ${S.t}. týdne, otázka ${S.i+1} z ${S.karty.length}`;
@@ -1022,8 +1026,36 @@ function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(
 function hint(side){ const L=$("hintL"),P=$("hintP"); L.textContent=hintTxt.l; P.textContent=hintTxt.p;
   L.style.opacity=side==="l"?1:0; P.style.opacity=side==="p"?1:0; }
 
+/* ---------- ukázka tahu ----------
+   Onboarding, ne nápověda, a ten rozdíl je celý vtip. Karta přípravy nabízí dvě cesty, ale
+   kdo je vlevo a kdo vpravo se podle pravidla 2 ukáže teprve při tahu. První hráč tak kouká
+   na odstavec prózy, pod ním „táhni doleva, nebo doprava", a nemá jak zjistit, co ty strany
+   znamenají. Předtím ho navíc dvě intro karty naučily, že tah jen listuje dál.
+
+   Hra proto na první kartě prvního běhu udělá tah SAMA: nakloní se doleva, ukáže levý
+   štítek, vrátí se. Nevysvětluje to nic (pravidlo 4 zůstává celé), jen to předvede gesto
+   a to, že strany mají jména.
+
+   Jen když je paměť města prázdná, tedy jednou za prohlížeč. Kdo hru zná, tomu se to pod
+   ruku neplete. A první dotyk to ruší okamžitě, i uprostřed pohybu: ukázka nesmí zdržet
+   nikoho, kdo ví, co dělá. Proto se taky NENASTAVUJE anim, jinak by ukázka na dvě vteřiny
+   zamkla ovládání a byla by z ní překážka místo pozvánky.                                  */
+let ukazka=null;
+function zrusUkazku(){ if(ukazka===null) return; clearTimeout(ukazka); ukazka=null;
+  const k=$("karta"); if(k&&k.style){ k.style.transition="none"; k.style.transform="translateX(0)"; }
+  hint(null); }
+function ukazTah(){
+  const k=$("karta"); if(!k||!k.style||typeof setTimeout!=="function") return;
+  const krok=(fn,ms)=>{ ukazka=setTimeout(()=>{ if(ukazka===null) return; fn(); },ms); };
+  krok(()=>{ hint("l");
+    k.style.transition="transform .55s ease-out"; k.style.transform="translateX(-9%) rotate(-2.5deg)";
+    krok(()=>{ k.style.transition="transform .45s ease-in"; k.style.transform="translateX(0)";
+      krok(()=>{ hint(null); ukazka=null; },460); },820); },700);
+}
+
 // co udělá tažení podle fáze
 function act(side){
+  zrusUkazku();     // ukázka se ruší tady: act() je jediná brána, kterou projdou šipky, myš i dotyk
   if(anim) return;
   Z.start();          // prohlížeč otevře zvuk až po prvním gestu, tohle je nejbližší místo
   dopisHned();
@@ -1061,7 +1093,7 @@ document.addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")act("l"); else i
 /* tažení: dotyk jde přes touch events (spolehlivý preventDefault, prohlížeč gesto nesebere), myš přes pointer events */
 let drag=null;
 const jev=$("jeviste");
-function tahniKartu(dx){ const k=$("karta");
+function tahniKartu(dx){ zrusUkazku(); const k=$("karta");
   k.style.transition="none"; k.style.transform=`translateX(${dx}px) rotate(${dx*0.04}deg)`; k.style.opacity=String(Math.max(.4,1-Math.abs(dx)/380));
   hint(Math.abs(dx)<25?null:(dx<0?"l":"p")); }
 function vratKartu(){ const k=$("karta");
@@ -1580,7 +1612,11 @@ function renderPrep(){ const k=S.prep[S.i];
   // Kdo má kdo, toho jde poprosit; zbytek se pojmenuje sám, stejně jako štítky u drátů.
   const stitek=s=>s.kdo?"You will ask: "+velke(s.jm):velke(s.jm);
   hintTxt={l:stitek(k.l),p:stitek(k.p)};
-  volbyDve("swipe left or right");
+  // Prvni karta prvniho behu v prazdnem meste = nekdo, kdo hru vidi poprve.
+  const poprve = S.t===1 && S.i===0 && !Object.keys(ZNAM||{}).length;
+  volbyDve(poprve ? "táhni doleva, nebo doprava: každá strana je jiná cesta"
+                  : "swipe left or right");
+  if(poprve) ukazTah();
 }
 function renderVyslech(){ const q=S.karty[S.i]; document.body.classList.add("noc"); document.body.classList.remove("prechod"); $("mery").style.display="";
   obraz("dokumenty.png"); $("scena").textContent=`Saturday, interrogation, week ${S.t}, question ${S.i+1} of ${S.karty.length}`;
@@ -1923,8 +1959,36 @@ function potvrd(side, fn){ if(anim) return; anim=true; const k=$("karta"); hint(
 function hint(side){ const L=$("hintL"),P=$("hintP"); L.textContent=hintTxt.l; P.textContent=hintTxt.p;
   L.style.opacity=side==="l"?1:0; P.style.opacity=side==="p"?1:0; }
 
+/* ---------- ukázka tahu ----------
+   Onboarding, ne nápověda, a ten rozdíl je celý vtip. Karta přípravy nabízí dvě cesty, ale
+   kdo je vlevo a kdo vpravo se podle pravidla 2 ukáže teprve při tahu. První hráč tak kouká
+   na odstavec prózy, pod ním „táhni doleva, nebo doprava", a nemá jak zjistit, co ty strany
+   znamenají. Předtím ho navíc dvě intro karty naučily, že tah jen listuje dál.
+
+   Hra proto na první kartě prvního běhu udělá tah SAMA: nakloní se doleva, ukáže levý
+   štítek, vrátí se. Nevysvětluje to nic (pravidlo 4 zůstává celé), jen to předvede gesto
+   a to, že strany mají jména.
+
+   Jen když je paměť města prázdná, tedy jednou za prohlížeč. Kdo hru zná, tomu se to pod
+   ruku neplete. A první dotyk to ruší okamžitě, i uprostřed pohybu: ukázka nesmí zdržet
+   nikoho, kdo ví, co dělá. Proto se taky NENASTAVUJE anim, jinak by ukázka na dvě vteřiny
+   zamkla ovládání a byla by z ní překážka místo pozvánky.                                  */
+let ukazka=null;
+function zrusUkazku(){ if(ukazka===null) return; clearTimeout(ukazka); ukazka=null;
+  const k=$("karta"); if(k&&k.style){ k.style.transition="none"; k.style.transform="translateX(0)"; }
+  hint(null); }
+function ukazTah(){
+  const k=$("karta"); if(!k||!k.style||typeof setTimeout!=="function") return;
+  const krok=(fn,ms)=>{ ukazka=setTimeout(()=>{ if(ukazka===null) return; fn(); },ms); };
+  krok(()=>{ hint("l");
+    k.style.transition="transform .55s ease-out"; k.style.transform="translateX(-9%) rotate(-2.5deg)";
+    krok(()=>{ k.style.transition="transform .45s ease-in"; k.style.transform="translateX(0)";
+      krok(()=>{ hint(null); ukazka=null; },460); },820); },700);
+}
+
 // co udělá tažení podle fáze
 function act(side){
+  zrusUkazku();     // ukázka se ruší tady: act() je jediná brána, kterou projdou šipky, myš i dotyk
   if(anim) return;
   Z.start();          // prohlížeč otevře zvuk až po prvním gestu, tohle je nejbližší místo
   dopisHned();
@@ -1962,7 +2026,7 @@ document.addEventListener("keydown",e=>{ if(e.key==="ArrowLeft")act("l"); else i
 /* tažení: dotyk jde přes touch events (spolehlivý preventDefault, prohlížeč gesto nesebere), myš přes pointer events */
 let drag=null;
 const jev=$("jeviste");
-function tahniKartu(dx){ const k=$("karta");
+function tahniKartu(dx){ zrusUkazku(); const k=$("karta");
   k.style.transition="none"; k.style.transform=`translateX(${dx}px) rotate(${dx*0.04}deg)`; k.style.opacity=String(Math.max(.4,1-Math.abs(dx)/380));
   hint(Math.abs(dx)<25?null:(dx<0?"l":"p")); }
 function vratKartu(){ const k=$("karta");
@@ -2021,7 +2085,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608120714";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608120728";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
