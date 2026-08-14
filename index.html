@@ -1,4 +1,4 @@
-<!-- pasmo build 202608141014 -->
+<!-- pasmo build 202608141015 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -2135,7 +2135,7 @@ const ZAPSANO=["The typewriter clacks. On the record.","He tapped it out with tw
    protože reask sedí skoro na každé otázce druhého výslechu a hráč, který se drží svého,
    dostane pokaždé totéž. Žádná z variant nemluví: promluva by se srazila s pravidlem,
    že nikdo neřekne dvakrát totéž. */
-const DRZEL=[""Položil oba listy vedle sebe a porovnal je řádek po řádku.","He laid both pages side by side and compared them line by line."","Položil oba listy vedle sebe a porovnal je řádek po řádku.","Přejel prstem po starším zápisu a nic k němu nedopsal.","Vrátil se v deskách o dva týdny zpátky a chvíli mlčky četl."];
+const DRZEL=["He set the older entry beside the new one and looked from one to the other for a while. Then he closed the folder.","He laid both pages side by side and compared them line by line.","He ran a finger down the older entry and added nothing to it.","He went back two weeks in the folder and read in silence for a while."];
 function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q); let vysl,stamp=false;
   // co jsi řekl, to je v protokolu: formulace i odpověď, ať už na to měli důkaz, nebo ne
   if(!q.reask) S.otazky[kl]={ot:q.ot,k:!!q.konkretni,kdo:q.kdo,ch:q.ch,usv:q.usv,need:q.need,str:q.str};
@@ -2668,7 +2668,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608141014";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608141015";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
