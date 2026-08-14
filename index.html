@@ -1,4 +1,4 @@
-<!-- pasmo build 202608121851 -->
+<!-- pasmo build 202608140930 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -866,6 +866,14 @@ function spustVyslech(){
   volbyRe("Posadit se");
 }
 const VERA_SLOVY=[[80,"zatím ano"],[60,"už ne úplně"],[40,"jen napůl"],[20,"skoro ne"],[0,"ani slovo"]];
+// Nálada je jedna ze tří věcí, kterými hra podle pravidla 5 nese stav. Počítala se ale jen
+// z věrohodnosti, a ta stojí, dokud tě někdo nechytí při lži: naměřeno na prvním výslechu
+// nováčka deset otázek a jedna jediná věta pod nimi. Spis přitom roste od první otázky
+// (udání, přiznané kusy) a je vidět na liště, takže tohle není nová informace, jen tatáž
+// věc řečená chováním. Prahy jsou zlomky PRAH_SPIS, ne čísla, ať knob nezhasne půlku vět.
+const NALADA_SPIS=["Nedívá se na tebe.","Sáhl pro čistý papír.","Srovnal listy a založil je k sobě.","Desky už se nezavírají."];
+function naladaZeSpisu(){ return S.spis>=PRAH_SPIS-1 ? NALADA_SPIS[3]
+  : S.spis>=PRAH_SPIS/2 ? NALADA_SPIS[2] : S.spis>=1 ? NALADA_SPIS[1] : NALADA_SPIS[0]; }
 function merky(){
   $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")";
   const sl=VERA_SLOVY.find(([h])=>S.vera>=h) || VERA_SLOVY[VERA_SLOVY.length-1];
@@ -878,7 +886,7 @@ function merky(){
     const byl=box.children[i].className.indexOf("psany")>=0, je=i<S.spis;
     box.children[i].className="list"+(je?" psany":"")+(je&&!byl?" cerstvy":"");
   }
-  $("nalada").textContent = S.vera>66?"Nedívá se na tebe.":S.vera>33?"Píše rychleji.":"Přestal psát a dívá se na tebe.";
+  $("nalada").textContent = S.vera>66?naladaZeSpisu():S.vera>33?"Píše rychleji.":"Přestal psát a dívá se na tebe.";
   // tep začne, teprve když je zle: do té doby má výslech jen svoje ticho
   Z.tepat(S.vera<70 ? Math.round((70-Math.max(0,S.vera))*1.4) : 0); }
 // Spis roste třemi cestami a rozsudek to potřebuje vědět: „stačilo počkat, až to řekneš sám"
@@ -2047,6 +2055,14 @@ function spustVyslech(){
   volbyRe("Sit down");
 }
 const VERA_SLOVY=[[80,"so far"],[60,"less and less"],[40,"half of it"],[20,"barely"],[0,"not a word"]];
+// Nálada je jedna ze tří věcí, kterými hra podle pravidla 5 nese stav. Počítala se ale jen
+// z věrohodnosti, a ta stojí, dokud tě někdo nechytí při lži: naměřeno na prvním výslechu
+// nováčka deset otázek a jedna jediná věta pod nimi. Spis přitom roste od první otázky
+// (udání, přiznané kusy) a je vidět na liště, takže tohle není nová informace, jen tatáž
+// věc řečená chováním. Prahy jsou zlomky PRAH_SPIS, ne čísla, ať knob nezhasne půlku vět.
+const NALADA_SPIS=["He is not looking at you.","He reached for a clean sheet.","He squared the pages and filed them together.","The folder no longer closes."];
+function naladaZeSpisu(){ return S.spis>=PRAH_SPIS-1 ? NALADA_SPIS[3]
+  : S.spis>=PRAH_SPIS/2 ? NALADA_SPIS[2] : S.spis>=1 ? NALADA_SPIS[1] : NALADA_SPIS[0]; }
 function merky(){
   $("verFill").style.transform="scaleX("+Math.max(0,S.vera)/100+")";
   const sl=VERA_SLOVY.find(([h])=>S.vera>=h) || VERA_SLOVY[VERA_SLOVY.length-1];
@@ -2059,7 +2075,7 @@ function merky(){
     const byl=box.children[i].className.indexOf("psany")>=0, je=i<S.spis;
     box.children[i].className="list"+(je?" psany":"")+(je&&!byl?" cerstvy":"");
   }
-  $("nalada").textContent = S.vera>66?"He is not looking at you.":S.vera>33?"He is writing faster.":"He has stopped writing and is looking at you.";
+  $("nalada").textContent = S.vera>66?naladaZeSpisu():S.vera>33?"He is writing faster.":"He has stopped writing and is looking at you.";
   // tep začne, teprve když je zle: do té doby má výslech jen svoje ticho
   Z.tepat(S.vera<70 ? Math.round((70-Math.max(0,S.vera))*1.4) : 0); }
 // Spis roste třemi cestami a rozsudek to potřebuje vědět: „stačilo počkat, až to řekneš sám"
@@ -2592,7 +2608,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608121851";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608140930";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
