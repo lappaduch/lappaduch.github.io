@@ -1,4 +1,4 @@
-<!-- pasmo build 202608141005 -->
+<!-- pasmo build 202608141010 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -902,6 +902,16 @@ function merky(){
 // platí jen pro jednu z nich. Kdo zapíral a nechal si otisknout razítko, řekl přesně nic;
 // koho udal svědek, ten taky ne.
 function doSpisu(duvod){ S.spis++; S.spisOd[duvod]=(S.spisOd[duvod]||0)+1; }
+/* DVA ŘETĚZCE POKRÝVALY 84 % VŠECH REAKCÍ VE VÝSLECHU. Naměřeno na 500 sezeních: „Psací stroj
+   klapl. Zapsáno." padne v jednom výslechu 5,3krát z deseti otázek, doslova stejně. Sezení je
+   přitom jediné místo, kde hráč mluví s člověkem, a ten člověk se v půlce sezení opakoval jako
+   hláška.
+   Střídá se to podle POŘADÍ otázky, ne losem: každé rnd() navíc posune celý seedovaný proud
+   a s ním naměřený balanc, aniž by se změnilo jediné rozhodnutí (viz CLAUDE.md, „pořadí losů").
+   Mluvené slovo smí být jen v jedné variantě od každé situace: pravidlo „nikdo neřekne dvakrát
+   totéž" měří promluvu, ne popis pohybu, takže zbytek je čisté chování a žádná řeč. */
+const ZAPRENO=["Ticho. Pak: „Dobře.“ Píše dál.","Nezvedl hlavu. Pero škrábe dál.","Chvíli se nedělo nic. Pak otočil list.","Poslouchal to do konce a nepřipsal nic."];
+const ZAPSANO=["Psací stroj klapl. Zapsáno.","Odklepal to dvěma prsty.","Zapsal to a posunul válec o řádku výš.","Klapot na tři slova. Pak nic."];
 function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q); let vysl,stamp=false;
   // co jsi řekl, to je v protokolu: formulace i odpověď, ať už na to měli důkaz, nebo ne
   if(!q.reask) S.otazky[kl]={ot:q.ot,k:!!q.konkretni,kdo:q.kdo,ch:q.ch,usv:q.usv,need:q.need,str:q.str};
@@ -913,11 +923,11 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
   else if(strana==="l"){ S.reklJsem[kl]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
       if(q.usv&&q.pouzito)doSpisu("razitko");   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
-      vysl=q.ch+" Ani se nezlobil. Jen si to zapsal.";} else vysl="Ticho. Pak: „Dobře.“ Píše dál."; }
+      vysl=q.ch+" Ani se nezlobil. Jen si to zapsal.";} else vysl=ZAPRENO[S.i%ZAPRENO.length]; }
   else { S.reklJsem[kl]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
-    if(q.usv&&q.pouzito){doSpisu("rekl");vysl="Psací stroj klapl. Zapsáno. Tenhle list si podtrhl.";} else vysl="Psací stroj klapl. Zapsáno."; }
+    if(q.usv&&q.pouzito){doSpisu("rekl");vysl="Psací stroj klapl. Zapsáno. Tenhle list si podtrhl.";} else vysl=ZAPSANO[S.i%ZAPSANO.length]; }
   zaloguj({ev:"vyslech", prel:preteklo(), tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[kl],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
@@ -2106,6 +2116,16 @@ function merky(){
 // platí jen pro jednu z nich. Kdo zapíral a nechal si otisknout razítko, řekl přesně nic;
 // koho udal svědek, ten taky ne.
 function doSpisu(duvod){ S.spis++; S.spisOd[duvod]=(S.spisOd[duvod]||0)+1; }
+/* DVA ŘETĚZCE POKRÝVALY 84 % VŠECH REAKCÍ VE VÝSLECHU. Naměřeno na 500 sezeních: „Psací stroj
+   klapl. Zapsáno." padne v jednom výslechu 5,3krát z deseti otázek, doslova stejně. Sezení je
+   přitom jediné místo, kde hráč mluví s člověkem, a ten člověk se v půlce sezení opakoval jako
+   hláška.
+   Střídá se to podle POŘADÍ otázky, ne losem: každé rnd() navíc posune celý seedovaný proud
+   a s ním naměřený balanc, aniž by se změnilo jediné rozhodnutí (viz CLAUDE.md, „pořadí losů").
+   Mluvené slovo smí být jen v jedné variantě od každé situace: pravidlo „nikdo neřekne dvakrát
+   totéž" měří promluvu, ne popis pohybu, takže zbytek je čisté chování a žádná řeč. */
+const ZAPRENO=["Silence. Then: “Fine.” He keeps writing.","He did not look up. The pen scratches on.","Nothing happened for a while. Then he turned the page.","He heard you out and added nothing."];
+const ZAPSANO=["The typewriter clacks. On the record.","He tapped it out with two fingers.","He typed it and moved the platen up a line.","Three words of clatter. Then nothing."];
 function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q); let vysl,stamp=false;
   // co jsi řekl, to je v protokolu: formulace i odpověď, ať už na to měli důkaz, nebo ne
   if(!q.reask) S.otazky[kl]={ot:q.ot,k:!!q.konkretni,kdo:q.kdo,ch:q.ch,usv:q.usv,need:q.need,str:q.str};
@@ -2117,11 +2137,11 @@ function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q)
   else if(strana==="l"){ S.reklJsem[kl]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
       if(q.usv&&q.pouzito)doSpisu("razitko");   // dokázaný úsvědčující akt jde do spisu i přes zapírání: lež ho nesmaže
-      vysl=q.ch+" He was not even angry. He just wrote it down.";} else vysl="Silence. Then: “Fine.” He keeps writing."; }
+      vysl=q.ch+" He was not even angry. He just wrote it down.";} else vysl=ZAPRENO[S.i%ZAPRENO.length]; }
   else { S.reklJsem[kl]=strana; if(q.kdo)S.zataženi[q.kdo]=true;
     if(q.pouzito && ["mapa","svoz","propustka","spojka"].includes(q.need)) S.prozrazenaTrasa=true;
     // spis staví jen to, cos REÁLNĚ udělal: na falešné přiznání věci, co se nestala, nemají důkaz
-    if(q.usv&&q.pouzito){doSpisu("rekl");vysl="The typewriter clacks. On the record. That page he underlined.";} else vysl="The typewriter clacks. On the record."; }
+    if(q.usv&&q.pouzito){doSpisu("rekl");vysl="The typewriter clacks. On the record. That page he underlined.";} else vysl=ZAPSANO[S.i%ZAPSANO.length]; }
   zaloguj({ev:"vyslech", prel:preteklo(), tyden:S.t, otazka:S.i+1, need:q.need, kdo:q.kdo,
     akce:(q.reask?"reask":(strana==="l"?"ZAPŘU":"PŘIZNÁM")), reask:!!q.reask, predchozi:q.predchozi, dokazano:!!S.dokazano[kl],
     pouzito:!!q.pouzito, majiDukaz:!!q.majiDukaz, usv:!!q.usv, stamp, vera:S.vera, spis:S.spis});
@@ -2638,7 +2658,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608141005";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608141010";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
