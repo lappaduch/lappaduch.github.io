@@ -1,4 +1,4 @@
-<!-- pasmo build 202608140939 -->
+<!-- pasmo build 202608141005 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -521,7 +521,9 @@ if(LOG_JE){ try{ LOG=JSON.parse(localStorage.getItem("pasmo-log")||"[]"); }catch
 // LOG_VERZE je verze schématu: zvedni ji, kdykoli přibude nebo zmizí druh události v logu.
 // 1: start, prep, vyslech, prechod, utek, zachrana, drat, konec.
 // 2: k tomu přístroj a jazyk ve startu a příznak přetečení karty u každého rozhodnutí.
-const LOG_VERZE=2;
+// 3: přetečení i u rozsudku. Není to nový DRUH události, ale nový bod měření, a bez verze
+//    by se v došlém logu nepoznal starší build (neměřil) od nového (změřil a nepřeteklo).
+const LOG_VERZE=3;
 /* PŘETEKLA KARTA? Pravidlo 3 říká, že se karta musí vejít bez scrollování, a je to jediné
    ze sedmi, které se strojově ověřit NEDÁ: náhradní DOM v testech nemá layout, takže se
    dnes jen přibližuje pásmem délky textu. Na skutečném přístroji se to změřit dá přesně,
@@ -1181,7 +1183,6 @@ function razitko(){ const r=$("razitko"); r.classList.remove("vid"); void r.offs
 function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.add("noc"); document.body.classList.remove("tik","prechod");
   Z.atmosfera(false); Z.tepat(0);
   if(druh!=="prechod") Z.chvej(120);   // ZVUK VYPNUT: Z.volno() / Z.dvere() / Z.pes() podle konce
-  zaloguj({ev:"konec", vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t, vera:S.vera, spis:S.spis, spisOd:Object.assign({},S.spisOd)});
   obraz(druh==="prechod"?"nocni_ulice.png":"checkpoint.png"); $("mery").style.display="none";
   const zap=[...new Set(S.stopy.filter(x=>x.kdo).map(x=>x.kdo))];
   // Kdo promluvil, ne jestli někdo. Množné číslo („ti, cos je zatáhl") stálo v rozsudku
@@ -1263,6 +1264,13 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   hintTxt={l:"Znovu",p:"Jiné město"};
   $("napoveda").textContent="vlevo znovu, vpravo jiné město";
   if(LOG_JE && MA_KLAVESNICI) $("napoveda").innerHTML='vlevo <b>znovu</b>, vpravo <b>jiné město</b>. <b>L</b> = zkopírovat záznam pro autora';
+  // AŽ TEĎ, ne na začátku finale. Rozsudek je nejdelší seznam ve hře (naměřeno až deset řádků
+  // s lidmi nad prózou a razítkem) a je to jediná karta, u které se přetečení nikdy neměřilo,
+  // protože se událost zapisovala dřív, než karta vůbec vznikla, a preteklo() tak měřilo tu
+  // předchozí. Vidí ho přitom KAŽDÝ hráč na konci prvního běhu. Pravidlo 3 se strojově ověřit
+  // nedá, tohle je jediná cesta, jak se o něm z došlého logu něco dozvědět.
+  zaloguj({ev:"konec", prel:preteklo(), vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t,
+    vera:S.vera, spis:S.spis, spisOd:Object.assign({},S.spisOd)});
 }
 function velke(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 
@@ -1717,7 +1725,9 @@ if(LOG_JE){ try{ LOG=JSON.parse(localStorage.getItem("pasmo-log")||"[]"); }catch
 // LOG_VERZE je verze schématu: zvedni ji, kdykoli přibude nebo zmizí druh události v logu.
 // 1: start, prep, vyslech, prechod, utek, zachrana, drat, konec.
 // 2: k tomu přístroj a jazyk ve startu a příznak přetečení karty u každého rozhodnutí.
-const LOG_VERZE=2;
+// 3: přetečení i u rozsudku. Není to nový DRUH události, ale nový bod měření, a bez verze
+//    by se v došlém logu nepoznal starší build (neměřil) od nového (změřil a nepřeteklo).
+const LOG_VERZE=3;
 /* PŘETEKLA KARTA? Pravidlo 3 říká, že se karta musí vejít bez scrollování, a je to jediné
    ze sedmi, které se strojově ověřit NEDÁ: náhradní DOM v testech nemá layout, takže se
    dnes jen přibližuje pásmem délky textu. Na skutečném přístroji se to změřit dá přesně,
@@ -2377,7 +2387,6 @@ function razitko(){ const r=$("razitko"); r.classList.remove("vid"); void r.offs
 function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.add("noc"); document.body.classList.remove("tik","prechod");
   Z.atmosfera(false); Z.tepat(0);
   if(druh!=="prechod") Z.chvej(120);   // ZVUK VYPNUT: Z.volno() / Z.dvere() / Z.pes() podle konce
-  zaloguj({ev:"konec", vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t, vera:S.vera, spis:S.spis, spisOd:Object.assign({},S.spisOd)});
   obraz(druh==="prechod"?"nocni_ulice.png":"checkpoint.png"); $("mery").style.display="none";
   const zap=[...new Set(S.stopy.filter(x=>x.kdo).map(x=>x.kdo))];
   // Kdo promluvil, ne jestli někdo. Množné číslo („ti, cos je zatáhl") stálo v rozsudku
@@ -2459,6 +2468,13 @@ function finale(druh,proc){ stopCas(); S.faze="konec"; document.body.classList.a
   hintTxt={l:"Again",p:"Another town"};
   $("napoveda").textContent="left again, right another town";
   if(LOG_JE && MA_KLAVESNICI) $("napoveda").innerHTML='left <b>again</b>, right <b>another town</b>. <b>L</b> = copy the record for the author';
+  // AŽ TEĎ, ne na začátku finale. Rozsudek je nejdelší seznam ve hře (naměřeno až deset řádků
+  // s lidmi nad prózou a razítkem) a je to jediná karta, u které se přetečení nikdy neměřilo,
+  // protože se událost zapisovala dřív, než karta vůbec vznikla, a preteklo() tak měřilo tu
+  // předchozí. Vidí ho přitom KAŽDÝ hráč na konci prvního běhu. Pravidlo 3 se strojově ověřit
+  // nedá, tohle je jediná cesta, jak se o něm z došlého logu něco dozvědět.
+  zaloguj({ev:"konec", prel:preteklo(), vysledek:druh, proc:proc&&(proc.need||proc), tyden:S.t,
+    vera:S.vera, spis:S.spis, spisOd:Object.assign({},S.spisOd)});
 }
 function velke(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 
@@ -2622,7 +2638,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608140939";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608141005";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
