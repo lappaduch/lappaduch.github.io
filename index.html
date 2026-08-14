@@ -1,4 +1,4 @@
-<!-- pasmo build 202608140930 -->
+<!-- pasmo build 202608140939 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -579,7 +579,14 @@ function noveMesto(){ MESTO=null; ZNAM={}; try{ localStorage.removeItem("pasmo-m
   nactiMesto(); toast("nové město, lidi neznáš"); nova(); }
 
 function nova(){
-  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false,dratViden:false};
+  // Úvod jsou dvě karty a 690 znaků. Kdo město už zná, čte je podruhé, potřetí, popáté.
+  // Naměřeno, že nováčkovi první běh končí kolem 61. karty, tedy uvnitř prvních deseti minut,
+  // takže se do úvodu vrací ještě v okně, kde se rozhoduje, jestli u hry vůbec zůstane.
+  // Ve známém městě se proto hraje jen druhá karta: povolávací rozkaz je ta jediná, co říká,
+  // co teď musíš. Titulek zůstává na první, takže se hra jmenuje v novém městě a ve známém ne,
+  // což je i jediné místo, kde jméno hry dává smysl: začátek, ne návrat.
+  const zname = Object.keys(ZNAM).length>0;
+  S={t:1,faze:"intro",introI:zname?INTRO.length-1:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false,dratViden:false};
   if(!MESTO) nactiMesto();
   // vylosuj obsazení pro tenhle běh: každou potřebu nabízí jiný člověk z poolu
   S.needy = NEED.map(n=>({ t:n.t, need:n.need, usv:n.usv, img:n.img, scena:n.scena, uvod:n.uvod, l:vyber(n.lPool), p:vyber(n.pPool) }));
@@ -1768,7 +1775,14 @@ function noveMesto(){ MESTO=null; ZNAM={}; try{ localStorage.removeItem("pasmo-m
   nactiMesto(); toast("a new town, you know nobody here"); nova(); }
 
 function nova(){
-  S={t:1,faze:"intro",introI:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false,dratViden:false};
+  // Úvod jsou dvě karty a 690 znaků. Kdo město už zná, čte je podruhé, potřetí, popáté.
+  // Naměřeno, že nováčkovi první běh končí kolem 61. karty, tedy uvnitř prvních deseti minut,
+  // takže se do úvodu vrací ještě v okně, kde se rozhoduje, jestli u hry vůbec zůstane.
+  // Ve známém městě se proto hraje jen druhá karta: povolávací rozkaz je ta jediná, co říká,
+  // co teď musíš. Titulek zůstává na první, takže se hra jmenuje v novém městě a ve známém ne,
+  // což je i jediné místo, kde jméno hry dává smysl: začátek, ne návrat.
+  const zname = Object.keys(ZNAM).length>0;
+  S={t:1,faze:"intro",introI:zname?INTRO.length-1:0,i:0,vera:100,spis:0,spisOd:{},mam:{},stopy:[],reklJsem:{},otazky:{},dokazano:{},zataženi:{},talked:{},zVypovedi:{},karty:[],vahal:false,vahaniPocet:0,prozrazenaTrasa:false,zrada:null,utekl:false,dratViden:false};
   if(!MESTO) nactiMesto();
   // vylosuj obsazení pro tenhle běh: každou potřebu nabízí jiný člověk z poolu
   S.needy = NEED.map(n=>({ t:n.t, need:n.need, usv:n.usv, img:n.img, scena:n.scena, uvod:n.uvod, l:vyber(n.lPool), p:vyber(n.pPool) }));
@@ -2608,7 +2622,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608140930";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608140939";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
