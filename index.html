@@ -1,4 +1,4 @@
-<!-- pasmo build 202608141010 -->
+<!-- pasmo build 202608141014 -->
 <!doctype html>
 <html lang="cs">
 <head>
@@ -912,13 +912,18 @@ function doSpisu(duvod){ S.spis++; S.spisOd[duvod]=(S.spisOd[duvod]||0)+1; }
    totéž" měří promluvu, ne popis pohybu, takže zbytek je čisté chování a žádná řeč. */
 const ZAPRENO=["Ticho. Pak: „Dobře.“ Píše dál.","Nezvedl hlavu. Pero škrábe dál.","Chvíli se nedělo nic. Pak otočil list.","Poslouchal to do konce a nepřipsal nic."];
 const ZAPSANO=["Psací stroj klapl. Zapsáno.","Odklepal to dvěma prsty.","Zapsal to a posunul válec o řádku výš.","Klapot na tři slova. Pak nic."];
+/* Držená výpověď v druhém týdnu. Nejopakovanější věta v celé hře: naměřeno 4,6krát za běh,
+   protože reask sedí skoro na každé otázce druhého výslechu a hráč, který se drží svého,
+   dostane pokaždé totéž. Žádná z variant nemluví: promluva by se srazila s pravidlem,
+   že nikdo neřekne dvakrát totéž. */
+const DRZEL=["Srovnal starší zápis s novým a chvíli mezi nimi přejížděl očima. Pak desky zavřel.","Položil oba listy vedle sebe a porovnal je řádek po řádku.","Přejel prstem po starším zápisu a nic k němu nedopsal.","Vrátil se v deskách o dva týdny zpátky a chvíli mlčky četl."];
 function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q); let vysl,stamp=false;
   // co jsi řekl, to je v protokolu: formulace i odpověď, ať už na to měli důkaz, nebo ne
   if(!q.reask) S.otazky[kl]={ot:q.ot,k:!!q.konkretni,kdo:q.kdo,ch:q.ch,usv:q.usv,need:q.need,str:q.str};
   if(q.reask){ const ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
       vysl=S.dokazano[kl]?"„Máme to v protokolu.“ Otočil list k tobě a čekal.":"„Minule jste to říkal jinak.“ Listoval zpátky a četl si to dvakrát.";}
-    else vysl=S.dokazano[kl]?"„No vidíte.“ Přeškrtl jeden řádek a psal dál.":"Srovnal starší zápis s novým a chvíli mezi nimi přejížděl očima. Pak desky zavřel.";
+    else vysl=S.dokazano[kl]?"„No vidíte.“ Přeškrtl jeden řádek a psal dál.":DRZEL[S.i%DRZEL.length];
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[kl]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
@@ -2126,13 +2131,18 @@ function doSpisu(duvod){ S.spis++; S.spisOd[duvod]=(S.spisOd[duvod]||0)+1; }
    totéž" měří promluvu, ne popis pohybu, takže zbytek je čisté chování a žádná řeč. */
 const ZAPRENO=["Silence. Then: “Fine.” He keeps writing.","He did not look up. The pen scratches on.","Nothing happened for a while. Then he turned the page.","He heard you out and added nothing."];
 const ZAPSANO=["The typewriter clacks. On the record.","He tapped it out with two fingers.","He typed it and moved the platen up a line.","Three words of clatter. Then nothing."];
+/* Držená výpověď v druhém týdnu. Nejopakovanější věta v celé hře: naměřeno 4,6krát za běh,
+   protože reask sedí skoro na každé otázce druhého výslechu a hráč, který se drží svého,
+   dostane pokaždé totéž. Žádná z variant nemluví: promluva by se srazila s pravidlem,
+   že nikdo neřekne dvakrát totéž. */
+const DRZEL=[""Položil oba listy vedle sebe a porovnal je řádek po řádku.","He laid both pages side by side and compared them line by line."","Položil oba listy vedle sebe a porovnal je řádek po řádku.","Přejel prstem po starším zápisu a nic k němu nedopsal.","Vrátil se v deskách o dva týdny zpátky a chvíli mlčky četl."];
 function vyslechVyber(strana){ stopCas(); const q=S.karty[S.i]; const kl=klic(q); let vysl,stamp=false;
   // co jsi řekl, to je v protokolu: formulace i odpověď, ať už na to měli důkaz, nebo ne
   if(!q.reask) S.otazky[kl]={ot:q.ot,k:!!q.konkretni,kdo:q.kdo,ch:q.ch,usv:q.usv,need:q.need,str:q.str};
   if(q.reask){ const ocek=S.dokazano[kl]?"p":q.predchozi;   // odhalenou lež už nemá smysl opakovat: v protokolu je pravda
     if(strana!==ocek){S.vera-=VER_ZTRATA;stamp=true;
       vysl=S.dokazano[kl]?"“We have it in the record.” He turned the page toward you and waited.":"“Last time you said it differently.” He leafed back and read it twice.";}
-    else vysl=S.dokazano[kl]?"“There we are.” He struck out a line and wrote on.":"He set the older entry beside the new one and looked from one to the other for a while. Then he closed the folder.";
+    else vysl=S.dokazano[kl]?"“There we are.” He struck out a line and wrote on.":DRZEL[S.i%DRZEL.length];
     S.reklJsem[kl]=strana; }
   else if(strana==="l"){ S.reklJsem[kl]=strana;
     if(q.majiDukaz){S.vera-=VER_ZTRATA;stamp=true;S.dokazano[kl]=true;
@@ -2658,7 +2668,7 @@ nova();
   document.getElementById("lblVera").textContent=T.vera;
   document.getElementById("lblSpis").textContent=T.spis;
   document.getElementById("razitko").textContent=T.razitko;
-  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608141010";
+  var b=document.getElementById("jazyk"); b.textContent=T.prepnout; b.title="build 202608141014";
   b.onclick=function(){ try{localStorage.setItem("pasmo-jazyk",j==="en"?"cs":"en");}catch(e){} location.reload(); };
   var s=document.createElement("script");
   s.textContent=document.getElementById(j==="en"?"src-en":"src-cs").textContent;
